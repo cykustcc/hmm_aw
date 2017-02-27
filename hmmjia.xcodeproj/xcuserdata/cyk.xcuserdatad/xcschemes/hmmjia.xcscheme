@@ -61,6 +61,12 @@
             ReferencedContainer = "container:hmmjia.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-i ../../../../../data/gmm_hmm_samples_dim2_T1000.dat -m md.dat -d 2 -n 1 -s 2 -l 1000"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

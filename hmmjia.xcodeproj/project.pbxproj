@@ -7,7 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		294549CD1BDD68C000281995 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 294549CC1BDD68C000281995 /* main.cpp */; };
+		294549F81BDD6C2F00281995 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F21BDD6C2F00281995 /* utils.c */; };
+		294549F91BDD6C2F00281995 /* cluster.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F31BDD6C2F00281995 /* cluster.c */; };
+		294549FA1BDD6C2F00281995 /* estimate.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F41BDD6C2F00281995 /* estimate.c */; };
+		294549FB1BDD6C2F00281995 /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F51BDD6C2F00281995 /* matrix.c */; };
+		294549FC1BDD6C2F00281995 /* modelio.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F61BDD6C2F00281995 /* modelio.c */; };
+		294549FD1BDD6C2F00281995 /* prob.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F71BDD6C2F00281995 /* prob.c */; };
+		294549FF1BDD6C4C00281995 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549FE1BDD6C4C00281995 /* main.c */; };
+		294DB1851C1B61D1001803B1 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F21BDD6C2F00281995 /* utils.c */; };
+		294DB1861C1B61D1001803B1 /* cluster.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F31BDD6C2F00281995 /* cluster.c */; };
+		294DB1871C1B61D1001803B1 /* estimate.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F41BDD6C2F00281995 /* estimate.c */; };
+		294DB1881C1B61D1001803B1 /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F51BDD6C2F00281995 /* matrix.c */; };
+		294DB1891C1B61D1001803B1 /* modelio.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F61BDD6C2F00281995 /* modelio.c */; };
+		294DB18A1C1B61D1001803B1 /* prob.c in Sources */ = {isa = PBXBuildFile; fileRef = 294549F71BDD6C2F00281995 /* prob.c */; };
+		294DB1921C1B61F5001803B1 /* main2.c in Sources */ = {isa = PBXBuildFile; fileRef = 294DB1811C1B60FD001803B1 /* main2.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -20,15 +33,43 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		294DB18D1C1B61D1001803B1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		294549C91BDD68C000281995 /* hmmjia */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmmjia; sourceTree = BUILT_PRODUCTS_DIR; };
-		294549CC1BDD68C000281995 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		294549F21BDD6C2F00281995 /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = utils.c; path = hmmjia/src/utils.c; sourceTree = "<group>"; };
+		294549F31BDD6C2F00281995 /* cluster.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = cluster.c; path = hmmjia/src/cluster.c; sourceTree = "<group>"; };
+		294549F41BDD6C2F00281995 /* estimate.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = estimate.c; path = hmmjia/src/estimate.c; sourceTree = "<group>"; };
+		294549F51BDD6C2F00281995 /* matrix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = matrix.c; path = hmmjia/src/matrix.c; sourceTree = "<group>"; };
+		294549F61BDD6C2F00281995 /* modelio.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = modelio.c; path = hmmjia/src/modelio.c; sourceTree = "<group>"; };
+		294549F71BDD6C2F00281995 /* prob.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = prob.c; path = hmmjia/src/prob.c; sourceTree = "<group>"; };
+		294549FE1BDD6C4C00281995 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = hmmjia/main.c; sourceTree = "<group>"; };
+		29454A001BDD6C5800281995 /* cluster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cluster.h; path = hmmjia/include/cluster.h; sourceTree = "<group>"; };
+		29454A011BDD6C5800281995 /* hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = hmm.h; path = hmmjia/include/hmm.h; sourceTree = "<group>"; };
+		29454A021BDD6C5800281995 /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = matrix.h; path = hmmjia/include/matrix.h; sourceTree = "<group>"; };
+		29454A031BDD6C5800281995 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = hmmjia/include/utils.h; sourceTree = "<group>"; };
+		294DB1811C1B60FD001803B1 /* main2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main2.c; path = hmmjia/main2.c; sourceTree = "<group>"; };
+		294DB1911C1B61D1001803B1 /* hmmjia2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmmjia2; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		294549C61BDD68C000281995 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		294DB18C1C1B61D1001803B1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -41,7 +82,10 @@
 		294549C01BDD68C000281995 = {
 			isa = PBXGroup;
 			children = (
-				294549CB1BDD68C000281995 /* hmmjia */,
+				29454A041BDD6C5D00281995 /* include */,
+				29454A051BDD6C6C00281995 /* src */,
+				294549FE1BDD6C4C00281995 /* main.c */,
+				294DB1811C1B60FD001803B1 /* main2.c */,
 				294549CA1BDD68C000281995 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,16 +94,33 @@
 			isa = PBXGroup;
 			children = (
 				294549C91BDD68C000281995 /* hmmjia */,
+				294DB1911C1B61D1001803B1 /* hmmjia2 */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		294549CB1BDD68C000281995 /* hmmjia */ = {
+		29454A041BDD6C5D00281995 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				294549CC1BDD68C000281995 /* main.cpp */,
+				29454A001BDD6C5800281995 /* cluster.h */,
+				29454A011BDD6C5800281995 /* hmm.h */,
+				29454A021BDD6C5800281995 /* matrix.h */,
+				29454A031BDD6C5800281995 /* utils.h */,
 			);
-			path = hmmjia;
+			name = include;
+			sourceTree = "<group>";
+		};
+		29454A051BDD6C6C00281995 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				294549F21BDD6C2F00281995 /* utils.c */,
+				294549F31BDD6C2F00281995 /* cluster.c */,
+				294549F41BDD6C2F00281995 /* estimate.c */,
+				294549F51BDD6C2F00281995 /* matrix.c */,
+				294549F61BDD6C2F00281995 /* modelio.c */,
+				294549F71BDD6C2F00281995 /* prob.c */,
+			);
+			name = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -80,6 +141,23 @@
 			name = hmmjia;
 			productName = hmmjia;
 			productReference = 294549C91BDD68C000281995 /* hmmjia */;
+			productType = "com.apple.product-type.tool";
+		};
+		294DB1831C1B61D1001803B1 /* hmmjia2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 294DB18E1C1B61D1001803B1 /* Build configuration list for PBXNativeTarget "hmmjia2" */;
+			buildPhases = (
+				294DB1841C1B61D1001803B1 /* Sources */,
+				294DB18C1C1B61D1001803B1 /* Frameworks */,
+				294DB18D1C1B61D1001803B1 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = hmmjia2;
+			productName = hmmjia;
+			productReference = 294DB1911C1B61D1001803B1 /* hmmjia2 */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -109,6 +187,7 @@
 			projectRoot = "";
 			targets = (
 				294549C81BDD68C000281995 /* hmmjia */,
+				294DB1831C1B61D1001803B1 /* hmmjia2 */,
 			);
 		};
 /* End PBXProject section */
@@ -118,7 +197,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				294549CD1BDD68C000281995 /* main.cpp in Sources */,
+				294549F81BDD6C2F00281995 /* utils.c in Sources */,
+				294549F91BDD6C2F00281995 /* cluster.c in Sources */,
+				294549FA1BDD6C2F00281995 /* estimate.c in Sources */,
+				294549FB1BDD6C2F00281995 /* matrix.c in Sources */,
+				294549FC1BDD6C2F00281995 /* modelio.c in Sources */,
+				294549FD1BDD6C2F00281995 /* prob.c in Sources */,
+				294549FF1BDD6C4C00281995 /* main.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		294DB1841C1B61D1001803B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				294DB1921C1B61F5001803B1 /* main2.c in Sources */,
+				294DB1851C1B61D1001803B1 /* utils.c in Sources */,
+				294DB1861C1B61D1001803B1 /* cluster.c in Sources */,
+				294DB1871C1B61D1001803B1 /* estimate.c in Sources */,
+				294DB1881C1B61D1001803B1 /* matrix.c in Sources */,
+				294DB1891C1B61D1001803B1 /* modelio.c in Sources */,
+				294DB18A1C1B61D1001803B1 /* prob.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,6 +306,10 @@
 		294549D11BDD68C000281995 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/hmmjia/include",
+					"$(PROJECT_DIR)/hmmjia/src",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -214,6 +317,32 @@
 		294549D21BDD68C000281995 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/hmmjia/include",
+					"$(PROJECT_DIR)/hmmjia/src",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		294DB18F1C1B61D1001803B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/hmmjia/include",
+					"$(PROJECT_DIR)/hmmjia/src",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		294DB1901C1B61D1001803B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/hmmjia/include",
+					"$(PROJECT_DIR)/hmmjia/src",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -237,6 +366,16 @@
 				294549D21BDD68C000281995 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		294DB18E1C1B61D1001803B1 /* Build configuration list for PBXNativeTarget "hmmjia2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				294DB18F1C1B61D1001803B1 /* Debug */,
+				294DB1901C1B61D1001803B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
