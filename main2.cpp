@@ -1,8 +1,7 @@
 #include "hmm.h"
 #include "utils.h"
-main(argc, argv)
-int argc;
-char *argv[];
+#include <cstring>
+int main(int argc, char *argv[])
 {
     char infilename[100];
     char mdfilename[100];

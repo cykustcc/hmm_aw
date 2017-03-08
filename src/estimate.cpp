@@ -361,9 +361,9 @@ void viterbicls(HmmModel *md, float *u, int len, int *optst, double *inita,
   pdflist=(GaussModel ***)calloc(numcls,sizeof(GaussModel **));
   for (i=0;i<numcls;i++)
     pdflist[i]=(GaussModel **)calloc(numst,sizeof(GaussModel *));
-  matrix_2d_double(&a, numcls,numcls);
+  a = matrix_2d_double(numcls,numcls);
   astart=(double *)calloc(numcls,sizeof(double));
-  matrix_2d_double(&prior, numcls,numst);
+  prior = matrix_2d_double(numcls,numst);
   nstpercls=(int *)calloc(numcls,sizeof(int));
 
   formmix(md, inita, a, astart, pdflist, prior, nstpercls);
@@ -441,9 +441,9 @@ void viterbicls(HmmModel *md, float *u, int len, int *optst, double *inita,
 
   free(prest);
   free(merit);
-  free_matrix_2d_double(&a, numcls);
+  free_matrix_2d_double(a, numcls);
   free(astart);
-  free_matrix_2d_double(&prior, numcls);
+  free_matrix_2d_double(prior, numcls);
   free(nstpercls);
   for (i=0;i<numcls;i++) free(pdflist[i]);
   free(pdflist);
@@ -548,7 +548,7 @@ void initialize(float **u, int nseq, int *len, int dim, HmmModel *md, int ranfla
   buf = (float *)calloc(numdata*dim,sizeof(float));
   code=(int *)calloc(numdata,sizeof(int));
   cdbk=(float *)calloc(numdata*dim,sizeof(float));
-  matrix_2d_double(&sigcom, dim, dim);
+  sigcom = matrix_2d_double(dim, dim);
 
   for (i=0,k=0; i<nseq; i++) {
     for (j=0; j<len[i]; j++) {
@@ -672,7 +672,7 @@ void initialize(float **u, int nseq, int *len, int dim, HmmModel *md, int ranfla
   free(buf);
   free(cdbk);
   free(code);
-  free_matrix_2d_double(&sigcom, dim);
+  free_matrix_2d_double(sigcom, dim);
 
 }
 
@@ -862,18 +862,18 @@ int baumwelch(float **u, int nseq, int *len, HmmModel *md, double *loglikehd,
   numst=md->numst;
   numcls=md->numcls;
 
-  vector_double(&musum, numst*dim);
-  vector_double(&mu, numst*dim);
-  matrix_2d_double(&mom2sum, numst*dim, dim);
-  matrix_2d_double(&mom2, numst*dim, dim);
-  matrix_2d_double(&sigma, numst*dim, dim);
-  matrix_2d_double(&sigcom, dim, dim);
-  matrix_2d_double(&asum, numst, numst);
-  matrix_2d_double(&a, numst, numst);
-  matrix_2d_double(&amn, numcls, numcls);
-  matrix_2d_double(&bnl, numcls, numst);
-  vector_double(&lsum, numst);
-  vector_double(&l1img, numst);
+  musum = vector_double( numst*dim);
+  mu = vector_double( numst*dim);
+  mom2sum = matrix_2d_double( numst*dim, dim);
+  mom2 = matrix_2d_double( numst*dim, dim);
+  sigma = matrix_2d_double( numst*dim, dim);
+  sigcom = matrix_2d_double( dim, dim);
+  asum = matrix_2d_double( numst, numst);
+  a = matrix_2d_double(numst, numst);
+  amn = matrix_2d_double( numcls, numcls);
+  bnl = matrix_2d_double( numcls, numst);
+  lsum = vector_double( numst);
+  l1img = vector_double( numst);
 
   maxcol=len[0];
   for (i=1; i<nseq; i++) {
@@ -1026,14 +1026,14 @@ int baumwelch(float **u, int nseq, int *len, HmmModel *md, double *loglikehd,
 
   free(musum);
   free(mu);
-  free_matrix_2d_double(&mom2sum, numst*dim);
-  free_matrix_2d_double(&mom2, numst*dim);
-  free_matrix_2d_double(&sigma, numst*dim);
-  free_matrix_2d_double(&sigcom,dim);
-  free_matrix_2d_double(&asum, numst);
-  free_matrix_2d_double(&a, numst);
-  free_matrix_2d_double(&amn, numcls);
-  free_matrix_2d_double(&bnl, numcls);
+  free_matrix_2d_double(mom2sum, numst*dim);
+  free_matrix_2d_double(mom2, numst*dim);
+  free_matrix_2d_double(sigma, numst*dim);
+  free_matrix_2d_double(sigcom,dim);
+  free_matrix_2d_double(asum, numst);
+  free_matrix_2d_double(a, numst);
+  free_matrix_2d_double(amn, numcls);
+  free_matrix_2d_double(bnl, numcls);
   free(lsum);
   free(l1img);
   free(thetalog);

@@ -1,9 +1,35 @@
 #include "hmm.h"
 #include "utils.h"
-main(argc, argv)
-     int argc;
-     char *argv[];
+#include <cstring>
+
+#include <gflags/gflags.h>
+#include <glog/logging.h>
+
+DEFINE_string(infilename, "",
+              "input data file name");
+DEFINE_string(mdfilename, "",
+              "output model file name");
+DEFINE_int32(dim, 10,
+             "data dimension");
+DEFINE_int32(num, 1,
+             "Optional, number of sequences");
+DEFINE_int32(statenum, 3,
+             "umber of states in HMM");
+DEFINE_int32(len, 100,
+             "sequence length");
+
+
+int main(int argc, char *argv[])
 {
+    gflags::SetUsageMessage("train HMM with Gaussian (or GMMs) emission\n"
+                            "usage: train <command> <args>\n\n"
+                            "commands:\n"
+                            "  infilename      input data file name\n"
+                            "  mdfilename      output model file name\n"
+                            "  dim             data dimension\n"
+                            "  num             number of sequences\n"
+                            "  statenum        number of states in HMM\n"
+                            "  l               sequence length");
   char infilename[100];
   char mdfilename[100];
   FILE *infile, *mdfile;
@@ -150,5 +176,5 @@ main(argc, argv)
 
   //Ascii file for the model
   print_model(md,stdout);
-
+  return 0;
 }

@@ -83,5 +83,6 @@ extern double mix_gauss_pdf_log(float *ft, GaussModel **gmlist, double *prior, i
 extern unsigned char write_model(HmmModel *md, FILE *outfile);
 extern unsigned char read_model(HmmModel *md, FILE *infile);
 extern unsigned char print_model(HmmModel *md, FILE *outfile);
+int hmm_read(HmmModel *md, const char* filename);
 
 

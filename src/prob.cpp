@@ -13,8 +13,8 @@ int newgauss(GaussModel *md, int dim, int cls, int exist)
   md->exist=exist;
 
   md->mean=(double *)calloc(dim,sizeof(double));
-  matrix_2d_double(&(md->sigma),dim,dim);
-  matrix_2d_double(&(md->sigma_inv), dim, dim);
+  md->sigma = matrix_2d_double(dim,dim);
+  md->sigma_inv = matrix_2d_double(dim, dim);
   return 0;
 }
 
@@ -63,7 +63,7 @@ void newhmm(HmmModel *md, int dim, int numst, int numcls, int *stcls)
     newgauss(md->stpdf[i], dim, md->stcls[i], exist);
   }
   
-  matrix_2d_double(&md->a, numst,numst);
+  md->a = matrix_2d_double(numst,numst);
   md->a00=(double *)calloc(numst, sizeof(double));
 }
 
@@ -79,14 +79,14 @@ void freehmm(HmmModel **md_pt)
 
   for (i=0; i<numst; i++) {
     free(md->stpdf[i]->mean);
-    free_matrix_2d_double(&(md->stpdf[i]->sigma), md->dim);
-    free_matrix_2d_double(&(md->stpdf[i]->sigma_inv), md->dim);
+    free_matrix_2d_double(md->stpdf[i]->sigma, md->dim);
+    free_matrix_2d_double(md->stpdf[i]->sigma_inv, md->dim);
     free(md->stpdf[i]);
   }
   free(md->stpdf);
 
   free(md->a00);
-  free_matrix_2d_double(&md->a, numst);
+  free_matrix_2d_double(md->a, numst);
 
   free(md->stcls);
 
@@ -124,10 +124,11 @@ double gauss_pdf_log(float *ft, GaussModel *gm)
   int i,j,k,m,n;
   float *ptrft;
 
-  if (!vector_double(&db_array, gm->dim))
+  db_array = vector_double(gm->dim);
+  if (!db_array)
     exit(1);
-
-  if (!vector_double(&dif, gm->dim))
+  dif = vector_double(gm->dim);
+  if (!dif)
     exit(1);
 
   m=gm->dim;

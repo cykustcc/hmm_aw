@@ -1,4 +1,83 @@
 #include "hmm.h"
+#include "glog/logging.h"
+#include <assert.h>
+
+// see hmm1.in for input format example. specifications will be added later
+int hmm_read(HmmModel *md, const char* filename){
+  FILE *fp = NULL;
+  fp = fopen(filename, "r");
+  assert(fp);
+  int dim, numst, tmp;
+  char comments[20];
+  fscanf(fp, "%d", &dim);
+  fscanf(fp, "%d", &numst);
+//newhmm(md, dim, numst, numst, NULL);
+  md->dim=dim;
+  md->numst=numst;
+  //we assume numcls==numst, which means each state has 1 Gaussian.
+  md->numcls=numst;
+  md->stcls=(int *)calloc(numst, sizeof(int));
+  for (int i=0; i<numst; i++)
+    md->stcls[i] = i;
+  //skip comments
+  fscanf(fp, "%20s", comments);
+  md->a00=(double *)calloc(numst,sizeof(double));
+  for (int i=0; i<numst; i++) {
+    fscanf(fp, "%lf ", &md->a00[i]);
+  }
+  //skip comments
+  fscanf(fp, "%20s", comments);
+  //read mus
+  md->a=(double **)calloc(numst, sizeof(double *));
+  for (int i=0; i<numst; i++) {
+    md->a[i]=(double *)calloc(numst, sizeof(double));
+    for (int j=0; j<numst; j++)
+      fscanf(fp, "%lf ", &md->a[i][j]);
+  }
+  md->stpdf=(GaussModel **)calloc(numst, sizeof(GaussModel *));
+  
+  //read means:
+  //skip comments
+  fscanf(fp, "%20s", comments);
+  for (int i=0; i<numst; i++) {
+    md->stpdf[i]=(GaussModel *)calloc(1, sizeof(GaussModel));
+    md->stpdf[i]->exist = 1;
+    md->stpdf[i]->dim = dim;
+    md->stpdf[i]->mean = (double *)calloc(md->stpdf[i]->dim, sizeof(double));
+    for (int j=0; j<dim; j++)
+      fscanf(fp, "%lf ", &md->stpdf[i]->mean[j]);
+  }
+  //read sigmas:
+  for (int i=0; i<numst; i++) {
+    //skip comments
+    fscanf(fp, "%20s", comments);
+    md->stpdf[i]->sigma=(double **)calloc(md->stpdf[i]->dim,sizeof(double *));
+    for (int m=0; m<md->stpdf[i]->dim; m++) {
+      md->stpdf[i]->sigma[m]=(double *)calloc(md->stpdf[i]->dim,
+                                              sizeof(double));
+      for (int n=0; n<md->stpdf[i]->dim; n++)
+        fscanf(fp, "%lf ", &md->stpdf[i]->sigma[m][n]);
+    }
+    md->stpdf[i]->sigma_inv=(double **)calloc(md->stpdf[i]->dim,
+                                              sizeof(double *));
+    for (int m=0; m<md->stpdf[i]->dim; m++) {
+      md->stpdf[i]->sigma_inv[m]=(double *)calloc(md->stpdf[i]->dim,
+                                                  sizeof(double));
+    }
+    tmp=mat_det_inv_double(md->stpdf[i]->sigma, md->stpdf[i]->sigma_inv,
+                          &(md->stpdf[i]->sigma_det),md->stpdf[i]->dim);
+    LOG(INFO)<<"return value = "<<tmp;
+  }
+  fclose(fp);
+  return 0;
+}
+
+int hmm_write(HmmModel *md, const char* filename){
+  FILE *fp = NULL;
+  fp = filename? fopen(filename, "w+") : stdout;
+  assert(fp);
+  return 0;
+}
 
 unsigned char write_model(HmmModel *md, FILE *outfile)
 {

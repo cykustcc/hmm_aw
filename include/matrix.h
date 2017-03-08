@@ -4,44 +4,44 @@
 /*-------------------------- General vector ------------------------*/
 /*------------------------------------------------------------------*/
 
-extern unsigned char vector_uchar(unsigned char **, int );
-extern unsigned char vector_float(float **, int );
-extern unsigned char vector_double(double **, int );
-extern unsigned char vector_int(int **, int);
+extern unsigned char * vector_uchar( int );
+extern float * vector_float( int );
+extern double * vector_double( int );
+extern int * vector_int( int);
 
 /*------------------------------------------------------------------*/
 /*---------------- General 2 dimension matrix ----------------------*/
 /*------------------------------------------------------------------*/
 
-extern unsigned char matrix_2d_uchar(unsigned char ***, int , int );
-extern unsigned char matrix_2d_float(float ***, int , int );
-extern unsigned char matrix_2d_double(double ***, int , int );
-extern unsigned char matrix_2d_int(int ***, int , int );
+extern unsigned char ** matrix_2d_uchar( int , int );
+extern float ** matrix_2d_float( int , int );
+extern double ** matrix_2d_double( int , int );
+extern int ** matrix_2d_int( int , int );
 
 /*--------------------------------------------------------------------*/
 /*------------ Generate 3 dimension matrix ---------------------------*/
 /*--------------------------------------------------------------------*/
 
-extern unsigned char matrix_3d_uchar(unsigned char ****, int ,int , int );
-extern unsigned char matrix_3d_float(float ****, int ,int , int );
-extern unsigned char matrix_3d_double(double ****, int ,int , int );
-extern unsigned char matrix_3d_int(int ****, int , int , int );
+extern unsigned char *** matrix_3d_uchar( int ,int , int );
+extern float *** matrix_3d_float( int ,int , int );
+extern double *** matrix_3d_double( int ,int , int );
+extern int *** matrix_3d_int( int , int , int );
 
 /*-------------------------------------------------------------------*/
 /*--------------- Free 2 dimension matrix ---------------------------*/
 /*-------------------------------------------------------------------*/
-extern void free_matrix_2d_uchar(unsigned char ***, int );
-extern void free_matrix_2d_float(float ***, int );
-extern void free_matrix_2d_double(double ***, int );
-extern void free_matrix_2d_int(int ***, int );
+extern void free_matrix_2d_uchar(unsigned char **, int );
+extern void free_matrix_2d_float(float **, int );
+extern void free_matrix_2d_double(double **, int );
+extern void free_matrix_2d_int(int **, int );
 
 /*-------------------------------------------------------------------*/
 /*--------------- Free 3 dimension matrix ---------------------------*/
 /*-------------------------------------------------------------------*/
-extern void free_matrix_3d_uchar(unsigned char ****, int , int );
-extern void free_matrix_3d_float(float ****, int , int );
-extern void free_matrix_3d_double(double ****, int , int );
-extern void free_matrix_3d_int(int ****, int , int );
+extern void free_matrix_3d_uchar(unsigned char ***, int , int );
+extern void free_matrix_3d_float(float ***, int , int );
+extern void free_matrix_3d_double(double ***, int , int );
+extern void free_matrix_3d_int(int ***, int , int );
 
 /*-------------------------------------------------------------------*/
 /*----------------------- Set Memory for Vector ---------------------*/
@@ -108,3 +108,5 @@ extern unsigned char mat_inv_float(float **, float **, int );
 extern unsigned char mat_inv_double(double **, double **, int );
 extern float mat_det_ludcmp_float(float **, int );
 extern double mat_det_ludcmp_double(double **, int );
+unsigned char mat_det_inv_double(double **mt, double **y, double *det,
+                                 int dim);
