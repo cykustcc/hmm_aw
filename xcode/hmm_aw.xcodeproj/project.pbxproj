@@ -106,9 +106,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		294549C91BDD68C000281995 /* hmmjia */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmmjia; sourceTree = BUILT_PRODUCTS_DIR; };
-		294DB1911C1B61D1001803B1 /* hmmjia2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmmjia2; sourceTree = BUILT_PRODUCTS_DIR; };
-		6717BEE61E651AD300E2521D /* hmmjiaTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmmjiaTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		294549C91BDD68C000281995 /* hmm_aw */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmm_aw; sourceTree = BUILT_PRODUCTS_DIR; };
+		294DB1911C1B61D1001803B1 /* hmm_aw2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmm_aw2; sourceTree = BUILT_PRODUCTS_DIR; };
+		6717BEE61E651AD300E2521D /* hmm_awTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmm_awTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6717BEFF1E6641D000E2521D /* libgtest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgtest.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6717BF281E66595F00E2521D /* libhmm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhmm.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6717BF921E688EA400E2521D /* libglog.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglog.a; path = ../../../../../../usr/local/Cellar/glog/0.3.4_1/lib/libglog.a; sourceTree = "<group>"; };
@@ -210,9 +210,9 @@
 		294549CA1BDD68C000281995 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				294549C91BDD68C000281995 /* hmmjia */,
-				294DB1911C1B61D1001803B1 /* hmmjia2 */,
-				6717BEE61E651AD300E2521D /* hmmjiaTest */,
+				294549C91BDD68C000281995 /* hmm_aw */,
+				294DB1911C1B61D1001803B1 /* hmm_aw2 */,
+				6717BEE61E651AD300E2521D /* hmm_awTest */,
 				6717BEFF1E6641D000E2521D /* libgtest.a */,
 				6717BF281E66595F00E2521D /* libhmm.a */,
 			);
@@ -322,9 +322,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		294549C81BDD68C000281995 /* hmmjia */ = {
+		294549C81BDD68C000281995 /* hmm_aw */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 294549D01BDD68C000281995 /* Build configuration list for PBXNativeTarget "hmmjia" */;
+			buildConfigurationList = 294549D01BDD68C000281995 /* Build configuration list for PBXNativeTarget "hmm_aw" */;
 			buildPhases = (
 				294549C51BDD68C000281995 /* Sources */,
 				294549C61BDD68C000281995 /* Frameworks */,
@@ -335,14 +335,14 @@
 			dependencies = (
 				67F9627F1E70815100482330 /* PBXTargetDependency */,
 			);
-			name = hmmjia;
+			name = hmm_aw;
 			productName = hmmjia;
-			productReference = 294549C91BDD68C000281995 /* hmmjia */;
+			productReference = 294549C91BDD68C000281995 /* hmm_aw */;
 			productType = "com.apple.product-type.tool";
 		};
-		294DB1831C1B61D1001803B1 /* hmmjia2 */ = {
+		294DB1831C1B61D1001803B1 /* hmm_aw2 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 294DB18E1C1B61D1001803B1 /* Build configuration list for PBXNativeTarget "hmmjia2" */;
+			buildConfigurationList = 294DB18E1C1B61D1001803B1 /* Build configuration list for PBXNativeTarget "hmm_aw2" */;
 			buildPhases = (
 				294DB1841C1B61D1001803B1 /* Sources */,
 				294DB18C1C1B61D1001803B1 /* Frameworks */,
@@ -353,14 +353,14 @@
 			dependencies = (
 				67F962811E70815900482330 /* PBXTargetDependency */,
 			);
-			name = hmmjia2;
+			name = hmm_aw2;
 			productName = hmmjia;
-			productReference = 294DB1911C1B61D1001803B1 /* hmmjia2 */;
+			productReference = 294DB1911C1B61D1001803B1 /* hmm_aw2 */;
 			productType = "com.apple.product-type.tool";
 		};
-		6717BEE51E651AD300E2521D /* hmmjiaTest */ = {
+		6717BEE51E651AD300E2521D /* hmm_awTest */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6717BEEA1E651AD300E2521D /* Build configuration list for PBXNativeTarget "hmmjiaTest" */;
+			buildConfigurationList = 6717BEEA1E651AD300E2521D /* Build configuration list for PBXNativeTarget "hmm_awTest" */;
 			buildPhases = (
 				6717BEE21E651AD300E2521D /* Sources */,
 				6717BEE31E651AD300E2521D /* Frameworks */,
@@ -372,9 +372,9 @@
 				6717BF551E6664DF00E2521D /* PBXTargetDependency */,
 				6717BF501E66602600E2521D /* PBXTargetDependency */,
 			);
-			name = hmmjiaTest;
+			name = hmm_awTest;
 			productName = hmmjiaTest;
-			productReference = 6717BEE61E651AD300E2521D /* hmmjiaTest */;
+			productReference = 6717BEE61E651AD300E2521D /* hmm_awTest */;
 			productType = "com.apple.product-type.tool";
 		};
 		6717BEFE1E6641D000E2521D /* gtest */ = {
@@ -437,7 +437,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 294549C41BDD68C000281995 /* Build configuration list for PBXProject "hmmjia" */;
+			buildConfigurationList = 294549C41BDD68C000281995 /* Build configuration list for PBXProject "hmm_aw" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -451,9 +451,9 @@
 			targets = (
 				6717BF271E66595F00E2521D /* hmm */,
 				6717BEFE1E6641D000E2521D /* gtest */,
-				294549C81BDD68C000281995 /* hmmjia */,
-				294DB1831C1B61D1001803B1 /* hmmjia2 */,
-				6717BEE51E651AD300E2521D /* hmmjiaTest */,
+				294549C81BDD68C000281995 /* hmm_aw */,
+				294DB1831C1B61D1001803B1 /* hmm_aw2 */,
+				6717BEE51E651AD300E2521D /* hmm_awTest */,
 			);
 		};
 /* End PBXProject section */
@@ -797,7 +797,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		294549C41BDD68C000281995 /* Build configuration list for PBXProject "hmmjia" */ = {
+		294549C41BDD68C000281995 /* Build configuration list for PBXProject "hmm_aw" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				294549CE1BDD68C000281995 /* Debug */,
@@ -806,7 +806,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		294549D01BDD68C000281995 /* Build configuration list for PBXNativeTarget "hmmjia" */ = {
+		294549D01BDD68C000281995 /* Build configuration list for PBXNativeTarget "hmm_aw" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				294549D11BDD68C000281995 /* Debug */,
@@ -815,7 +815,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		294DB18E1C1B61D1001803B1 /* Build configuration list for PBXNativeTarget "hmmjia2" */ = {
+		294DB18E1C1B61D1001803B1 /* Build configuration list for PBXNativeTarget "hmm_aw2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				294DB18F1C1B61D1001803B1 /* Debug */,
@@ -824,7 +824,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6717BEEA1E651AD300E2521D /* Build configuration list for PBXNativeTarget "hmmjiaTest" */ = {
+		6717BEEA1E651AD300E2521D /* Build configuration list for PBXNativeTarget "hmm_awTest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6717BEEB1E651AD300E2521D /* Debug */,

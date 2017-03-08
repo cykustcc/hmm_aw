@@ -1,6 +1,6 @@
 //
 //  dist_utils_test.cpp
-//  hmmjia
+//  hmm_aw
 //
 //  Created by Yukun Chen on 3/7/17.
 //  Copyright © 2017 cyk. All rights reserved.

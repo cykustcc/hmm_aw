@@ -1,6 +1,6 @@
 //
 //  modelio_test.cpp
-//  hmmjia
+//  hmm_aw
 //
 //  Created by Yukun Chen on 3/7/17.
 //  Copyright © 2017 cyk. All rights reserved.
@@ -12,7 +12,7 @@
 #include <utils/blas_utils.h>
 
 TEST(ModelIoTest, HmmRead){
-  const char filename[] = "/Users/yzc147/Dropbox/GMMHMM/code/hmmjia/data/test/hmm1.in";
+  const char filename[] = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm1.in";
   HmmModel *hmm1;
   hmm1=(HmmModel *)calloc(1,sizeof(HmmModel));
   hmm_read(hmm1, filename);
@@ -30,8 +30,8 @@ TEST(ModelIoTest, HmmRead){
 }
 
 TEST(ModelIoTest, HmmWrite){
-  const char filenamein[] = "/Users/yzc147/Dropbox/GMMHMM/code/hmmjia/data/test/hmm1.in";
-  const char filenameout[] = "/Users/yzc147/Dropbox/GMMHMM/code/hmmjia/data/test/hmm1.out";
+  const char filenamein[] = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm1.in";
+  const char filenameout[] = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm1.out";
   HmmModel *hmm1;
   hmm1=(HmmModel *)calloc(1,sizeof(HmmModel));
   hmm_read(hmm1, filenamein);

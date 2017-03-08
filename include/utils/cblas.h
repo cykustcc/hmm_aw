@@ -1,6 +1,6 @@
 //
 //  cblas.h
-//  hmmjia
+//  hmm_aw
 //
 //  modified from https://github.com/bobye/d2_kmeans Copyright @ Jianbo Ye
 //  Copyright © 2017 cyk. All rights reserved.
