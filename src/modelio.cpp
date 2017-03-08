@@ -27,7 +27,7 @@ int hmm_read(HmmModel *md, const char* filename){
   }
   //skip comments
   fscanf(fp, "%20s", comments);
-  //read mus
+  //read transition matrix a:
   md->a=(double **)calloc(numst, sizeof(double *));
   for (int i=0; i<numst; i++) {
     md->a[i]=(double *)calloc(numst, sizeof(double));
@@ -66,7 +66,7 @@ int hmm_read(HmmModel *md, const char* filename){
     }
     tmp=mat_det_inv_double(md->stpdf[i]->sigma, md->stpdf[i]->sigma_inv,
                           &(md->stpdf[i]->sigma_det),md->stpdf[i]->dim);
-    LOG(INFO)<<"return value = "<<tmp;
+    LOG(INFO)<<"mat_det_inv_double return value = "<<tmp;
   }
   fclose(fp);
   return 0;
@@ -76,6 +76,37 @@ int hmm_write(HmmModel *md, const char* filename){
   FILE *fp = NULL;
   fp = filename? fopen(filename, "w+") : stdout;
   assert(fp);
+  int dim = md->dim, numst = md->numst;
+  fprintf(fp, "%d\n", dim);
+  fprintf(fp, "%d\n", numst);
+  fprintf(fp, "//a00\n");
+  for (int i=0; i<numst; i++) {
+    fprintf(fp, "%lf ", md->a00[i]);
+  }
+  fprintf(fp, "\n");
+  //write transition matrix a:
+  fprintf(fp, "//a\n");
+  for (int i=0; i<numst; i++) {
+    for (int j=0; j<numst; j++)
+      fprintf(fp, "%lf ", md->a[i][j]);
+    fprintf(fp, "\n");
+  }
+  //write means:
+  fprintf(fp, "//mus\n");
+  for (int i=0; i<numst; i++) {
+    for (int j=0; j<dim; j++)
+      fprintf(fp, "%lf ", md->stpdf[i]->mean[j]);
+    fprintf(fp, "\n");
+  }
+  for (int i=0; i<numst; i++) {
+    //skip comments
+    fprintf(fp, "//sigmas\n");
+    for (int m=0; m<md->stpdf[i]->dim; m++) {
+      for (int n=0; n<md->stpdf[i]->dim; n++)
+        fprintf(fp, "%lf ", md->stpdf[i]->sigma[m][n]);
+      fprintf(fp, "\n");
+    }
+  }
   return 0;
 }
 

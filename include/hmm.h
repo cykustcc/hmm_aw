@@ -84,5 +84,6 @@ extern unsigned char write_model(HmmModel *md, FILE *outfile);
 extern unsigned char read_model(HmmModel *md, FILE *infile);
 extern unsigned char print_model(HmmModel *md, FILE *outfile);
 int hmm_read(HmmModel *md, const char* filename);
+int hmm_write(HmmModel *md, const char* filename);
 
 
