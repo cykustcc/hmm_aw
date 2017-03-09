@@ -66,7 +66,7 @@ int hmm_read(HmmModel *md, const char* filename){
     }
     tmp=mat_det_inv_double(md->stpdf[i]->sigma, md->stpdf[i]->sigma_inv,
                           &(md->stpdf[i]->sigma_det),md->stpdf[i]->dim);
-    LOG(INFO)<<"mat_det_inv_double return value = "<<tmp;
+//    LOG(INFO)<<"mat_det_inv_double return value = "<<tmp;
   }
   fclose(fp);
   return 0;

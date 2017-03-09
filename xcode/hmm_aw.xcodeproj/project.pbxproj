@@ -42,6 +42,12 @@
 		67F962841E7082D400482330 /* libglog.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9627C1E70813C00482330 /* libglog.dylib */; };
 		67F962851E7082E900482330 /* libglog.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9627C1E70813C00482330 /* libglog.dylib */; };
 		67F962871E7082FA00482330 /* libgflags.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F962861E7082FA00482330 /* libgflags.dylib */; };
+		67F962B51E70B40A00482330 /* gtest-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 67F962B41E70B40A00482330 /* gtest-all.cc */; };
+		67F962C61E70E76000482330 /* mosek_solver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962B61E70E6CF00482330 /* mosek_solver.cpp */; };
+		67F962C81E70EBE400482330 /* mosek_solver.h in Headers */ = {isa = PBXBuildFile; fileRef = 67F962C71E70E80400482330 /* mosek_solver.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		67F962CA1E70F1D500482330 /* libmosek64.7.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F962C91E70F1D500482330 /* libmosek64.7.1.dylib */; };
+		67F962CC1E70F98F00482330 /* mosek_solver_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962CB1E70F98F00482330 /* mosek_solver_test.cpp */; };
+		67F962CD1E70F9DC00482330 /* libmosek64_wrapper.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F962BB1E70E74C00482330 /* libmosek64_wrapper.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,7 +139,6 @@
 		67F9625A1E707FBF00482330 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		67F9626D1E707FD600482330 /* dist_utils_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dist_utils_test.cpp; sourceTree = "<group>"; };
 		67F9626E1E707FD600482330 /* gtest_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gtest_main.cpp; sourceTree = "<group>"; };
-		67F9626F1E707FD600482330 /* hmm1.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hmm1.in; sourceTree = "<group>"; };
 		67F962701E707FD600482330 /* matrix_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matrix_test.cpp; sourceTree = "<group>"; };
 		67F962711E707FD600482330 /* modelio_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelio_test.cpp; sourceTree = "<group>"; };
 		67F962721E707FD600482330 /* utils_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils_test.cpp; sourceTree = "<group>"; };
@@ -141,6 +146,12 @@
 		67F9627A1E70801300482330 /* main2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main2.cpp; path = ../main2.cpp; sourceTree = "<group>"; };
 		67F9627C1E70813C00482330 /* libglog.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglog.dylib; path = ../../../../../../../usr/local/Cellar/glog/0.3.4_1/lib/libglog.dylib; sourceTree = "<group>"; };
 		67F962861E7082FA00482330 /* libgflags.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgflags.dylib; path = ../../../../../../../usr/local/Cellar/gflags/2.2.0/lib/libgflags.dylib; sourceTree = "<group>"; };
+		67F962B41E70B40A00482330 /* gtest-all.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "gtest-all.cc"; path = "../googletest/googletest/src/gtest-all.cc"; sourceTree = "<group>"; };
+		67F962B61E70E6CF00482330 /* mosek_solver.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mosek_solver.cpp; sourceTree = "<group>"; };
+		67F962BB1E70E74C00482330 /* libmosek64_wrapper.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmosek64_wrapper.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		67F962C71E70E80400482330 /* mosek_solver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mosek_solver.h; sourceTree = "<group>"; };
+		67F962C91E70F1D500482330 /* libmosek64.7.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmosek64.7.1.dylib; path = ../../../../../Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin/libmosek64.7.1.dylib; sourceTree = "<group>"; };
+		67F962CB1E70F98F00482330 /* mosek_solver_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mosek_solver_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +179,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67F962CD1E70F9DC00482330 /* libmosek64_wrapper.dylib in Frameworks */,
 				67F962081E7078A000482330 /* Accelerate.framework in Frameworks */,
 				6717BF561E6664E600E2521D /* libhmm.a in Frameworks */,
 				6717BF0C1E66435C00E2521D /* libgtest.a in Frameworks */,
@@ -188,6 +200,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				67F9627D1E70813C00482330 /* libglog.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		67F962B81E70E74C00482330 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67F962CA1E70F1D500482330 /* libmosek64.7.1.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,6 +235,7 @@
 				6717BEE61E651AD300E2521D /* hmm_awTest */,
 				6717BEFF1E6641D000E2521D /* libgtest.a */,
 				6717BF281E66595F00E2521D /* libhmm.a */,
+				67F962BB1E70E74C00482330 /* libmosek64_wrapper.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -222,6 +243,7 @@
 		6717BEED1E651AFB00E2521D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				67F962C91E70F1D500482330 /* libmosek64.7.1.dylib */,
 				67F962861E7082FA00482330 /* libgflags.dylib */,
 				67F9627C1E70813C00482330 /* libglog.dylib */,
 				67F962071E7078A000482330 /* Accelerate.framework */,
@@ -241,6 +263,7 @@
 				67F9624A1E707FBF00482330 /* matrix.h */,
 				67F9624B1E707FBF00482330 /* utils */,
 				67F9624F1E707FBF00482330 /* utils.h */,
+				67F962C71E70E80400482330 /* mosek_solver.h */,
 			);
 			name = include;
 			path = ../include;
@@ -267,6 +290,7 @@
 				67F962561E707FBF00482330 /* prob.cpp */,
 				67F962571E707FBF00482330 /* utils */,
 				67F9625A1E707FBF00482330 /* utils.cpp */,
+				67F962B61E70E6CF00482330 /* mosek_solver.cpp */,
 			);
 			name = src;
 			path = ../src;
@@ -283,12 +307,13 @@
 		67F9626C1E707FD600482330 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				67F962B41E70B40A00482330 /* gtest-all.cc */,
 				67F9626D1E707FD600482330 /* dist_utils_test.cpp */,
 				67F9626E1E707FD600482330 /* gtest_main.cpp */,
-				67F9626F1E707FD600482330 /* hmm1.in */,
 				67F962701E707FD600482330 /* matrix_test.cpp */,
 				67F962711E707FD600482330 /* modelio_test.cpp */,
 				67F962721E707FD600482330 /* utils_test.cpp */,
+				67F962CB1E70F98F00482330 /* mosek_solver_test.cpp */,
 			);
 			name = test;
 			path = ../test;
@@ -316,6 +341,14 @@
 				67F962611E707FBF00482330 /* cblas.h in Headers */,
 				67F962621E707FBF00482330 /* utils.h in Headers */,
 				67F9625E1E707FBF00482330 /* matrix.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		67F962B91E70E74C00482330 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67F962C81E70EBE400482330 /* mosek_solver.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +444,23 @@
 			productReference = 6717BF281E66595F00E2521D /* libhmm.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		67F962BA1E70E74C00482330 /* mosek64_wrapper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 67F962C31E70E74C00482330 /* Build configuration list for PBXNativeTarget "mosek64_wrapper" */;
+			buildPhases = (
+				67F962B71E70E74C00482330 /* Sources */,
+				67F962B81E70E74C00482330 /* Frameworks */,
+				67F962B91E70E74C00482330 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = mosek64_wrapper;
+			productName = mosek64_wrapper;
+			productReference = 67F962BB1E70E74C00482330 /* libmosek64_wrapper.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -435,6 +485,10 @@
 						CreatedOnToolsVersion = 8.0;
 						ProvisioningStyle = Automatic;
 					};
+					67F962BA1E70E74C00482330 = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 294549C41BDD68C000281995 /* Build configuration list for PBXProject "hmm_aw" */;
@@ -450,6 +504,7 @@
 			projectRoot = "";
 			targets = (
 				6717BF271E66595F00E2521D /* hmm */,
+				67F962BA1E70E74C00482330 /* mosek64_wrapper */,
 				6717BEFE1E6641D000E2521D /* gtest */,
 				294549C81BDD68C000281995 /* hmm_aw */,
 				294DB1831C1B61D1001803B1 /* hmm_aw2 */,
@@ -479,6 +534,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67F962CC1E70F98F00482330 /* mosek_solver_test.cpp in Sources */,
 				67F962771E707FD600482330 /* utils_test.cpp in Sources */,
 				67F962741E707FD600482330 /* gtest_main.cpp in Sources */,
 				67F962761E707FD600482330 /* modelio_test.cpp in Sources */,
@@ -491,6 +547,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67F962B51E70B40A00482330 /* gtest-all.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,6 +563,14 @@
 				67F962671E707FBF00482330 /* modelio.cpp in Sources */,
 				67F9626B1E707FBF00482330 /* utils.cpp in Sources */,
 				67F962641E707FBF00482330 /* dist_utils.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		67F962B71E70E74C00482330 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67F962C61E70E76000482330 /* mosek_solver.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,10 +641,12 @@
 					"$(PROJECT_DIR)/../include",
 					$SRCROOT/../googletest/googletest/include,
 					/usr/local/Cellar/gflags/2.2.0/include,
+					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/h",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glog/0.3.4_1/lib,
 					/usr/local/Cellar/gflags/2.2.0/lib,
+					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -623,10 +690,12 @@
 					"$(PROJECT_DIR)/../include",
 					$SRCROOT/../googletest/googletest/include,
 					/usr/local/Cellar/gflags/2.2.0/include,
+					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/h",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glog/0.3.4_1/lib,
 					/usr/local/Cellar/gflags/2.2.0/lib,
+					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -678,6 +747,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = "~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -692,6 +762,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = "~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -794,6 +865,42 @@
 			};
 			name = Release;
 		};
+		67F962C41E70E74C00482330 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				LD_RUNPATH_SEARCH_PATHS = "~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		67F962C51E70E74C00482330 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				LD_RUNPATH_SEARCH_PATHS = "~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -850,6 +957,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		67F962C31E70E74C00482330 /* Build configuration list for PBXNativeTarget "mosek64_wrapper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				67F962C41E70E74C00482330 /* Debug */,
+				67F962C51E70E74C00482330 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

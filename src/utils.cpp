@@ -18,3 +18,14 @@ void print_mat(float* X, int dim, int n){
       printf(";\n");
   }
 }
+
+void print_mat(double* X, int dim, int n){
+  for (int i = 0; i < n; i++)
+  {
+    for (int j = 0; j < dim; j++)
+    {
+      printf("%lf,\t", X[j+i*dim]);
+    }
+    printf(";\n");
+  }
+}

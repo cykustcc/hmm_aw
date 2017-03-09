@@ -14,5 +14,5 @@
 
 void pdist2(int d, size_t n, size_t m, double* A, double* B, double *C);
 
-void calc_distmat(HmmModel* hmm1, HmmModel* hmm2);
+void calc_distmat(HmmModel* hmm1, HmmModel* hmm2, double* C);
 #endif /* dist_utils_hpp */
