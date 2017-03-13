@@ -1,3 +1,6 @@
+#ifndef __hmm_aw_cluster_h
+#define __hmm_aw_cluster_h
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -14,4 +17,6 @@ extern float lloyd(float *cdbk, int dim, int numcdwd, float *vc, int numdata,
 		   float threshold);
 extern float kmeans(float *cdbk, int dim, int maxnumcdwd, int *fnumcdwd, 
 		    float *vc, int numdata, float threshold, float distthred);
+
+#endif
 

@@ -25,7 +25,7 @@ TEST(ModelIoTest, HmmRead){
       EXPECT_NEAR(dot_prod, 1.0, 0.01);
     }
   }
-  print_model(hmm1, stdout);
+//  print_model(hmm1, stdout);
   freehmm(&hmm1);
 }
 

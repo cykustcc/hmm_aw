@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
   md=(HmmModel *)calloc(1,sizeof(HmmModel));
 
   hmmfit(u, nseq, len, dim, md, numst, NULL, loglikehd, &lhsum,
-	 (double)epsilon, wt);
+	 (double)epsilon, wt, false);
 
   //Output loglikehd from hmmfit() is not written out
 

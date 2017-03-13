@@ -1,3 +1,5 @@
+#ifndef __hmm_aw_matrix_h
+#define __hmm_aw_matrix_h
 /*-------------------------- mat_simple.c --------------------------*/
 
 /*------------------------------------------------------------------*/
@@ -110,3 +112,4 @@ extern float mat_det_ludcmp_float(float **, int );
 extern double mat_det_ludcmp_double(double **, int );
 unsigned char mat_det_inv_double(double **mt, double **y, double *det,
                                  int dim);
+#endif

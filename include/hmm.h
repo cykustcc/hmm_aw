@@ -1,3 +1,6 @@
+#ifndef __hmm_aw_hmm_h
+#define __hmm_aw_hmm_h
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,10 +61,10 @@ extern double classlikehd(HmmModel *md, float **u, int nseq, int *len,
 			  double **cprob, double *wt);
 extern int baumwelch(float **u, int nseq, int *len, HmmModel *md, 
 		      double *loglikehd, double *lhsumpt, double epsilon, 
-		      double *wt);
+		      double *wt, bool forcediag);
 extern void hmmfit(float **u, int nseq, int *len, int dim, HmmModel *md, 
 		   int numst, int *stcls, double *loglikehd, double *lhsumpt, 
-		   double epsilon, double *wt);
+		   double epsilon, double *wt, bool forcediag);
 
 /*-------------------------------------*/
 /*-------------- prob.c ---------------*/
@@ -85,5 +88,7 @@ extern unsigned char read_model(HmmModel *md, FILE *infile);
 extern unsigned char print_model(HmmModel *md, FILE *outfile);
 int hmm_read(HmmModel *md, const char* filename);
 int hmm_write(HmmModel *md, const char* filename);
+
+#endif
 
 

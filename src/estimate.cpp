@@ -835,7 +835,7 @@ void transprob(double **asum, int numst, double **amn, int numcls, double **bnl,
 /** EM estimation assuming that the initial model is set up     **/
 /*---------------------------------------------------------------*/
 int baumwelch(float **u, int nseq, int *len, HmmModel *md, double *loglikehd,
-	      double *lhsumpt, double epsilon, double *wt)
+	      double *lhsumpt, double epsilon, double *wt, bool forcediag)
      /* The only outputs are loglikehd, lhsumpt, and updated md */
 // Input wt[nseq] gives a weight to each sequence, normally it contains all 1
 {
@@ -892,49 +892,49 @@ int baumwelch(float **u, int nseq, int *len, HmmModel *md, double *loglikehd,
     for (i=0; i<numst; i++) {
       lsum[i]=0.0;
       for (j=0; j<dim; j++)
-	musum[i*dim+j]=0.0;
+        musum[i*dim+j]=0.0;
       for (j=0; j<dim; j++)
-	for (k=0; k<dim; k++)
-	  mom2sum[i*dim+j][k]=0.0;
+        for (k=0; k<dim; k++)
+      mom2sum[i*dim+j][k]=0.0;
     }
     for (j=0; j<numst; j++)
       for (l=0; l<numst; l++)
-	  asum[j][l]=0.0;
+        asum[j][l]=0.0;
 
     for (t=0; t<nseq; t++) {
       forward(u[t],len[t],thetalog,md,loglikehd+t);
       backward(u[t],len[t],betalog, md);
       updatepar_adder(u[t],len[t],thetalog, betalog, loglikehd[t],
-		      md, mu, mom2, a, l1img);
+          md, mu, mom2, a, l1img);
 
       for (i=0; i<numst; i++) {
-	lsum[i]+=wt[t]*l1img[i];
-	for (j=0; j<dim; j++)
-	  musum[i*dim+j]+=wt[t]*mu[i*dim+j];
-	for (j=0; j<dim; j++)
-	  for (k=0; k<dim; k++)
-	    mom2sum[i*dim+j][k]+=wt[t]*mom2[i*dim+j][k];
+        lsum[i]+=wt[t]*l1img[i];
+        for (j=0; j<dim; j++)
+          musum[i*dim+j]+=wt[t]*mu[i*dim+j];
+        for (j=0; j<dim; j++)
+          for (k=0; k<dim; k++)
+            mom2sum[i*dim+j][k]+=wt[t]*mom2[i*dim+j][k];
       }
       for (j=0; j<numst; j++)
-	for (l=0; l<numst; l++)
-	  asum[j][l]+=wt[t]*a[j][l];
+        for (l=0; l<numst; l++)
+          asum[j][l]+=wt[t]*a[j][l];
 
     } // for (t=0; ...)
 
     /* Normalization */
     for (i=0; i<numst; i++) {
       for (j=0; j<dim; j++)
-	musum[i*dim+j]/=lsum[i];
+        musum[i*dim+j]/=lsum[i];
       for (j=0; j<dim; j++)
-	for (k=0; k<dim; k++)
-	  mom2sum[i*dim+j][k]/=lsum[i];
+        for (k=0; k<dim; k++)
+        mom2sum[i*dim+j][k]/=lsum[i];
     }
 
     for (i=0; i<numst; i++) {
       for (j=0; j<dim; j++)
-	for (k=0; k<dim; k++)
-	  sigma[i*dim+j][k]=mom2sum[i*dim+j][k]-
-	    musum[i*dim+j]*musum[i*dim+k];
+        for (k=0; k<dim; k++)
+          sigma[i*dim+j][k]=mom2sum[i*dim+j][k]-
+          musum[i*dim+j]*musum[i*dim+k];
     }
 
     // asum adjustment
@@ -961,7 +961,7 @@ int baumwelch(float **u, int nseq, int *len, HmmModel *md, double *loglikehd,
     // exit if empty state appears
     for (i=0,k=0;i<numst;i++) {
       if (lsum[i]==0.0)
-	k++;
+        k++;
     }
 
     if (k) {
@@ -977,47 +977,50 @@ int baumwelch(float **u, int nseq, int *len, HmmModel *md, double *loglikehd,
       v1+=lsum[i];
     if (v1>0.0) {
       for (i=0; i<numst; i++)
-	md->a00[i]=lsum[i]/v1;
+        md->a00[i]=lsum[i]/v1;
     }
     else {
       for (i=0; i<numst; i++)
-//	md->a00[i]=1.0/(double)lsum[i];
+      //	md->a00[i]=1.0/(double)lsum[i];
           md->a00[i]=1.0/(double)numst;
     }
 
     for (j=0; j<numst; j++)
       for (k=0; k<numst; k++)
-	md->a[j][k]=asum[j][k];
+        md->a[j][k]=asum[j][k];
 
     for (j=0;j<dim;j++)
       for (k=0;k<dim;k++) sigcom[j][k]=0.0;
 
     for (i=0;i<numst;i++) {
       for (j=0;j<dim;j++)
-	for (k=0;k<dim;k++)
-	  sigcom[j][k]+=md->a00[i]*sigma[i*dim+j][k];
+        for (k=0;k<dim;k++)
+          sigcom[j][k]+=md->a00[i]*sigma[i*dim+j][k];
     }
 
     for (i=0; i<numst; i++) {
       curg=md->stpdf[i];
       for (j=0; j<dim; j++)
-	curg->mean[j]=musum[i*dim+j];
+        curg->mean[j]=musum[i*dim+j];
       for (j=0; j<dim; j++)
-	for (k=0; k<dim; k++)
-	  curg->sigma[j][k]=sigma[i*dim+j][k]*lambda+(1.0-lambda)*sigcom[j][k];
+        for (k=0; k<dim; k++){
+          curg->sigma[j][k]=sigma[i*dim+j][k]*lambda+(1.0-lambda)*sigcom[j][k];
+          if(forcediag && j!=k)
+            curg->sigma[j][k] = 0;
+        }
 
       /* compute the inverse sigma and the determinant of sigma */
       mm=mat_det_inv_double(curg->sigma, curg->sigma_inv,
-			    &(curg->sigma_det),dim);
+          &(curg->sigma_det),dim);
 
       if (mm==2) { /* singular matrix */
-	for (k1=0, tpdb=0.0; k1<dim; k1++) tpdb+=curg->sigma[k1][k1];
-	tpdb=(tpdb>0.0)?(tpdb/(double)dim*epsilon2):epsilon2;
+        for (k1=0, tpdb=0.0; k1<dim; k1++) tpdb+=curg->sigma[k1][k1];
+        tpdb=(tpdb>0.0)?(tpdb/(double)dim*epsilon2):epsilon2;
 
-	/* modify sigma by adding a scalar matrix */
-	for (k1=0; k1<dim; k1++) curg->sigma[k1][k1]+=tpdb;
-	mat_det_inv_double(curg->sigma, curg->sigma_inv,
-			   &(curg->sigma_det),dim);
+      /* modify sigma by adding a scalar matrix */
+      for (k1=0; k1<dim; k1++) curg->sigma[k1][k1]+=tpdb;
+      mat_det_inv_double(curg->sigma, curg->sigma_inv,
+         &(curg->sigma_det),dim);
       }
     }
   } // while (ite<minite ...)
@@ -1045,7 +1048,7 @@ int baumwelch(float **u, int nseq, int *len, HmmModel *md, double *loglikehd,
 
 void hmmfit(float **u, int nseq, int *len, int dim, HmmModel *md, int numst,
 	    int *stcls, double *loglikehd, double *lhsumpt,
-	    double epsilon, double *wt)
+	    double epsilon, double *wt, bool forcediag)
 {
   int t,i,j,k,l,m,n;
   double *thiswt;
@@ -1067,10 +1070,10 @@ void hmmfit(float **u, int nseq, int *len, int dim, HmmModel *md, int numst,
   if (wt==NULL) {
     thiswt=(double *)calloc(nseq, sizeof(double));
     for (i=0;i<nseq;i++) thiswt[i]=1.0;
-    baumwelch(u, nseq, len, md, loglikehd, lhsumpt, epsilon, thiswt);
+    baumwelch(u, nseq, len, md, loglikehd, lhsumpt, epsilon, thiswt, forcediag);
     if (thiswt!=NULL) free(thiswt);
   } else {
-    baumwelch(u, nseq, len, md, loglikehd, lhsumpt, epsilon, wt);
+    baumwelch(u, nseq, len, md, loglikehd, lhsumpt, epsilon, wt, forcediag);
   }
 }
 

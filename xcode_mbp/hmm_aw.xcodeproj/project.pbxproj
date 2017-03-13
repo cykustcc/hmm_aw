@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29D4CA6C1E726CD60098DCED /* libglog.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D4CA6B1E726CD60098DCED /* libglog.dylib */; };
 		6717BF0C1E66435C00E2521D /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BEFF1E6641D000E2521D /* libgtest.a */; };
 		6717BF561E6664E600E2521D /* libhmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BF281E66595F00E2521D /* libhmm.a */; };
 		6717BF931E688EA400E2521D /* libglog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BF921E688EA400E2521D /* libglog.a */; };
@@ -36,7 +37,6 @@
 		67F962771E707FD600482330 /* utils_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962721E707FD600482330 /* utils_test.cpp */; };
 		67F962791E70800900482330 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962781E70800900482330 /* main.cpp */; };
 		67F9627B1E70801300482330 /* main2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F9627A1E70801300482330 /* main2.cpp */; };
-		67F9627D1E70813C00482330 /* libglog.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9627C1E70813C00482330 /* libglog.dylib */; };
 		67F962821E70825900482330 /* libhmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BF281E66595F00E2521D /* libhmm.a */; };
 		67F962831E70825F00482330 /* libhmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BF281E66595F00E2521D /* libhmm.a */; };
 		67F962841E7082D400482330 /* libglog.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9627C1E70813C00482330 /* libglog.dylib */; };
@@ -48,7 +48,6 @@
 		67F962CA1E70F1D500482330 /* libmosek64.7.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F962C91E70F1D500482330 /* libmosek64.7.1.dylib */; };
 		67F962CC1E70F98F00482330 /* mosek_solver_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962CB1E70F98F00482330 /* mosek_solver_test.cpp */; };
 		67F962CD1E70F9DC00482330 /* libmosek64_wrapper.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F962BB1E70E74C00482330 /* libmosek64_wrapper.dylib */; };
-		67F963111E74B1CE00482330 /* estimate_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F963101E74B1CE00482330 /* estimate_test.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +114,7 @@
 /* Begin PBXFileReference section */
 		294549C91BDD68C000281995 /* hmm_aw */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmm_aw; sourceTree = BUILT_PRODUCTS_DIR; };
 		294DB1911C1B61D1001803B1 /* hmm_aw2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmm_aw2; sourceTree = BUILT_PRODUCTS_DIR; };
+		29D4CA6B1E726CD60098DCED /* libglog.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglog.dylib; path = ../../../../../../../usr/local/Cellar/glog/0.3.4/lib/libglog.dylib; sourceTree = "<group>"; };
 		6717BEE61E651AD300E2521D /* hmm_awTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hmm_awTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6717BEFF1E6641D000E2521D /* libgtest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgtest.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6717BF281E66595F00E2521D /* libhmm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhmm.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,8 +153,6 @@
 		67F962C71E70E80400482330 /* mosek_solver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mosek_solver.h; sourceTree = "<group>"; };
 		67F962C91E70F1D500482330 /* libmosek64.7.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmosek64.7.1.dylib; path = ../../../../../Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin/libmosek64.7.1.dylib; sourceTree = "<group>"; };
 		67F962CB1E70F98F00482330 /* mosek_solver_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mosek_solver_test.cpp; sourceTree = "<group>"; };
-		67F963101E74B1CE00482330 /* estimate_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = estimate_test.cpp; sourceTree = "<group>"; };
-		67F963121E74CFF100482330 /* test_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = test_common.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,7 +200,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67F9627D1E70813C00482330 /* libglog.dylib in Frameworks */,
+				29D4CA6C1E726CD60098DCED /* libglog.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +244,7 @@
 		6717BEED1E651AFB00E2521D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				29D4CA6B1E726CD60098DCED /* libglog.dylib */,
 				67F962C91E70F1D500482330 /* libmosek64.7.1.dylib */,
 				67F962861E7082FA00482330 /* libgflags.dylib */,
 				67F9627C1E70813C00482330 /* libglog.dylib */,
@@ -311,14 +310,12 @@
 			isa = PBXGroup;
 			children = (
 				67F962B41E70B40A00482330 /* gtest-all.cc */,
-				67F9626E1E707FD600482330 /* gtest_main.cpp */,
 				67F9626D1E707FD600482330 /* dist_utils_test.cpp */,
+				67F9626E1E707FD600482330 /* gtest_main.cpp */,
 				67F962701E707FD600482330 /* matrix_test.cpp */,
 				67F962711E707FD600482330 /* modelio_test.cpp */,
 				67F962721E707FD600482330 /* utils_test.cpp */,
 				67F962CB1E70F98F00482330 /* mosek_solver_test.cpp */,
-				67F963101E74B1CE00482330 /* estimate_test.cpp */,
-				67F963121E74CFF100482330 /* test_common.h */,
 			);
 			name = test;
 			path = ../test;
@@ -541,7 +538,6 @@
 			files = (
 				67F962CC1E70F98F00482330 /* mosek_solver_test.cpp in Sources */,
 				67F962771E707FD600482330 /* utils_test.cpp in Sources */,
-				67F963111E74B1CE00482330 /* estimate_test.cpp in Sources */,
 				67F962741E707FD600482330 /* gtest_main.cpp in Sources */,
 				67F962761E707FD600482330 /* modelio_test.cpp in Sources */,
 				67F962731E707FD600482330 /* dist_utils_test.cpp in Sources */,
@@ -643,16 +639,16 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/Cellar/glog/0.3.4_1/include,
+					/usr/local/Cellar/glog/0.3.4/include,
 					"$(PROJECT_DIR)/../include",
 					$SRCROOT/../googletest/googletest/include,
-					/usr/local/Cellar/gflags/2.2.0/include,
+					/usr/local/Cellar/gflags/2.1.2/include,
 					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/h",
 				);
-				LD_RUNPATH_SEARCH_PATHS = /Users/yzc147/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin;
+				LD_RUNPATH_SEARCH_PATHS = /Users/MAC/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin;
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/glog/0.3.4_1/lib,
-					/usr/local/Cellar/gflags/2.2.0/lib,
+					/usr/local/Cellar/glog/0.3.4/lib,
+					/usr/local/Cellar/gflags/2.1.2/lib,
 					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -693,16 +689,16 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/Cellar/glog/0.3.4_1/include,
+					/usr/local/Cellar/glog/0.3.4/include,
 					"$(PROJECT_DIR)/../include",
 					$SRCROOT/../googletest/googletest/include,
-					/usr/local/Cellar/gflags/2.2.0/include,
+					/usr/local/Cellar/gflags/2.1.2/include,
 					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/h",
 				);
-				LD_RUNPATH_SEARCH_PATHS = /Users/yzc147/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin;
+				LD_RUNPATH_SEARCH_PATHS = /Users/MAC/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin;
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/glog/0.3.4_1/lib,
-					/usr/local/Cellar/gflags/2.2.0/lib,
+					/usr/local/Cellar/glog/0.3.4/lib,
+					/usr/local/Cellar/gflags/2.1.2/lib,
 					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -795,7 +791,7 @@
 					$SRCROOT/../googletest/googletest/include,
 					$SRCROOT/../googletest/googletest,
 				);
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -815,7 +811,7 @@
 					$SRCROOT/../googletest/googletest/include,
 					$SRCROOT/../googletest/googletest,
 				);
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -831,16 +827,9 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/Cellar/gflags/2.2.0/include,
-					/usr/local/Cellar/glog/0.3.4_1/include,
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/gflags/2.2.0/lib,
-					/usr/local/Cellar/glog/0.3.4_1/lib,
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-D",
@@ -860,16 +849,9 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/Cellar/gflags/2.2.0/include,
-					/usr/local/Cellar/glog/0.3.4_1/include,
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/gflags/2.2.0/lib,
-					/usr/local/Cellar/glog/0.3.4_1/lib,
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-D",
@@ -892,7 +874,9 @@
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -910,7 +894,9 @@
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -979,6 +965,7 @@
 				67F962C51E70E74C00482330 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
