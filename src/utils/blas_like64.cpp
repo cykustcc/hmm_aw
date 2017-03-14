@@ -1,7 +1,7 @@
 #include <math.h>
 
 #define __USE_C99_MATH
-#include "blas_like.h"
+#include "utils/blas_like.h"
 #include "utils/blas_utils.h"
 #include "math.h"
 #include <stdio.h>
