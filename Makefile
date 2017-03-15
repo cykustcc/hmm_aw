@@ -15,19 +15,23 @@ endif
 
 ifeq ($(LINUX),1)
 MEXCC=/usr/global/matlab/R2016a/bin/mex
-MATLABINC=/usr/global/matlab/R2015a/extern/include/ -fPIC
+MATLABINC=-I/usr/global/matlab/R2016a/extern/include/
 endif
 ifeq ($(OSX),1)
 MEXCC=/Applications/MATLAB_R2016a.app/bin/mex
-MATLABINC=/Applications/MATLAB_R2015a.app/extern/include/ -fPIC
+MATLABINC=-I/Applications/MATLAB_R2016a.app/extern/include/
 endif
 
 
 INCLUDES=-Iinclude/ -I$(MOSEK)/h $(CBLAS_INC) \
- -Igoogletest/googletest/include \
+ -Igoogletest/googletest/include -Igoogletest/googletest\
  -I/usr/local/Cellar/gflags/2.2.0/include \
  -I/usr/local/Cellar/glog/0.3.4_1/include
 LIBRARIES=-L$(MOSEK)/bin -lmosek64.7.1 -Wl,-rpath,. -Wl,-rpath,$(MOSEK)/bin $(BLAS_LIB) \
+ -L/usr/local/Cellar/glog/0.3.4_1/lib -lglog \
+ -L/usr/local/Cellar/gflags/2.2.0/lib -lgflags \
+ -L./lib
+MEXLIBRARIES=-L$(MOSEK)/bin -lmosek64.7.1 $(BLAS_LIB) \
  -L/usr/local/Cellar/glog/0.3.4_1/lib -lglog \
  -L/usr/local/Cellar/gflags/2.2.0/lib -lgflags
 BUILD_DIR=build
@@ -41,12 +45,12 @@ SOURCE_CPP_WITH_MAIN=main.cpp
 # OBJ = $(patsubst src/%.c,obj/%.o,$(SOURCES_C))
 
 # Test sources:
+GTEST_ALL = ./googletest/googletest/src/gtest-all.cc
 TEST_MAIN_SRC = ./test/gtest_main.cpp
-TEST_SRCS := $(shell find ./test/ -name "*_test.cpp")
+TEST_SRCS := $(shell find ./test -name "*_test.cpp")
 TEST_SRCS := $(filter-out $(TEST_MAIN_SRC), $(TEST_SRCS))
-TEST_CXX_OBJS := $(addprefix $(BUILD_DIR)/,${TEST_SRCS:.cpp=.o})
-TEST_CXX_BINS := $(addsuffix .testbin,$(foreach obj,$(TEST_CXX_OBJS),$(basename $(notdir $(obj)))))
-TEST_ALL_BIN := $(TEST_BIN_DIR)/test_all.testbin
+TEST_CXX_OBJS := $(patsubst ./test/%.cpp, ./build/%.o, $(TEST_SRCS))
+TEST_ALL_BIN := lib/hmm_awTest
 
 GTEST_OBJ := $(addprefix $(BUILD_DIR)/, ${GTEST_SRC:.cpp=.o})
 GTEST_SRC := src/gtest/gtest-all.cpp
@@ -60,11 +64,11 @@ build/%.o: src/%.cpp
 	$(CXX) $(CFLAGS) $(INCLUDES) -MM -MT build/$*.o $< >build/$*.d
 	$(CXX) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
-hmm_fit.mex: hmm_fit_jia.c $(OBJ)
-	$(MEXCC) CFLAGS="\$(CFLAGS)" $< $(OBJ)
+hmm_fit.mex: hmm_fit.c lib/libhmm.a
+	$(MEXCC) -v $(INCLUDES) $(MATLABINC) $<
 
-hmm_likelihood.mex: hmm_likelihood_jia.c $(OBJ)
-	$(MEXCC) CFLAGS="\$(CFLAGS)" $< $(OBJ)
+hmm_likelihood.mex: hmm_likelihood.c $(OBJ)
+	$(MEXCC) CFLAGS="\$(CFLAGS)" $(INCLUDES) $(LIBRARIES) $< $(OBJ)
 
 ifeq ($(OSX),1)
 $(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a lib/libmosek64_wrapper.dylib
@@ -75,7 +79,7 @@ lib/libmosek64_wrapper.dylib: build/mosek_solver.o
 	# install_name_tool -change  @loader_path/libmosek64.$(MOSEK_VERSION).dylib  $(MOSEK)/bin/libmosek64.$(MOSEK_VERSION).dylib libmosek64_wrapper.$(MOSEK_VERSION).dylib
 	# ln -sf libmosek64_wrapper.$(MOSEK_VERSION).dylib $@ 
 
-lib/libhmm.a: $(filter-out lib/solver_mosek.o, $(OBJ))
+lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
 	@echo $^
 	@mkdir -p $(@D)
 	ar crv $@ $^
@@ -103,7 +107,17 @@ clean:
 run:
 	./train -i ../../data/gmm_hmm_samples_dim2_T1000.dat -m md.dat -d 2 -n 1 -s 2 -l 1000
 
-test: $(TEST_ALL_BIN) $(TEST_CXX_BINS)
+test: $(TEST_ALL_BIN) lib/libgtest.so
+
+runtest:
+	$(TEST_ALL_BIN)
+
+lib/libgtest.so:
+	$(CXX) -shared -undefined dynamic_lookup -o $@ $(LDFLAGS) $(INCLUDES) $(GTEST_ALL) -Wl
+
+$(TEST_ALL_BIN): $(TEST_MAIN_SRC) $(TEST_SRCS) lib/libhmm.a lib/libgtest.so
+	@echo $@
+	$(CXX) $(TEST_MAIN_SRC) $(TEST_SRCS) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) -lhmm -lgtest -Wl,-rpath,./lib
 
 testvars:
 	@echo $(HEADERS)
@@ -112,3 +126,6 @@ testvars:
 	@echo $(SOURCE_CPP_WITH_MAIN)
 	@echo $(MEXCC)
 	@echo $(UNAME)
+	@echo $(filter-out build/mosek_solver.o, $(OBJ))
+	@echo $(TEST_SRCS)
+	@echo $(TEST_CXX_OBJS)

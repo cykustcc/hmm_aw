@@ -2,6 +2,7 @@
 #define __hmm_aw_hmm_h
 
 #include <math.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "matrix.h"

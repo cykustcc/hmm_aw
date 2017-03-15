@@ -8,7 +8,7 @@ void matInit(float* X, unsigned int size, float value)
   }
 }
 
-void print_mat(float* X, int dim, int n){
+void print_mat_float(float* X, int dim, int n){
   for (int i = 0; i < n; i++)
   {
     for (int j = 0; j < dim; j++)
@@ -19,7 +19,7 @@ void print_mat(float* X, int dim, int n){
   }
 }
 
-void print_mat(double* X, int dim, int n){
+void print_mat_double(double* X, int dim, int n){
   for (int i = 0; i < n; i++)
   {
     for (int j = 0; j < dim; j++)

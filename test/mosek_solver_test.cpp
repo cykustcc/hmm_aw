@@ -30,9 +30,9 @@ TEST(MatchByDistmatTest, MatchByDistmat){
     0.02, 0.0, 0.02,\
     0.08, 0.02, 0.0};
 //  LOG(INFO)<<"Cost matrix:";
-//  print_mat(C, n, m);
+//  print_mat_double(C, n, m);
 //  LOG(INFO)<<"prior prob.:";
-//  print_mat(hmm1->a00, 3, 1);
+//  print_mat_double(hmm1->a00, 3, 1);
   double* match = (double*) calloc(n*m, sizeof(double));
   solver_setup();
   double d = match_by_distmat(n, m, C, hmm1->a00, hmm1->a00, match, NULL);
@@ -46,5 +46,5 @@ TEST(MatchByDistmatTest, MatchByDistmat){
       EXPECT_NEAR(match[i*m+j], gt_match[i][j], 0.0001);
     }
   }
-//  print_mat(match, n, m);
+  print_mat_double(match, n, m);
 }

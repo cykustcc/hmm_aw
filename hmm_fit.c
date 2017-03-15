@@ -167,7 +167,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   }
 
   // dat=(float *)calloc(numdat*dim,sizeof(float));
-  u=(double **)calloc(nseq,sizeof(double *));
+  u=(float **)calloc(nseq,sizeof(float *));
   for (i=0,m=0;i<nseq;i++) {
     u[i]=dat+m*dim;
     m+=len[i];
@@ -190,7 +190,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   md=(HmmModel *)calloc(1,sizeof(HmmModel));
 
   hmmfit(u, nseq, len, dim, md, numst, NULL, loglikehd, &lhsum,
-	 (double)epsilon, wt);
+	 (double)epsilon, wt, false);
 
   //Output loglikehd from hmmfit() is not written out
 
