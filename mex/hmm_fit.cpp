@@ -159,7 +159,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
   for (i=0,numdat=0;i<nseq;i++) { numdat+=len[i];}
   double * dat_temp;
-  dat_temp=mxGetData(prhs[0]);
+  dat_temp=(double *)mxGetData(prhs[0]);
   dat=(float *)calloc(numdat*dim,sizeof(float));
   //convert double * dat_temp to float * dat:
   for (i=0;i<numdat*dim;i++){

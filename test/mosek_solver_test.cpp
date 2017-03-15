@@ -47,4 +47,5 @@ TEST(MatchByDistmatTest, MatchByDistmat){
     }
   }
   print_mat_double(match, n, m);
+  freehmm(&hmm1);
 }

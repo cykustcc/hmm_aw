@@ -183,7 +183,7 @@ void mexFunction(MEX_ARGS)
 
   for (i=0,numdat=0;i<nseq;i++) { numdat+=len[i];}
   double * dat_temp;
-  dat_temp=mxGetData(prhs[0]);
+  dat_temp=(double *)mxGetData(prhs[0]);
   dat=(float *)calloc(numdat*dim,sizeof(float));
   //convert double * dat_temp to float * dat:
   for (i=0;i<numdat*dim;i++){
@@ -191,7 +191,7 @@ void mexFunction(MEX_ARGS)
   }
 
   // dat=(float *)calloc(numdat*dim,sizeof(float));
-  u=(double **)calloc(nseq,sizeof(double *));
+  u=(float **)calloc(nseq,sizeof(float *));
   for (i=0,m=0;i<nseq;i++) {
     u[i]=dat+m*dim;
     m+=len[i];

@@ -31,9 +31,10 @@ LIBRARIES=-L$(MOSEK)/bin -lmosek64.7.1 -Wl,-rpath,. -Wl,-rpath,$(MOSEK)/bin $(BL
  -L/usr/local/Cellar/glog/0.3.4_1/lib -lglog \
  -L/usr/local/Cellar/gflags/2.2.0/lib -lgflags \
  -L./lib
-MEXLIBRARIES=-L$(MOSEK)/bin -lmosek64.7.1 $(BLAS_LIB) \
+MEXLIBRARIES=$(BLAS_LIB) \
  -L/usr/local/Cellar/glog/0.3.4_1/lib -lglog \
- -L/usr/local/Cellar/gflags/2.2.0/lib -lgflags
+ -L/usr/local/Cellar/gflags/2.2.0/lib -lgflags \
+ -L./lib
 BUILD_DIR=build
 
 HEADERS := $(shell find include -name '*.h')
@@ -57,22 +58,24 @@ GTEST_SRC := src/gtest/gtest-all.cpp
 
 .PHONY: clean all test
 
-all: $(PROJECT)_train
+all: $(PROJECT)_train mex/hmm_fit.mex mex/hmm_likelihood.mex
 
 build/%.o: src/%.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(CFLAGS) $(INCLUDES) -MM -MT build/$*.o $< >build/$*.d
 	$(CXX) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
-hmm_fit.mex: hmm_fit.c lib/libhmm.a
-	$(MEXCC) -v $(INCLUDES) $(MATLABINC) $<
+mex/hmm_fit.mex: mex/hmm_fit.cpp lib/libhmm.a
+	$(MEXCC) $(INCLUDES) -L./lib -lhmm mex/hmm_fit.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
+	mv hmm_fit.mexmaci64 mex/
 
-hmm_likelihood.mex: hmm_likelihood.c $(OBJ)
-	$(MEXCC) CFLAGS="\$(CFLAGS)" $(INCLUDES) $(LIBRARIES) $< $(OBJ)
+mex/hmm_likelihood.mex: mex/hmm_likelihood.cpp lib/libhmm.a
+	$(MEXCC) $(INCLUDES) -L./lib -lhmm mex/hmm_likelihood.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
+	mv hmm_likelihood.mexmaci64 mex/
 
 ifeq ($(OSX),1)
 $(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a lib/libmosek64_wrapper.dylib
-	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $^ $(LDFLAGS)
+	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) -lhmm -lmosek64_wrapper $(LDFLAGS)
 
 lib/libmosek64_wrapper.dylib: build/mosek_solver.o
 	$(CXX) -dynamiclib $(INCLUDES) $(LIBRARIES) -Wl,-install_name,$@ -compatibility_version 7.0 -current_version $(MOSEK_VERSION) -o $@ $< $(MOSEKLIB)
@@ -88,7 +91,7 @@ endif
 
 ifeq ($(LINUX),1)
 $(PROJECT)_train: lib/libhmm.a lib/libmosek64_wrapper.so
-	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $^ $(LDFLAGS)
+	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) -lhmm -lmosek64_wrapper $(LDFLAGS)
 
 lib/libmosek64_wrapper.so: build/mosek_solver.o
 	$(CXX) -shared $(LDFLAGS) $(INCLUDES) $(LIBRARIES) -Wl,-soname,$@ -o libmosek64_wrapper.$(MOSEK_VERSION).so $< $(MOSEKLIB)
@@ -103,9 +106,11 @@ endif
 
 clean: 
 	rm -f ./build/*.o ./build/*.d
+	rm ./mex/*.mex*
+	rm $(PROJECT)_train
 
 run:
-	./train -i ../../data/gmm_hmm_samples_dim2_T1000.dat -m md.dat -d 2 -n 1 -s 2 -l 1000
+	./$(PROJECT)_train -i ./data/gmm_hmm_samples_dim2_T1000.dat -m ./data/md.dat -d 2 -n 1 -s 2 -l 1000
 
 test: $(TEST_ALL_BIN) lib/libgtest.so
 

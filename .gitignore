@@ -22,6 +22,11 @@ xcuserdata/
 *.xccheckout
 *.xcscmblueprint
 
+## Generated binaries:
 *.out
 lib/
 hmmaw_*
+.mexmaci64
+
+## Data
+./data/md.dat

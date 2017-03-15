@@ -25,4 +25,5 @@ TEST(DistUtilTest, CalcDistmat){
     EXPECT_NEAR(C[i], gt_dist[i], 0.0001);
 //    LOG(INFO)<<C[i];
   }
+  freehmm(&hmm1);
 }
