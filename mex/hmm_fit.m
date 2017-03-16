@@ -23,7 +23,7 @@
 % The path and distance are computed with Dijkstra's algorithm.
 %
 %
-function [a00, a, gauss] = hmm_fit(data, d, nseq, onelen, numst, verbose)
+function [a00, a, gauss] = hmm_fit(data, d, nseq, onelen, numst, verbose, forcediag)
 
-    [a00, a, gauss] = hmm_fit(data, d, nseq, onelen, numst, verbose);
+    [a00, a, gauss] = hmm_fit(data, d, nseq, onelen, numst, verbose, forcediag);
 end

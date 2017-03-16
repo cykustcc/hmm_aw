@@ -101,7 +101,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   float epsilon=EPSILON;
   float tp1, tp2;
 
-  if (nrhs != 6){
+  if (nrhs != 7){
     mexErrMsgTxt("Must have 6 input arguments");
   }
   if (nlhs != 3){
@@ -141,6 +141,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   onelen = mxGetScalar(prhs[3]);
   numst = mxGetScalar(prhs[4]);
   int verbose = mxGetScalar(prhs[5]);
+  int forcediag = mxGetScalar(prhs[6]);
 
   /*----------------------------------------------------------------*/
   /*----------------- Read in data ---------------------------------*/
@@ -190,7 +191,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   md=(HmmModel *)calloc(1,sizeof(HmmModel));
 
   hmmfit(u, nseq, len, dim, md, numst, NULL, loglikehd, &lhsum,
-	 (double)epsilon, wt, false);
+	 (double)epsilon, wt, (bool)forcediag);
 
   //Output loglikehd from hmmfit() is not written out
 
