@@ -12,18 +12,16 @@
 
 
 TEST(DistUtilTest, CalcDistmat){
-  const char filename[] = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm2.in";
-  HmmModel *hmm1;
-  hmm1=(HmmModel *)calloc(1,sizeof(HmmModel));
-  hmm_read(hmm1, filename);
-  double *C = (double *)calloc(hmm1->numst*hmm1->numst, sizeof(double));
+  std::string filename("/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm2.in");
+  HmmModel hmm1;
+  hmm1.read_model(filename);
+  double *C = (double *)calloc(hmm1.numst*hmm1.numst, sizeof(double));
   calc_distmat(hmm1, hmm1, C);
   double gt_dist[] = {0.0, 0.02, 0.08,\
                      0.02, 0.0, 0.02,\
                      0.08, 0.02, 0.0};
-  for (int i=0; i<hmm1->numst*hmm1->numst; i++) {
+  for (int i=0; i<hmm1.numst*hmm1.numst; i++) {
     EXPECT_NEAR(C[i], gt_dist[i], 0.0001);
 //    LOG(INFO)<<C[i];
   }
-  freehmm(&hmm1);
 }

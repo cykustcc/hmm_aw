@@ -16,14 +16,10 @@
 
 
 TEST(MatchByDistmatTest, MatchByDistmat){
-  char datafile[] = "data/test/hmm2.in";
-  char filename[40];
-  std::strcpy(filename, root_path);
-  std::strcat(filename, datafile);
-  HmmModel *hmm1;
-  hmm1=(HmmModel *)calloc(1,sizeof(HmmModel));
-  hmm_read(hmm1, filename);
-  int n = hmm1->numst, m = hmm1->numst;
+  std::string filename = root_path + "data/test/hmm2.in";
+  HmmModel hmm1;
+  hmm1.read_model(filename);
+  int n = hmm1.numst, m = hmm1.numst;
   double *C = (double *)calloc(n*m, sizeof(double));
   calc_distmat(hmm1, hmm1, C);
   double gt_dist[] = {0.0, 0.02, 0.08,\
@@ -35,7 +31,7 @@ TEST(MatchByDistmatTest, MatchByDistmat){
 //  print_mat_double(hmm1->a00, 3, 1);
   double* match = (double*) calloc(n*m, sizeof(double));
   solver_setup();
-  double d = match_by_distmat(n, m, C, hmm1->a00, hmm1->a00, match, NULL);
+  double d = match_by_distmat(n, m, C, hmm1.a00, hmm1.a00, match, NULL);
   solver_release();
   EXPECT_NEAR(d, 0, 0.0001);
   double gt_match[3][3] = {{0.5,0.0,0.0},
@@ -47,5 +43,4 @@ TEST(MatchByDistmatTest, MatchByDistmat){
     }
   }
   print_mat_double(match, n, m);
-  freehmm(&hmm1);
 }

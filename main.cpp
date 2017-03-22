@@ -1,6 +1,9 @@
 #include "hmm.h"
 #include "utils.h"
 #include <cstring>
+#include <iostream>
+#include <fstream>
+#include <vector>
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
@@ -17,6 +20,8 @@ DEFINE_int32(statenum, 3,
              "umber of states in HMM");
 DEFINE_int32(len, 100,
              "sequence length");
+DEFINE_bool(forcediag, false,
+             "sequence length");
 
 
 int main(int argc, char *argv[])
@@ -30,73 +35,36 @@ int main(int argc, char *argv[])
                             "  num             number of sequences\n"
                             "  statenum        number of states in HMM\n"
                             "  l               sequence length");
-  char infilename[100];
-  char mdfilename[100];
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
+//  char infilename[100];
+//  char mdfilename[100];
   FILE *infile, *mdfile;
   int i,j,k,m,n;
   int dim=2;
-  float *dat;
-  float **u;
-  double *wt=NULL;
-  int nseq, numdat, onelen=0, *len, *stcls;
-  HmmModel *md=NULL;
+  int nseq, numdat, onelen=0;
   int numst=2;
-  double *loglikehd, lhsum;
+  double lhsum;
   float epsilon=EPSILON;
   float tp1, tp2;
 
-  /*----------------------------------------------------------------*/
-  /*---------------- Read in parameters from command line-----------*/
-  /*----------------------------------------------------------------*/
-
-  i = 1;
-  while (i <argc)
-    {
-      if (*(argv[i]) != '-')
-        {
-          printf("**ERROR** bad arguments\n");
-          exit(1);
-        }
-      else
-        {
-          switch(*(argv[i++] + 1))
-            {
-            case 'i':
-              strcpy(infilename,argv[i]);
-              break;
-            case 'm':
-              strcpy(mdfilename,argv[i]);
-              break;
-	    case 'd':
-	      sscanf(argv[i],"%d",&dim);
-	      break;
-	    case 'n':
-	      sscanf(argv[i],"%d",&nseq);
-	      break;
-	    case 'l':
-	      sscanf(argv[i],"%d",&onelen);
-	      break;
-	    case 's':
-	      sscanf(argv[i],"%d",&numst);
-	      break;
-	    case 'e':
-	      sscanf(argv[i],"%f",&epsilon);
-	      break;
-            default:
-              {
-                printf("**ERROR** bad arguments\n");
-                exit(1);
-              }
-            }
-          i++;
-        }
-    }
-
+  nseq = FLAGS_num;
+  onelen = FLAGS_len;
+  numst = FLAGS_statenum;
+  dim = FLAGS_dim;
+  std::string infilenamestr = FLAGS_infilename;
+  std::string mdfilenamestr = FLAGS_mdfilename;
+  std::string hmmmdfilenamestr = mdfilenamestr.substr(0,mdfilenamestr.size()-3) + "txt";
+//  std::cout<<hmmmdfilenamestr<<std::endl;
+  const char * infilename = infilenamestr.c_str();
+  const char * mdfilename = mdfilenamestr.c_str();
+  const char * hmmmdfilename = hmmmdfilenamestr.c_str();
+  
   /*----------------------------------------------------------------*/
   /*--------------------- open files -------------------------------*/
   /*----------------------------------------------------------------*/
 
   infile = fopen(infilename, "r");
+//  infile = fopen(FLAGS_infilename, "r")
   if (infile == NULL)
     {
       printf("Couldn't open input data file \n");
@@ -104,6 +72,7 @@ int main(int argc, char *argv[])
    }
 
   mdfile = fopen(mdfilename, "wb");
+//  mdfile = fopen(FLAGS_mdfilename, "wb");
   if (mdfile == NULL)
     {
       printf("Couldn't open output model file \n");
@@ -115,35 +84,41 @@ int main(int argc, char *argv[])
   /*----------------------------------------------------------------*/
 
   // Assume the same length for all the sequences
-  len = (int *)calloc(nseq, sizeof(int));
+  std::vector<int> len(nseq, 0);
   if (onelen>0) {
     for (i=0;i<nseq;i++) len[i]=onelen;
   }
   else {
     for (i=0;i<nseq;i++) {     //read in len from stdin
-      fscanf(stdin, "%d", len+i);
+      fscanf(stdin, "%d", &len[i]);
     }
   }
-
-  for (i=0,numdat=0;i<nseq;i++) { numdat+=len[i];}
-  dat=(float *)calloc(numdat*dim,sizeof(float));
-  u=(float **)calloc(nseq,sizeof(float *));
-  for (i=0,m=0;i<nseq;i++) {
-    u[i]=dat+m*dim;
-    m+=len[i];
+  std::ifstream input(FLAGS_infilename, std::ios::in | std::ifstream::binary);
+  std::vector<std::vector<float>> u;
+  for (i=0,numdat=0;i<nseq;i++){
+    numdat+=len[i];
+    u.push_back(std::vector<float>(len[i], 0.0));
   }
+//  std::vector<float> dat(numdat*dim, 0.0);
+
 
   // For testing purpose only
   //fprintf(stdout, "nseq=%d, numdat=%d, dim=%d\n",nseq,numdat,dim);
   //for (i=0;i<nseq;i++)
   // fprintf(stdout, "len[%d]=%d\n", i,len[i]);r
-  int size[2],dimension,seq_len;
-  fread(size,sizeof(int),2, infile);
+  
+  int dimension,seq_len;
+  std::vector<int> size(2, 0);
+  input.read(reinterpret_cast<char*>(&size[0]), size.size());
   dimension=size[0];
   seq_len=size[1];
   printf("dimension=%d, n=%d\n",dimension,seq_len);
-  fread(dat,sizeof(float),numdat*dim, infile);
-  print_mat_float(dat,dim,numdat);
+  for (i=0,m=0;i<nseq;i++) {
+    input.read(reinterpret_cast<char*>(&u[i][0]), u[i].size());
+    print_mat_float(u[i],dim,u[i].size());
+  }
+//  fread(dat,sizeof(float),numdat*dim, infile);
+  
   /*for (m=0;m<numdat;m++) {*/
     /*if (feof(nfile)) {*/
       /*fprintf(stderr, "Error: not enough data in input file\n");*/
@@ -163,18 +138,20 @@ int main(int argc, char *argv[])
 
   //fprintf(stderr, "numdat=%d, nseq=%d\n",numdat,nseq);
 
-  loglikehd=(double *)calloc(nseq,sizeof(double));
-  md=(HmmModel *)calloc(1,sizeof(HmmModel));
+  std::vector<double> loglikehd(nseq,0.0);
 
-  hmmfit(u, nseq, len, dim, md, numst, NULL, loglikehd, &lhsum,
-	 (double)epsilon, wt, false);
+  std::vector<int> stcls;
+  std::vector<double> wt;
+  HmmModel md = hmmfit(u, nseq, len, dim, numst, stcls, loglikehd, lhsum,
+	 (double)epsilon, wt, FLAGS_forcediag);
 
   //Output loglikehd from hmmfit() is not written out
 
   // Binary file for the output model
-  write_model(md, mdfile);
+  md.write_model("");
+  // hmm_write(md, hmmmdfilename);
 
   //Ascii file for the model
-  print_model(md,stdout);
+  md.print_model("");
   return 0;
 }

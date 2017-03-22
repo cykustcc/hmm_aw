@@ -12,6 +12,7 @@
 		6717BF931E688EA400E2521D /* libglog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BF921E688EA400E2521D /* libglog.a */; };
 		6717BF951E68907900E2521D /* libgflags.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BF941E68907900E2521D /* libgflags.dylib */; };
 		6717BF961E68923500E2521D /* libgflags.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BF941E68907900E2521D /* libgflags.dylib */; };
+		67A95F721E81AB210039AD66 /* test_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67A95F711E81AB210039AD66 /* test_common.cpp */; };
 		67F962081E7078A000482330 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F962071E7078A000482330 /* Accelerate.framework */; };
 		67F9625B1E707FBF00482330 /* cluster.h in Headers */ = {isa = PBXBuildFile; fileRef = 67F962471E707FBF00482330 /* cluster.h */; };
 		67F9625C1E707FBF00482330 /* dist_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 67F962481E707FBF00482330 /* dist_utils.h */; };
@@ -25,7 +26,7 @@
 		67F962641E707FBF00482330 /* dist_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962521E707FBF00482330 /* dist_utils.cpp */; };
 		67F962651E707FBF00482330 /* estimate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962531E707FBF00482330 /* estimate.cpp */; };
 		67F962661E707FBF00482330 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962541E707FBF00482330 /* matrix.cpp */; };
-		67F962671E707FBF00482330 /* modelio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962551E707FBF00482330 /* modelio.cpp */; };
+		67F962671E707FBF00482330 /* hmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962551E707FBF00482330 /* hmm.cpp */; };
 		67F962681E707FBF00482330 /* prob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962561E707FBF00482330 /* prob.cpp */; };
 		67F9626A1E707FBF00482330 /* blas_like64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962591E707FBF00482330 /* blas_like64.cpp */; };
 		67F9626B1E707FBF00482330 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F9625A1E707FBF00482330 /* utils.cpp */; };
@@ -120,6 +121,7 @@
 		6717BF281E66595F00E2521D /* libhmm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhmm.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6717BF921E688EA400E2521D /* libglog.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglog.a; path = ../../../../../../usr/local/Cellar/glog/0.3.4_1/lib/libglog.a; sourceTree = "<group>"; };
 		6717BF941E68907900E2521D /* libgflags.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgflags.dylib; path = ../../../../../../usr/local/Cellar/gflags/2.2.0/lib/libgflags.dylib; sourceTree = "<group>"; };
+		67A95F711E81AB210039AD66 /* test_common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_common.cpp; sourceTree = "<group>"; };
 		67F961F91E6F92EB00482330 /* libglog.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglog.dylib; path = ../../../../../../usr/local/Cellar/glog/0.3.4_1/lib/libglog.dylib; sourceTree = "<group>"; };
 		67F962071E7078A000482330 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		67F962471E707FBF00482330 /* cluster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cluster.h; sourceTree = "<group>"; };
@@ -134,7 +136,7 @@
 		67F962521E707FBF00482330 /* dist_utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dist_utils.cpp; sourceTree = "<group>"; };
 		67F962531E707FBF00482330 /* estimate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = estimate.cpp; sourceTree = "<group>"; };
 		67F962541E707FBF00482330 /* matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
-		67F962551E707FBF00482330 /* modelio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelio.cpp; sourceTree = "<group>"; };
+		67F962551E707FBF00482330 /* hmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hmm.cpp; sourceTree = "<group>"; };
 		67F962561E707FBF00482330 /* prob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = prob.cpp; sourceTree = "<group>"; };
 		67F962591E707FBF00482330 /* blas_like64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blas_like64.cpp; sourceTree = "<group>"; };
 		67F9625A1E707FBF00482330 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
@@ -289,7 +291,7 @@
 				67F962521E707FBF00482330 /* dist_utils.cpp */,
 				67F962531E707FBF00482330 /* estimate.cpp */,
 				67F962541E707FBF00482330 /* matrix.cpp */,
-				67F962551E707FBF00482330 /* modelio.cpp */,
+				67F962551E707FBF00482330 /* hmm.cpp */,
 				67F962561E707FBF00482330 /* prob.cpp */,
 				67F962571E707FBF00482330 /* utils */,
 				67F9625A1E707FBF00482330 /* utils.cpp */,
@@ -319,6 +321,7 @@
 				67F962CB1E70F98F00482330 /* mosek_solver_test.cpp */,
 				67F963101E74B1CE00482330 /* estimate_test.cpp */,
 				67F963121E74CFF100482330 /* test_common.h */,
+				67A95F711E81AB210039AD66 /* test_common.cpp */,
 			);
 			name = test;
 			path = ../test;
@@ -539,6 +542,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67A95F721E81AB210039AD66 /* test_common.cpp in Sources */,
 				67F962CC1E70F98F00482330 /* mosek_solver_test.cpp in Sources */,
 				67F962771E707FD600482330 /* utils_test.cpp in Sources */,
 				67F963111E74B1CE00482330 /* estimate_test.cpp in Sources */,
@@ -566,7 +570,7 @@
 				67F962651E707FBF00482330 /* estimate.cpp in Sources */,
 				67F962681E707FBF00482330 /* prob.cpp in Sources */,
 				67F962631E707FBF00482330 /* cluster.cpp in Sources */,
-				67F962671E707FBF00482330 /* modelio.cpp in Sources */,
+				67F962671E707FBF00482330 /* hmm.cpp in Sources */,
 				67F9626B1E707FBF00482330 /* utils.cpp in Sources */,
 				67F962641E707FBF00482330 /* dist_utils.cpp in Sources */,
 			);
@@ -979,6 +983,7 @@
 				67F962C51E70E74C00482330 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

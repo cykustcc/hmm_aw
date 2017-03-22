@@ -57,8 +57,13 @@ void solver_release() {
   MSK_deleteenv(&env);
 }
 
-double match_by_distmat(int n, int m, double *C, double *wX, double *wY,\
-                           /** OUT **/ double *x, /** OUT **/ double *lambda) {
+double match_by_distmat(int n,
+                        int m,
+                        double *C,
+                        std::vector<double> &wX,
+                        std::vector<double> &wY,
+                        /** OUT **/ double *x,
+                        /** OUT **/ double *lambda) {
   
   const MSKint32t numvar = n * m,
   numcon = n + m - 1;

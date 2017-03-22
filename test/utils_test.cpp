@@ -18,10 +18,10 @@ protected:
 };
 
 // test matInit()
-TEST_F(UtilsTest, MatInit){
-    float *mat1 = vector_float(3);
-    matInit(mat1, 3, 1.0);
-    for (int i=0; i<3; i++) {
-        EXPECT_EQ(mat1[i], mat_1x3[i]);
-    }
-}
+//TEST_F(UtilsTest, MatInit){
+//    float *mat1 = vector_float(3);
+//    matInit(mat1, 3, 1.0);
+//    for (int i=0; i<3; i++) {
+//        EXPECT_EQ(mat1[i], mat_1x3[i]);
+//    }
+//}

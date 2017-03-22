@@ -19,6 +19,17 @@ void print_mat_float(float* X, int dim, int n){
   }
 }
 
+void print_mat_float(std::vector<float>& X, int dim, int n){
+  for (int i = 0; i < n; i++)
+  {
+    for (int j = 0; j < dim; j++)
+    {
+      printf("%f,\t", X[j+i*dim]);
+    }
+    printf(";\n");
+  }
+}
+
 void print_mat_double(double* X, int dim, int n){
   for (int i = 0; i < n; i++)
   {

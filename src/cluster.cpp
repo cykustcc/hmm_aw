@@ -1,6 +1,7 @@
 #include "cluster.h"
 
-void split(float *cdwd, float *newcdwd, int dim, float *stddev)
+void split(std::vector<float> &cdwd, int cdwd_baseidx, int newcdwd_baseidx, int dim,
+           std::vector<float> &stddev, int stddev_baseidx)
 {
   float mult_offset=0.1;
   int i;
@@ -16,141 +17,113 @@ void split(float *cdwd, float *newcdwd, int dim, float *stddev)
 
   /* set random range to [0.25, 0.75] */
   for (i=0; i<dim; i++) {
-    newcdwd[i] = cdwd[i]+stddev[i]*mult_offset*(0.25+drand48()/2.0);
+    cdwd[newcdwd_baseidx + i] = cdwd[cdwd_baseidx + i]+stddev[stddev_baseidx + i]*mult_offset*(0.25+drand48()/2.0);
   }
-    
 }
 
-void centroid(float *cdbk, int dim, int numcdwd, float *vc,
-	 int *index, int numdata)
+void centroid(std::vector<float> &cdbk, int dim, int numcdwd, std::vector<float> &vc,
+	 std::vector<int> &index, int numdata)
 {
-  int i,j,k,m,n;
-  int *ct;
+  std::vector<int> ct(numcdwd,0);
 
-  ct=(int *)malloc(numcdwd*sizeof(int));
-
-  if (index==NULL)
-    {
-      for (k=0; k<dim; k++)
-	cdbk[k] = 0.0;
-      for (i=0; i<numdata; i++) 
-	for (k=0; k<dim; k++) 
-	  cdbk[k]+=vc[i*dim+k];
-      for (k=0; k<dim; k++)
-	cdbk[k] /= ((float)numdata);
+  if (index.size()==0){
+    for (int k=0; k<dim; k++)
+      cdbk[k] = 0.0;
+    for (int i=0; i<numdata; i++)
+      for (int k=0; k<dim; k++)
+        cdbk[k]+=vc[i*dim+k];
+    for (int k=0; k<dim; k++)
+      cdbk[k] /= ((float)numdata);
+  }else{
+    for (int j=0; j<numcdwd; j++) {
+      for (int k=0; k<dim; k++)
+        cdbk[j*dim+k] = 0.0;
+      ct[j] = 0;
     }
-  else
-    {
-      for (j=0; j<numcdwd; j++) {
-	for (k=0; k<dim; k++)
-	  cdbk[j*dim+k] = 0.0;
-	ct[j] = 0;
-      }
       
-      for (i=0; i<numdata; i++) {
-	for (k=0; k<dim; k++) 
-	  cdbk[index[i]*dim+k]+=vc[i*dim+k];
-	ct[index[i]]++;
-      }
-      
-      for (j=0; j<numcdwd; j++) 
-	for (k=0; k<dim; k++)
-	  cdbk[j*dim+k] /= ((float)ct[j]);
+    for (int i=0; i<numdata; i++) {
+      for (int k=0; k<dim; k++)
+        cdbk[index[i]*dim+k]+=vc[i*dim+k];
+      ct[index[i]]++;
     }
-
-  free(ct);
-
+      
+    for (int j=0; j<numcdwd; j++)
+      for (int k=0; k<dim; k++)
+        cdbk[j*dim+k] /= ((float)ct[j]);
+    }
 }  
 
-void cellstdv(float *cdbk, float *stddev, int dim, int numcdwd, float *vc,
-	      int *index,  int numdata)
+void cellstdv(std::vector<float> &cdbk, std::vector<float> &stddev, int dim, int numcdwd,
+              std::vector<float> &vc,std::vector<int> &index, int numdata)
 {
-  int i,j,k,m,n;
-  int *ct;
+  std::vector<int> ct(numcdwd, 0);
 
-  ct=(int *)malloc(numcdwd*sizeof(int));
-
-  for (j=0; j<numcdwd; j++) {
-    for (k=0; k<dim; k++)
+  for (int j=0; j<numcdwd; j++) {
+    for (int k=0; k<dim; k++)
       stddev[j*dim+k] = 0.0;
     ct[j] = 0;
   }
       
-  for (i=0; i<numdata; i++) {
-    for (k=0; k<dim; k++) 
+  for (int i=0; i<numdata; i++) {
+    for (int k=0; k<dim; k++)
       stddev[index[i]*dim+k]+=((vc[i*dim+k]-cdbk[index[i]*dim+k])*
-	(vc[i*dim+k]-cdbk[index[i]*dim+k]));
+      (vc[i*dim+k]-cdbk[index[i]*dim+k]));
     ct[index[i]]++;
   }
   
-  for (j=0; j<numcdwd; j++) { 
+  for (int j=0; j<numcdwd; j++) {
     if (ct[j]>0) {
-      for (k=0; k<dim; k++) {
+      for (int k=0; k<dim; k++) {
 	stddev[j*dim+k] /= ((float)ct[j]);
 	stddev[j*dim+k]=sqrt(stddev[j*dim+k]);
       }
     }
     else {
-      for (k=0; k<dim; k++) stddev[j*dim+k]=1.0;
+      for (int k=0; k<dim; k++) stddev[j*dim+k]=1.0;
     }
   }
-
-  free(ct);
-
 }  
 
 
-float mse_dist(float *cdwd, float *vc, int dim)
+float mse_dist(std::vector<float> &cdwd, int cdwd_baseidx, std::vector<float> &vc, int vc_baseidx, int dim)
 {
   float mse= 0.0;
-  int i;
 
-  for (i=0; i<dim; i++)
-    mse += (vc[i]-cdwd[i])*(vc[i]-cdwd[i]);
+  for (int i=0; i<dim; i++)
+    mse += (vc[vc_baseidx+i]-cdwd[cdwd_baseidx+i])*(vc[vc_baseidx+i]-cdwd[cdwd_baseidx+i]);
 
   return(mse);
 }
 
 
-void encode(float *cdbk, int dim, int numcdwd, float *vc, int *code,
-	    int numdata)
-{
-  int i,j,k,m,n;
-  float *dist,minv;
+void encode(std::vector<float> &cdbk, int dim, int numcdwd, std::vector<float> &vc, std::vector<int> &code, int numdata){
+  float minv;
+  std::vector<float> dist(numcdwd,0.0);
 
-  dist=(float *)calloc(numcdwd,sizeof(float));
-
-  for (i=0; i<numdata; i++) {
-    for (j=0; j<numcdwd;j++)
-      dist[j]=mse_dist(cdbk+j*dim, vc+i*dim, dim);    
+  for (int i=0; i<numdata; i++) {
+    for (int j=0; j<numcdwd;j++)
+      dist[j]=mse_dist(cdbk, j*dim, vc, i*dim, dim);
     code[i]=0;
     minv=dist[0];
-    for (j=1;j<numcdwd;j++)
+    for (int j=1;j<numcdwd;j++)
       if (dist[j]<minv) {
-	minv=dist[j];
-	code[i]=j;
+        minv=dist[j];
+        code[i]=j;
       }
   }
-
-  free(dist);
 }
 
 
-float lloyd(float *cdbk, int dim, int numcdwd, float *vc, int numdata, 
+float lloyd(std::vector<float> &cdbk, int dim, int numcdwd, std::vector<float> &vc, int numdata,
 	    float threshold)
      /* return the value of the mean squared distance, i.e., average */
      /* squared distance between a sample and its centroid           */
      /* threshold is for controling when to stop the loop */
 {
-  int i,j,k,m,n;
-  int ite;
-  float dist, olddist, minmse, mse;
+  float dist = 0.0, olddist = 0.0, minmse, mse;
   int min_iteration=2;
   /*float threshold = 0.005;*/
-  int *index;
-  float *tp;
   int cdbksz2, temp_int, new_cdwds, cdbksz;
-  float *stddev; // standard deviation for appropriate split
 
   cdbksz2 = 0;
   temp_int = 1;
@@ -159,77 +132,63 @@ float lloyd(float *cdbk, int dim, int numcdwd, float *vc, int numdata,
     temp_int += temp_int;
   }  
 
-
-  index = (int *)calloc(numdata, sizeof(int));
-  stddev = (float *)calloc(numcdwd*dim,sizeof(float));
-
-  centroid(cdbk, dim, 1, vc, NULL, numdata);
+  std::vector<int> index(numdata, 0);
+  std::vector<float> stddev(numcdwd*dim, 0.0);// standard deviation for appropriate split
+  std::vector<int> tmpindex;
+  
+  centroid(cdbk, dim, 1, vc, tmpindex, numdata);
 
   /* compute standard deviation for each cell */
-  for (i=0;i<numdata;i++) index[i]=0;
+  for (int i=0;i<numdata;i++) index[i]=0;
   cellstdv(cdbk,stddev,dim,numcdwd,vc,index,numdata);
 
   if (numcdwd==1) {
     dist = 0.0;
-    for (i=0, k=0; i<numdata; i++)
-      for (j=0; j<dim; j++, k++)
-	dist += (cdbk[j]-vc[k])*(cdbk[j]-vc[k]);
+    for (int i=0, k=0; i<numdata; i++)
+      for (int j=0; j<dim; j++, k++)
+          dist += (cdbk[j]-vc[k])*(cdbk[j]-vc[k]);
     dist /= ((float)numdata);
   }
 
   cdbksz = 1;
 
-  for (ite=0; ite<cdbksz2; ite++) {
+  for (int ite=0; ite<cdbksz2; ite++) {
     new_cdwds = ((numcdwd - 2*cdbksz) >= 0) ? cdbksz : numcdwd - cdbksz;
 
-    for (k=0; k<new_cdwds; k++)
-      split(cdbk+k*dim, cdbk+(cdbksz+k)*dim, dim, stddev+k*dim);
+    for (int k=0; k<new_cdwds; k++)
+      split(cdbk, k*dim, (cdbksz+k)*dim, dim, stddev, k*dim);
 
     cdbksz += new_cdwds;
 
     dist=HUGE;
-    m = 0;
+    int m = 0;
 
     while (m < min_iteration || 
-	   (fabs((double)(olddist-dist))/olddist > threshold
-	    && dist < olddist))
-      {
-	m++;
-	olddist = dist;
-	tp = vc;
-	dist = 0.0;
-	for (i=0; i<numdata; i++)
-	  {
-	    minmse = mse_dist(cdbk, tp, dim);
-	    index[i]= 0;
-	    
-	    for (j=1; j<cdbksz; j++)
-	      {
-		mse = mse_dist(cdbk+j*dim, tp, dim);
-		if (mse<minmse)
-		  {
-		    minmse=mse;
-		    index[i]=j;
-		  }
-	      }
-	    
-	    dist += minmse;
-	    tp += dim;
-	  }
-	
-	dist /= ((float)numdata);
-
-	centroid(cdbk, dim, cdbksz, vc, index, numdata);
+	    (fabs((double)(olddist-dist))/olddist > threshold
+	    && dist < olddist)){
+      m++;
+      olddist = dist;
+      dist = 0.0;
+      for (int i=0; i<numdata; i++){
+        minmse = mse_dist(cdbk, 0, vc, i*dim, dim);
+        index[i]= 0;
+        for (int j=1; j<cdbksz; j++){
+          mse = mse_dist(cdbk, j*dim, vc, i*dim, dim);
+          if (mse<minmse){
+            minmse=mse;
+            index[i]=j;
+          }
+        }
+        dist += minmse;
       }
-    cellstdv(cdbk,stddev,dim,cdbksz,vc,index,numdata);
+      dist /= ((float)numdata);
 
+      centroid(cdbk, dim, cdbksz, vc, index, numdata);
+    }
+    cellstdv(cdbk,stddev,dim,cdbksz,vc,index,numdata);
   }
 
-  free(index);
-  free(stddev);
-
   return(dist);
-
 }	    
 
 
@@ -239,24 +198,26 @@ float lloyd(float *cdbk, int dim, int numcdwd, float *vc, int numdata,
 /** error below a given threshold.  The number of codewords is     **/
 /** upper bounded by the given maxnumcdwd.                         **/
 
-float kmeans(float *cdbk, int dim, int maxnumcdwd, int *fnumcdwd, 
-	     float *vc, int numdata, float threshold, float distthred)
+float kmeans(std::vector<float> &cdbk, int dim, int maxnumcdwd, float &fnumcdwd,
+             std::vector<float> &vc, int numdata, float threshold, float distthred)
 {
-  int i,j,k,m,n;
   int ite, splitwd;
   float dist, olddist, minmse, mse;
   int min_iteration=2;
   int numcdwd;
 
-  centroid(cdbk, dim, numcdwd, vc, NULL, numdata);
+  std::vector<int> index;
+  centroid(cdbk, dim, numcdwd, vc, index, numdata);
 
   dist = 0.0;
-  for (i=0, k=0; i<numdata; i++)
-    for (j=0; j<dim; j++, k++)
+  
+  for (int i=0, k=0; i<numdata; i++)
+    for (int j=0; j<dim; j++, k++)
       dist += (cdbk[j]-vc[k])*(cdbk[j]-vc[k]);
+  
   dist /= ((float)numdata);
   if (dist<distthred) {
-    *fnumcdwd=1;
+    fnumcdwd=1;
     return(dist);
   }
 
@@ -267,7 +228,7 @@ float kmeans(float *cdbk, int dim, int maxnumcdwd, int *fnumcdwd,
     //fprintf(stderr, "numcdwd=%d, dist=%f\n", numcdwd,dist);
   } while (numcdwd<=maxnumcdwd && dist > distthred);
   
-  *fnumcdwd=numcdwd-1;
+  fnumcdwd=numcdwd-1;
   
   return(dist);
 }	    

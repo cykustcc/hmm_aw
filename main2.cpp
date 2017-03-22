@@ -140,9 +140,6 @@ int main(int argc, char *argv[])
     loglikehd=(double *)calloc(nseq,sizeof(double));
     md=(HmmModel *)calloc(1,sizeof(HmmModel));
     
-//    hmmfit(u, nseq, len, dim, md, numst, NULL, loglikehd, &lhsum,
-//           (double)epsilon, wt);
-    
     //Output loglikehd from hmmfit() is not written out
     
     // Binary file for the output model
@@ -150,7 +147,7 @@ int main(int argc, char *argv[])
     read_model(md, mdfile2);
     
     //Ascii file for the model
-    print_model(md,stdout);
+    md.print_model("");
     
     /*----------------------------------------------------------------*/
     /*------------ Compute the likelihood of the sequence  -----------*/
