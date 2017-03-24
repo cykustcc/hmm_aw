@@ -57,9 +57,9 @@ void HmmModel::read_model(std::string filename){
       for (int n=0; n<this->stpdf[i].dim; n++)
         fscanf(fp, "%lf ", &this->stpdf[i].sigma[m][n]);
     }
-    tmp=mat_det_inv_double(this->stpdf[i].sigma, this->stpdf[i].sigma_inv,
+    tmp=mat_det_inv(this->stpdf[i].sigma, this->stpdf[i].sigma_inv,
                           this->stpdf[i].sigma_det,this->stpdf[i].dim);
-//    LOG(INFO)<<"mat_det_inv_double return value = "<<tmp;
+//    LOG(INFO)<<"mat_det_inv return value = "<<tmp;
   }
   fclose(fp);
 }

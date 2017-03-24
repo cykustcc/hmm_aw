@@ -664,10 +664,10 @@ void initialize(std::vector<std::vector<float>> &u,
         }
     }
     
-    mm = mat_det_inv_double(md.stpdf[m].sigma,
-                            md.stpdf[m].sigma_inv,
-                            md.stpdf[m].sigma_det,
-                            dim);
+    mm = mat_det_inv(md.stpdf[m].sigma,
+                     md.stpdf[m].sigma_inv,
+                     md.stpdf[m].sigma_det,
+                     dim);
     if (mm==2) { /* singular matrix */
       for (k1=0, tpdb=0.0; k1<dim; k1++)
         tpdb+=md.stpdf[m].sigma[k1][k1];
@@ -675,10 +675,10 @@ void initialize(std::vector<std::vector<float>> &u,
       /* modify sigma by adding a scalar matrix */
       for (k1=0; k1<dim; k1++)
         md.stpdf[m].sigma[k1][k1]+=tpdb;
-      mat_det_inv_double(md.stpdf[m].sigma,
-                         md.stpdf[m].sigma_inv,
-                         md.stpdf[m].sigma_det,
-                         dim);
+      mat_det_inv(md.stpdf[m].sigma,
+                  md.stpdf[m].sigma_inv,
+                  md.stpdf[m].sigma_det,
+                  dim);
     }
   }
 
@@ -1042,7 +1042,7 @@ int baumwelch(std::vector<std::vector<float>> &u,
       }
 
       /* compute the inverse sigma and the determinant of sigma */
-      mm=mat_det_inv_double(curg->sigma, curg->sigma_inv,
+      mm=mat_det_inv(curg->sigma, curg->sigma_inv,
           curg->sigma_det,dim);
 
       if (mm==2) { /* singular matrix */
@@ -1053,7 +1053,7 @@ int baumwelch(std::vector<std::vector<float>> &u,
         /* modify sigma by adding a scalar matrix */
         for (int k1=0; k1<dim; k1++)
           curg->sigma[k1][k1]+=tpdb;
-        mat_det_inv_double(curg->sigma, curg->sigma_inv,
+        mat_det_inv(curg->sigma, curg->sigma_inv,
            curg->sigma_det,dim);
       }
     }

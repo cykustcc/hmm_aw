@@ -13,6 +13,7 @@
 #include "mosek_solver.h"
 #include "hmm.h"
 #include <cstring>
+#include "matrix.h"
 
 void same_hmm(HmmModel& md1, HmmModel& md2, double tol){
   int dim = md1.dim, numst = md1.numst;
@@ -40,7 +41,6 @@ void same_hmm(HmmModel& md1, HmmModel& md2, double tol){
     }
   }
 }
-
 
 class HMMFitTest: public ::testing::Test{
 protected:
