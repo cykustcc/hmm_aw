@@ -20,11 +20,10 @@ TEST(ModelIoTest, HmmRead){
   // Test inverse matrix function.
   for(int i=0; i<hmm1.numst; i++){
     for (int j=0; j<hmm1.dim; j++) {
-      double dot_prod = cblas_ddot(hmm1.dim,
-                                   (double *) &hmm1.stpdf[i].sigma[j],
-                                   1,
-                                   (double *) &hmm1.stpdf[i].sigma_inv[j],
-                                   1);
+      double dot_prod = 0;
+      for (int k=0; k<hmm1.dim; k++) {
+        dot_prod += hmm1.stpdf[i].sigma[j][k] * hmm1.stpdf[i].sigma_inv[j][k];
+      }
       EXPECT_NEAR(dot_prod, 1.0, 0.01);
     }
   }

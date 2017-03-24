@@ -569,22 +569,9 @@ void initialize(std::vector<std::vector<float>> &u,
       k++;
     }
   }
-  std::cout<<"before lloyd, buf = "<<std::endl;
-  for (int i=0; i<numdata*dim; i++) {
-    std::cout<<buf[i]<<" ";
-  }std::cout<<std::endl;
 
   if (!ranflag) {
-    std::cout<<"in initialize():"<<std::endl;
-    std::cout<<lloyd(cdbk,dim,numst,buf,numdata,1.0e-4)<<std::endl;
-    std::cout<<"after lloyd, cdbk = "<<std::endl;
-    for (int i=0; i<numdata*dim; i++) {
-      std::cout<<cdbk[i]<<" ";
-    }std::cout<<std::endl;
-    std::cout<<"after lloyd, buf = "<<std::endl;
-    for (int i=0; i<numdata*dim; i++) {
-      std::cout<<buf[i]<<" ";
-    }std::cout<<std::endl;
+    lloyd(cdbk,dim,numst,buf,numdata,1.0e-4);
     encode(cdbk,dim,numst,buf,code,numdata);
   }
   else {
@@ -676,13 +663,7 @@ void initialize(std::vector<std::vector<float>> &u,
 
         }
     }
-    std::cout<<"Initialize()..."<<std::endl;
-    for (int i=0; i<md.dim; i++) {
-      for (int j=0; j<md.dim; j++) {
-        std::cout<<md.stpdf[m].sigma[i][j]<<" ";
-      }
-      std::cout<<std::endl;
-    }
+    
     mm = mat_det_inv_double(md.stpdf[m].sigma,
                             md.stpdf[m].sigma_inv,
                             md.stpdf[m].sigma_det,
@@ -825,18 +806,15 @@ void transprob(std::vector<std::vector<double>> &asum,
       }
     }
     if (k>0) {
-      if (v1>0.0)
-        for (l=0;l<numst;l++) if (stcls[l]==n) bnl[n][l]/=v1;
-        else
-          for (l=0;l<numst;l++) if (stcls[l]==n) bnl[n][l]=1.0/(double)k;
-//      if (v1>0.0)
-//        for (int l=0;l<numst;l++)
-//          if (stcls[l]==n)
-//            bnl[n][l]/=v1;
-//      else
-//        for (int l=0;l<numst;l++)
-//          if (stcls[l]==n)
-//            bnl[n][l]=1.0/(double)k;
+      if (v1>0.0){
+        for (int l=0;l<numst;l++)
+          if (stcls[l]==n)
+            bnl[n][l]/=v1;
+      }else{
+          for (int l=0;l<numst;l++)
+            if (stcls[l]==n)
+              bnl[n][l]=1.0/(double)k;
+      }
     }
   }
 
@@ -939,7 +917,6 @@ int baumwelch(std::vector<std::vector<float>> &u,
   oldlhsum=HUGE;
 
   while (ite<minite || twomdflag==0 || ratio>epsilon) {
-    fprintf(stderr, "Inside While iter=%d\n", ite);
     /* Initialization */
     for (int i=0; i<numst; i++) {
       lsum[i]=0.0;
@@ -954,25 +931,9 @@ int baumwelch(std::vector<std::vector<float>> &u,
         asum[j][l]=0.0;
     for (int t=0; t<nseq; t++) {
       forward(u[t],len[t],thetalog,md,loglikehd[t]);
-//      md.print_model("");
-//      fprintf(stderr, "t = %d, backward ...\n", t);
       backward(u[t],len[t],betalog, md);
-//      md.print_model("");
-//      fprintf(stderr, "t = %d, updatepar_adder ...\n", t);
-//      std::cout<<"mu"<<std::endl;
-//      print_vector_double(mu);
-//      std::cout<<"mom2"<<std::endl;
-//      print_matrix_double(mom2);
-//      std::cout<<"l1img"<<std::endl;
-//      print_vector_double(l1img);
       updatepar_adder(u[t],len[t],thetalog, betalog, loglikehd[t],
           md, mu, mom2, a, l1img);
-//      std::cout<<"mu"<<std::endl;
-//      print_vector_double(mu);
-//      std::cout<<"mom2"<<std::endl;
-//      print_matrix_double(mom2);
-//      std::cout<<"l1img"<<std::endl;
-//      print_vector_double(l1img);
 
       for (int i=0; i<numst; i++) {
         lsum[i]+=wt[t]*l1img[i];
@@ -987,7 +948,7 @@ int baumwelch(std::vector<std::vector<float>> &u,
           asum[j][l]+=wt[t]*a[j][l];
 
     } // for (t=0; ...)
-    fprintf(stderr, "After Initialization\n");
+    
     /* Normalization */
     for (int i=0; i<numst; i++) {
       for (int j=0; j<dim; j++)
@@ -1011,7 +972,6 @@ int baumwelch(std::vector<std::vector<float>> &u,
     lhsum=0.0;
     for (int t=0;t<nseq;t++) lhsum+=wt[t]*loglikehd[t];
 
-    md.print_model("");
     // Judge whether to quit iteration loop
     if (twomdflag>0) {
       ratio=(lhsum-oldlhsum)/fabs(lhsum);
@@ -1037,7 +997,6 @@ int baumwelch(std::vector<std::vector<float>> &u,
       res=1;
       break;
     }
-    fprintf(stderr, "Before update model parameters\n");
     /*---------------------------*/
     /** update model parameters **/
     /*---------------------------*/
@@ -1118,10 +1077,6 @@ void hmmfit(HmmModel& md,
   // The stcls[numst] stores the class label for each state. It's only meaningful
   // for HMM with GMM at each state. If the default HMM with a single Gaussian
   // for each state, stcls[] can be set to NULL
-
-  for (int i=0; i<len[0]; i++) {
-    LOG(INFO)<<u[0][2*i]<<" "<<u[0][2*i+1];
-  }
   
   /*** initialize parameters using the states given by kmeans **/
   initialize(u, nseq, len, md.dim, md, 0);

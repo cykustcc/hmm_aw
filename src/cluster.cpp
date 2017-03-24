@@ -162,8 +162,6 @@ float lloyd(std::vector<float> &cdbk,
   std::vector<float> stddev(numcdwd*dim, 0.0);// standard deviation for appropriate split
   std::vector<int> tmpindex;
   
-  LOG(INFO)<<"In lloyd: tmpindex.size() = "<<tmpindex.size();
-  
   centroid(cdbk, dim, 1, vc, tmpindex, numdata);
 
   /* compute standard deviation for each cell */
