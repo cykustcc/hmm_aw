@@ -1133,6 +1133,5 @@ void hmmfit(HmmModel& md,
   } else {
     baumwelch(u, nseq, len, md, loglikehd, lhsumpt, epsilon, wt, forcediag);
   }
-  return md;
 }
 
