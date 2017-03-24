@@ -9,6 +9,7 @@
 #ifndef test_common_h
 #define test_common_h
 #include<string>
-  const char root_path[] = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/";
+
+extern std::string root_path;
 
 #endif /* test_common_h */

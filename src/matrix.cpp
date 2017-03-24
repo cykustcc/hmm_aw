@@ -28,863 +28,216 @@
 #include <math.h>
 #include "matrix.h"
 #include <stdlib.h>
+#include <iostream>
 #include "glog/logging.h"
+#include <vector>
 
-/*------------------------------------------------------------------*/
-/*------------------------------------------------------------------*/
-/*-------------------------- General vector ------------------------*/
-/*------------------------------------------------------------------*/
-/*------------------------------------------------------------------*/
-
-unsigned char * vector_uchar( int dim)
-{
-  unsigned char *tp;
-  
-  tp = (unsigned char *)calloc(dim, sizeof(unsigned char));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in vector_uchar\n");
-    return(0);
+/*-------------------------------------------------------------------*/
+/*------------------------ Print out Vector -------------------------*/
+/*-------------------------------------------------------------------*/
+void print_vector_uchar(std::vector<unsigned char>& vt){
+  int size = vt.size();
+  for (int i=0; i<size; i++) {
+    std::cout<<vt[i]<<" ";
   }
-  
-  return tp;
+  std::cout<<std::endl;
 }
 
-float * vector_float(int dim)
-{
-  float *tp;
-  tp = (float *)calloc(dim, sizeof(float));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in vector_float\n");
-    return NULL;
+void print_vector_int(std::vector<int>& vt){
+  int size = vt.size();
+  for (int i=0; i<size; i++) {
+    std::cout<<vt[i]<<" ";
   }
-  return tp;
+  std::cout<<std::endl;
 }
 
-double * vector_double( int dim)
-{
-  double *tp;
-  
-  tp = (double *)calloc(dim, sizeof(double));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in vector_double\n");
-    return NULL;
+void print_vector_float(std::vector<float>& vt){
+  int size = vt.size();
+  for (int i=0; i<size; i++) {
+    std::cout<<vt[i]<<" ";
   }
-  return tp;
+  std::cout<<std::endl;
 }
 
-int * vector_int( int dim)
-{
-  int *tp;
-  
-  tp = (int *)calloc(dim, sizeof(int));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in vector_int\n");
-    return NULL;
+void print_vector_double(std::vector<double>& vt){
+  int size = vt.size();
+  for (int i=0; i<size; i++) {
+    std::cout<<vt[i]<<" ";
   }
-  
-  return tp;
+  std::cout<<std::endl;
 }
 
 
-/*------------------------------------------------------------------*/
-/*------------------------------------------------------------------*/
-/*---------------- General 2 dimension matrix ----------------------*/
-/*------------------------------------------------------------------*/
-/*------------------------------------------------------------------*/
+/*-------------------------------------------------------------------*/
+/*------------------------ Print out Matrix -------------------------*/
+/*-------------------------------------------------------------------*/
 
-unsigned char ** matrix_2d_uchar(int rows, int cols)
+void print_matrix_uchar(std::vector<std::vector<unsigned char>> &mt)
 {
-  unsigned char **tp;
-  int i;
-  
-  tp = (unsigned char **)calloc(rows, sizeof(unsigned char *));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in matrix_2d_uchar\n");
-    return NULL;
-  }
-  
-  if (cols==0) {
-    return tp;
-  }
-  
-  for (i=0; i<rows; i++) {
-    tp[i] = (unsigned char *)calloc(cols, sizeof(unsigned char));
-    if (tp[i]==NULL) {
-      fprintf(stderr, "Can't allocate space in matrix_2d_uchar\n");
-      return NULL;
+  int rows = mt.size();
+  int cols = rows > 0 ? mt[0].size(): 0;
+  for (int i=0; i<rows; i++) {
+    for (int j=0; j<cols; j++) {
+      fprintf(stdout, "%d  ", mt[i][j]);
+      if ((j+1)%8==0)
+        fprintf(stdout, "\n");
     }
+    fprintf(stdout, "\n");
   }
-  
-  return tp;
 }
 
-float ** matrix_2d_float( int rows, int cols)
+void print_matrix_int(std::vector<std::vector<int>> &mt)
 {
-  float **tp;
-  int i;
-  
-  tp = (float **)calloc(rows, sizeof(float *));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in matrix_2d_float\n");
-    return NULL;
-  }
-  
-  if (cols==0) {
-    return tp;
-  }
-  
-  for (i=0; i<rows; i++) {
-    tp[i] = (float *)calloc(cols, sizeof(float));
-    if (tp[i]==NULL) {
-      fprintf(stderr, "Can't allocate space in matrix_2d_float\n");
-      return NULL;
+  int rows = mt.size();
+  int cols = rows > 0 ? mt[0].size(): 0;
+  for (int i=0; i<rows; i++) {
+    for (int j=0; j<cols; j++) {
+      fprintf(stdout, "%d  ", mt[i][j]);
+      if ((j+1)%8==0)
+        fprintf(stdout, "\n");
     }
+    fprintf(stdout, "\n");
   }
-  
-  return tp;
 }
 
-double ** matrix_2d_double( int rows, int cols)
+void print_matrix_float(std::vector<std::vector<float>> &mt)
 {
-  double **tp;
-  int i;
-  
-  tp = (double **)calloc(rows, sizeof(double *));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in matrix_2d_double\n");
-    return NULL;
-  }
-  
-  if (cols==0) {
-    return tp;
-  }
-  
-  for (i=0; i<rows; i++) {
-    tp[i] = (double *)calloc(cols, sizeof(double));
-    if (tp[i]==NULL) {
-      fprintf(stderr, "Can't allocate space in matrix_2d_double\n");
-      return NULL;
+  int rows = mt.size();
+  int cols = rows > 0 ? mt[0].size(): 0;
+  for (int i=0; i<rows; i++) {
+    for (int j=0; j<cols; j++) {
+      fprintf(stdout, "%f  ", mt[i][j]);
+      if ((j+1)%8==0)
+        fprintf(stdout, "\n");
     }
+    fprintf(stdout, "\n");
   }
-  
-  return tp;
 }
 
-int ** matrix_2d_int( int rows, int cols)
+void print_matrix_double(std::vector<std::vector<double>> &mt)
 {
-  int **tp;
-  int i;
-  
-  tp = (int **)calloc(rows, sizeof(int *));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in matrix_2d_int\n");
-    return NULL;
-  }
-  
-  if (cols==0) {
-    return tp;
-  }
-  
-  for (i=0; i<rows; i++) {
-    tp[i] = (int *)calloc(cols, sizeof(int));
-    if (tp[i]==NULL) {
-      fprintf(stderr, "Can't allocate space in matrix_2d_int\n");
-      return(0);
+  int rows = mt.size();
+  int cols = rows > 0 ? mt[0].size(): 0;
+  for (int i=0; i<rows; i++) {
+    for (int j=0; j<cols; j++) {
+      fprintf(stdout, "%f  ", mt[i][j]);
+      if ((j+1)%8==0)
+        fprintf(stdout, "\n");
     }
+    fprintf(stdout, "\n");
   }
-  
-  return tp;
-}
-
-/*--------------------------------------------------------------------*/
-/*--------------------------------------------------------------------*/
-/*------------ Generate 3 dimension matrix ---------------------------*/
-/*--------------------------------------------------------------------*/
-/*--------------------------------------------------------------------*/
-
-unsigned char *** matrix_3d_uchar( int rows,
-                  int cols, int depth)
-{
-  unsigned char ***tp;
-  int i, j;
-  
-  tp = (unsigned char ***)calloc(rows, sizeof(unsigned char **));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in matrix_3d_uchar\n");
-    return NULL;
-  }
-  
-  if (cols==0) {
-    return tp;
-  }
-  
-  for (i=0; i<rows; i++) {
-    tp[i] = (unsigned char **)calloc(cols, sizeof(unsigned char *));
-    if (tp[i]==NULL) {
-      fprintf(stderr, "Can't allocate space in matrix_3d_uchar\n");
-      return NULL;
-    }
-    if (depth==0) continue;
-    for (j=0; j<cols; j++) {
-      tp[i][j] = (unsigned char *)calloc(depth, sizeof(unsigned char));
-      if (tp[i][j]==NULL) {
-        fprintf(stderr, "Can't allocate space in matrix_3d_uchar\n");
-        return NULL;
-      }
-    }
-  }
-  
-  return tp;
-}
-
-float *** matrix_3d_float( int rows,
-              int cols, int depth)
-{
-  float ***tp;
-  int i, j;
-  
-  tp = (float ***)calloc(rows, sizeof(float **));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in matrix_3d_float\n");
-    return(0);
-  }
-  
-  if (cols==0) {
-    return tp;
-  }
-  
-  for (i=0; i<rows; i++) {
-    tp[i] = (float **)calloc(cols, sizeof(float *));
-    if (tp[i]==NULL) {
-      fprintf(stderr, "Can't allocate space in matrix_3d_float\n");
-      return NULL;
-    }
-    if (depth==0) continue;
-    for (j=0; j<cols; j++) {
-      tp[i][j] = (float *)calloc(depth, sizeof(float));
-      if (tp[i][j]==NULL) {
-        fprintf(stderr, "Can't allocate space in matrix_3d_float\n");
-        return NULL;
-      }
-    }
-  }
-  
-  return tp;
-}
-
-
-double *** matrix_3d_double( int rows,
-              int cols, int depth)
-{
-  double ***tp;
-  int i, j;
-  
-  tp = (double ***)calloc(rows, sizeof(double **));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in matrix_3d_double\n");
-    return(0);
-  }
-  
-  if (cols==0) {
-    return tp;
-  }
-  
-  for (i=0; i<rows; i++) {
-    tp[i] = (double **)calloc(cols, sizeof(double *));
-    if (tp[i]==NULL) {
-      fprintf(stderr, "Can't allocate space in matrix_3d_double\n");
-      return NULL;
-    }
-    if (depth==0) continue;
-    for (j=0; j<cols; j++) {
-      tp[i][j] = (double *)calloc(depth, sizeof(double));
-      if (tp[i][j]==NULL) {
-        fprintf(stderr, "Can't allocate space in matrix_3d_double\n");
-        return NULL;
-      }
-    }
-  }
-  
-  return tp;
-}
-
-int *** matrix_3d_int( int rows,
-            int cols, int depth)
-{
-  int ***tp;
-  int i, j;
-  
-  tp = (int ***)calloc(rows, sizeof(int **));
-  if (tp==NULL) {
-    fprintf(stderr, "Can't allocate space in matrix_3d_int\n");
-    return NULL;
-  }
-  
-  if (cols==0) {
-    return tp;
-  }
-  
-  for (i=0; i<rows; i++) {
-    tp[i] = (int **)calloc(cols, sizeof(int *));
-    if (tp[i]==NULL) {
-      fprintf(stderr, "Can't allocate space in matrix_3d_int\n");
-      return NULL;
-    }
-    if (depth==0) continue;
-    for (j=0; j<cols; j++) {
-      tp[i][j] = (int *)calloc(depth, sizeof(int));
-      if (tp[i][j]==NULL) {
-        fprintf(stderr, "Can't allocate space in matrix_3d_int\n");
-        return NULL;
-      }
-    }
-  }
-  
-  return tp;
 }
 
 
 /*-------------------------------------------------------------------*/
 /*-------------------------------------------------------------------*/
-/*--------------- Free 2 dimension matrix ---------------------------*/
+/*---------------    Numerical Programs               ---------------*/
+/*---------------    LU decomposition programs        ---------------*/
+/*---------------    Calculate matrix inversion       ---------------*/
+/*---------------    Calculate matrix determinant     ---------------*/
 /*-------------------------------------------------------------------*/
 /*-------------------------------------------------------------------*/
-
-void free_matrix_2d_uchar(unsigned char **mt, int rows)
-{
-  unsigned char **tp;
-  int i;
-  
-  tp = mt;
-  for (i=0; i<rows; i++)
-    free(tp[i]);
-  
-  free(tp);
-  
-  *mt = NULL;
-}
-
-void free_matrix_2d_float(float **mt, int rows)
-{
-  float **tp;
-  int i;
-  
-  tp = mt;
-  for (i=0; i<rows; i++)
-    free(tp[i]);
-  
-  free(tp);
-  
-  *mt = NULL;
-}
-
-void free_matrix_2d_double(double **mt, int rows)
-{
-  double **tp;
-  int i;
-  
-  tp = mt;
-  for (i=0; i<rows; i++)
-    free(tp[i]);
-  
-  free(tp);
-  
-  *mt = NULL;
-}
-
-void free_matrix_2d_int(int **mt, int rows)
-{
-  int **tp;
-  int i;
-  
-  tp = mt;
-  for (i=0; i<rows; i++)
-    free(tp[i]);
-  
-  free(tp);
-  
-  *mt = NULL;
-}
-
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-/*--------------- Free 3 dimension matrix ---------------------------*/
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-
-void free_matrix_3d_uchar(unsigned char ***mt, int rows, int cols)
-{
-  unsigned char ***tp;
-  int i,j;
-  
-  tp = mt;
-  for (i=0; i<rows; i++)
-    for (j=0; j<cols; j++)
-      free(tp[i][j]);
-  for (i=0; i<rows; i++)
-    free(tp[i]);
-  
-  free(tp);
-  
-  *mt = NULL;
-}
-
-void free_matrix_3d_float(float ***mt, int rows, int cols)
-{
-  float ***tp;
-  int i,j;
-  
-  tp = mt;
-  for (i=0; i<rows; i++)
-    for (j=0; j<cols; j++)
-      free(tp[i][j]);
-  for (i=0; i<rows; i++)
-    free(tp[i]);
-  
-  free(tp);
-  
-  *mt = NULL;
-}
-
-void free_matrix_3d_double(double ***mt, int rows, int cols)
-{
-  double ***tp;
-  int i,j;
-  
-  tp = mt;
-  for (i=0; i<rows; i++)
-    for (j=0; j<cols; j++)
-      free(tp[i][j]);
-  for (i=0; i<rows; i++)
-    free(tp[i]);
-  
-  free(tp);
-  
-  *mt = NULL;
-}
-
-void free_matrix_3d_int(int ***mt, int rows, int cols)
-{
-  int ***tp;
-  int i,j;
-  
-  tp = mt;
-  for (i=0; i<rows; i++)
-    for (j=0; j<cols; j++)
-      free(tp[i][j]);
-  for (i=0; i<rows; i++)
-    free(tp[i]);
-  
-  free(tp);
-  
-  *mt = NULL;
-}
-
 
 // compute 2d matrix determinant
-float mat_det_float(float **mt, int dim)
+float mat_det_float( std::vector<std::vector<float>> mt,
+                    int dim)
 {
   int i,j,k,m,n;
   float res;
-  float **submt;
-  float *ptr1, *ptr2;
   
   if (dim==1)
-    return(**mt);
+    return(mt[0][0]);
   
-  submt = matrix_2d_float(dim-1, dim-1);
-  if (!submt)
-    exit(1);
+  std::vector<std::vector<float>> submt(dim-1, std::vector<float>(dim-1, 0.0));
   
-  for (i=1; i<dim; i++) {
-    ptr1 = submt[i-1];
-    ptr2 = mt[i]+1;
-    for (j=1; j<dim; j++) {
-      *(ptr1++) = *ptr2;
-      ptr2++;
+  for (int i=1; i<dim; i++) {
+    for (int j=1; j<dim; j++) {
+      submt[i-1][j-1] = mt[i][j];
     }
   }
   
   n=1;
   res = 0.0;
   
-  for (i=0; i<dim; i++) {
+  for (int i=0; i<dim; i++) {
     res += (n*mt[i][0]*mat_det_float(submt, dim-1));
     n = -n;
     if (i==dim-1)
       continue;
-    ptr1 = submt[i];
-    ptr2 = mt[i]+1;
-    for (j=1; j<dim; j++) {
-      *(ptr1++) = *ptr2;
-      ptr2++;
+    for (int j=1; j<dim; j++) {
+      submt[i][j-1] = mt[i][j];
     }
   }
-  
-  free_matrix_2d_float(submt, dim-1);
   
   return(res);
 }
 
-
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-/*----------------------- Set Memory for Vector ---------------------*/
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-
-void memcpy_1d_uchar(unsigned char *mt, int dim, unsigned char tp)
+double mat_det_double(std::vector<std::vector<double>> &mt,
+                      int dim)
 {
-  int i;
-  
-  for (i=0; i<dim; i++)
-    *(mt++) = tp;
-}
-
-void memcpy_1d_int(int *mt, int dim, int tp)
-{
-  int i;
-  
-  for (i=0; i<dim; i++)
-    *(mt++) = tp;
-}
-
-void memcpy_1d_float(float *mt, int dim, float tp)
-{
-  int i;
-  
-  for (i=0; i<dim; i++)
-    *(mt++) = tp;
-}
-
-void memcpy_1d_double(double *mt, int dim, double tp)
-{
-  int i;
-  
-  for (i=0; i<dim; i++)
-    *(mt++) = tp;
-}
-
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-/*----------------------- Set Memory for 2D matrix ------------------*/
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-
-void memcpy_2d_uchar(unsigned char **mt, int rows, int cols, unsigned char tp)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    memcpy_1d_uchar(mt[i],cols,tp);
-}
-
-void memcpy_2d_int(int **mt, int rows, int cols, int tp)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    memcpy_1d_int(mt[i],cols,tp);
-}
-
-void memcpy_2d_float(float **mt, int rows, int cols, float tp)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    memcpy_1d_float(mt[i],cols,tp);
-}
-
-void memcpy_2d_double(double **mt, int rows, int cols, double tp)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    memcpy_1d_double(mt[i],cols,tp);
-}
-
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-/*----------------------- Set Memory for 3D matrix ------------------*/
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-
-void memcpy_3d_uchar(unsigned char ***mt, int rows, int cols, int depth,
-           unsigned char tp)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    memcpy_2d_uchar(mt[i],cols,depth,tp);
-}
-
-void memcpy_3d_int(int ***mt, int rows, int cols, int depth, int tp)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    memcpy_2d_int(mt[i],cols,depth,tp);
-}
-
-void memcpy_3d_float(float ***mt, int rows, int cols, int depth, float tp)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    memcpy_2d_float(mt[i],cols,depth,tp);
-}
-
-void memcpy_3d_double(double ***mt, int rows, int cols, int depth, double tp)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    memcpy_2d_double(mt[i],cols,depth,tp);
-}
-
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-/*------------------------ Vector copy ------------------------------*/
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-
-void vector_cpy_uchar(unsigned char *output, unsigned char *input, int dim)
-{
-  int i;
-  
-  for (i=0; i<dim; i++)
-  {
-    *(output++)=*input;
-    input++;
-  }
-}
-
-void vector_cpy_int(int *output, int *input, int dim)
-{
-  int i;
-  
-  for (i=0; i<dim; i++)
-  {
-    *(output++)=*input;
-    input++;
-  }
-}
-
-void vector_cpy_float(float *output, float *input, int dim)
-{
-  int i;
-  
-  for (i=0; i<dim; i++)
-  {
-    *(output++)=*input;
-    input++;
-  }
-}
-
-void vector_cpy_double(double *output, double *input, int dim)
-{
-  int i;
-  
-  for (i=0; i<dim; i++)
-  {
-    *(output++)=*input;
-    input++;
-  }
-}
-
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-/*------------------------ Matrix copy ------------------------------*/
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-
-void matrix_2d_cpy_uchar(unsigned char **output, unsigned char **input,
-             int rows, int cols)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    vector_cpy_uchar(output[i], input[i],cols);
-}
-
-void matrix_2d_cpy_int(int **output, int **input, int rows, int cols)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    vector_cpy_int(output[i], input[i],cols);
-}
-
-void matrix_2d_cpy_float(float **output, float **input, int rows, int cols)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    vector_cpy_float(output[i], input[i],cols);
-}
-
-void matrix_2d_cpy_double(double **output, double **input, int rows, int cols)
-{
-  int i;
-  
-  for (i=0; i<rows; i++)
-    vector_cpy_double(output[i], input[i],cols);
-}
-
-
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-/*------------------------ Print out Matrix -------------------------*/
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-
-void print_matrix_uchar(unsigned char **mt, int rows, int cols)
-{
-  int i,j;
-  
-  for (i=0; i<rows; i++) {
-    for (j=0; j<cols; j++) {
-      fprintf(stdout, "%d  ", mt[i][j]);
-      if ((j+1)%8==0)
-        fprintf(stdout, "\n");
-    }
-    fprintf(stdout, "\n");
-  }
-}
-
-void print_matrix_int(int **mt, int rows, int cols)
-{
-  int i,j;
-  
-  for (i=0; i<rows; i++) {
-    for (j=0; j<cols; j++) {
-      fprintf(stdout, "%d  ", mt[i][j]);
-      if ((j+1)%8==0)
-        fprintf(stdout, "\n");
-    }
-    fprintf(stdout, "\n");
-  }
-}
-
-void print_matrix_float(float **mt, int rows, int cols)
-{
-  int i,j;
-  
-  for (i=0; i<rows; i++) {
-    for (j=0; j<cols; j++) {
-      fprintf(stdout, "%f  ", mt[i][j]);
-      if ((j+1)%8==0)
-        fprintf(stdout, "\n");
-    }
-    fprintf(stdout, "\n");
-  }
-}
-
-void print_matrix_double(double **mt, int rows, int cols)
-{
-  int i,j;
-  
-  for (i=0; i<rows; i++) {
-    for (j=0; j<cols; j++) {
-      fprintf(stdout, "%f  ", mt[i][j]);
-      if ((j+1)%8==0)
-        fprintf(stdout, "\n");
-    }
-    fprintf(stdout, "\n");
-  }
-}
-
-
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-/*---------------    Numerical Programs       ---------------*/
-/*---------------  LU decomposition programs    ---------------*/
-/*---------------    Calculate matrix inversion   ---------------*/
-/*---------------    Calculate matrix determinant   ---------------*/
-/*-------------------------------------------------------------------*/
-/*-------------------------------------------------------------------*/
-
-double mat_det_double(double **mt, int dim)
-{
-  int i,j,k,m,n;
   double res;
-  double **submt;
-  double *ptr1, *ptr2;
   
   if (dim==1)
-    return(**mt);
+    return(mt[0][0]);
   
-  n = dim-1;
-  submt = matrix_2d_double(dim-1, dim-1);
-  if (!submt)
-    exit(1);
+  int n = dim-1;
+  std::vector<std::vector<double>> submt(dim-1, std::vector<double>(dim-1));
   
-  for (i=1; i<dim; i++) {
-    ptr1 = submt[i-1];
-    ptr2 = mt[i]+1;
-    for (j=1; j<dim; j++) {
-      *(ptr1++) = *ptr2;
-      ptr2++;
+  for (int i=1; i<dim; i++) {
+    for (int j=1; j<dim; j++) {
+      submt[i-1][j-1] = mt[i][j];
     }
   }
   
   n=1;
   res = 0.0;
   
-  for (i=0; i<dim; i++) {
+  for (int i=0; i<dim; i++) {
     res += (n*mt[i][0]*mat_det_double(submt, dim-1));
     n = -n;
     if (i==dim-1)
       continue;
-    ptr1 = submt[i];
-    ptr2 = mt[i]+1;
-    for (j=1; j<dim; j++) {
-      *(ptr1++) = *ptr2;
-      ptr2++;
+    for (int j=1; j<dim; j++) {
+      submt[i][j-1] = mt[i][j];
     }
   }
-  
-  free_matrix_2d_double(submt, dim-1);
-  
   return(res);
 }
 
-unsigned char ludcmp_float(float **a, int n, int *indx, float *d)
+unsigned char ludcmp_float(std::vector<std::vector<float>> &a,
+                           int n,
+                           std::vector<int> &indx,
+                           float &d)
 {
-  int i,imax,j,k;
+  int imax = 0;
   float big, dum,sum,temp;
-  float *vv;
+  std::vector<float> vv(n, 0.0);
   float TINY=1e-20;
   
-  vv = vector_float(n);
-  if (!vv)
-    return(0);
-  
-  *d = 1.0;
-  for (i=0; i<n; i++) {
+  d = 1.0;
+  for (int i=0; i<n; i++) {
     big =0.0;
-    for (j=0; j<n; j++)
+    for (int j=0; j<n; j++)
       if ((temp=fabs(a[i][j]))>big)
         big = temp;
     if (big==0.0) {
       fprintf(stderr, "Singular matrix in ludcmp_float\n");
-      free(vv);
       return(2); /* 2 stands for singular matrix */
     }
     vv[i]=1.0/big;
   }
   
-  for (j=0; j<n; j++) {
-    for (i=0; i<j; i++) {
+  for (int j=0; j<n; j++) {
+    for (int i=0; i<j; i++) {
       sum = a[i][j];
-      for (k=0; k<i; k++)
+      for (int k=0; k<i; k++)
         sum -= a[i][k]*a[k][j];
       a[i][j] = sum;
     }
     big = 0.0;
-    for (i=j; i<n; i++) {
+    for (int i=j; i<n; i++) {
       sum = a[i][j];
-      for (k=0; k<j; k++)
+      for (int k=0; k<j; k++)
         sum -= a[i][k]*a[k][j];
       a[i][j] = sum;
       if ((dum=vv[i]*fabs(sum))>=big) {
@@ -893,64 +246,61 @@ unsigned char ludcmp_float(float **a, int n, int *indx, float *d)
       }
     }
     if (j!=imax) {
-      for (k=0; k<n; k++) {
+      for (int k=0; k<n; k++) {
         dum = a[imax][k];
         a[imax][k]=a[j][k];
         a[j][k]=dum;
       }
-      *d = -(*d);
+      d = -d;
       vv[imax]=vv[j];
     }
     indx[j]=imax;
     if (a[j][j]==0.0) a[j][j] = TINY;
     if (j!=n-1) {
       dum = 1.0/(a[j][j]);
-      for (i=j+1; i<n; i++)
+      for (int i=j+1; i<n; i++)
         a[i][j] *= dum;
     }
   }
-  
-  free(vv);
   return(1);
 }
 
 
-unsigned char ludcmp_double(double **a, int n, int *indx, double *d)
+unsigned char ludcmp_double(std::vector<std::vector<double>> &a,
+                            int n,
+                            std::vector<int> &indx,
+                            double &d)
 {
-  int i,imax,j,k;
+  int imax = 0;
   double big, dum,sum,temp;
-  double *vv;
+  std::vector<double> vv(n);
   double TINY=1e-20;
   
-  vv = vector_double(n);
-  if (!vv)
-    return(0);
-  
-  *d = 1.0;
-  for (i=0; i<n; i++) {
+  d = 1.0;
+  for (int i=0; i<n; i++) {
     big =0.0;
-    for (j=0; j<n; j++)
+    for (int j=0; j<n; j++)
       if ((temp=fabs(a[i][j]))>big)
         big = temp;
     if (big==0.0) {
+      LOG(ERROR)<<"Singular matrix in ludcmp_double\n";
       fprintf(stderr, "Singular matrix in ludcmp_double\n");
-      free(vv);
       return(2); /* 2 stands for singular matrix */
     }
     vv[i]=1.0/big;
   }
   
-  for (j=0; j<n; j++) {
-    for (i=0; i<j; i++) {
+  for (int j=0; j<n; j++) {
+    for (int i=0; i<j; i++) {
       sum = a[i][j];
-      for (k=0; k<i; k++)
+      for (int k=0; k<i; k++)
         sum -= a[i][k]*a[k][j];
       a[i][j] = sum;
     }
     big = 0.0;
-    for (i=j; i<n; i++) {
+    for (int i=j; i<n; i++) {
       sum = a[i][j];
-      for (k=0; k<j; k++)
+      for (int k=0; k<j; k++)
         sum -= a[i][k]*a[k][j];
       a[i][j] = sum;
       if ((dum=vv[i]*fabs(sum))>=big) {
@@ -959,216 +309,168 @@ unsigned char ludcmp_double(double **a, int n, int *indx, double *d)
       }
     }
     if (j!=imax) {
-      for (k=0; k<n; k++) {
+      for (int k=0; k<n; k++) {
         dum = a[imax][k];
         a[imax][k]=a[j][k];
         a[j][k]=dum;
       }
-      *d = -(*d);
+      d = -d;
       vv[imax]=vv[j];
     }
     indx[j]=imax;
     if (a[j][j]==0.0) a[j][j] = TINY;
     if (j!=n-1) {
       dum = 1.0/(a[j][j]);
-      for (i=j+1; i<n; i++)
+      for (int i=j+1; i<n; i++)
         a[i][j] *= dum;
     }
   }
-  
-  free(vv);
   return(1);
 }
 
-void lubksb_float(float **a, int n, int *indx, float *b)
+void lubksb_float(std::vector<std::vector<float>> &a,
+                  int n,
+                  std::vector<int> &indx,
+                  std::vector<float> &b)
 {
-  int i, ii=-1, ip,j;
+  int ii=-1, ip;
   float sum;
   
-  for (i=0; i<n; i++) {
+  for (int i=0; i<n; i++) {
     ip = indx[i];
     sum = b[ip];
     b[ip]=b[i];
     if (ii>=0)
-      for (j=ii; j<i; j++) sum -= a[i][j]*b[j];
+      for (int j=ii; j<i; j++) sum -= a[i][j]*b[j];
     else if (sum != 0.0) ii=i;
     b[i]=sum;
   }
-  for (i=n-1; i>=0; i--) {
+  for (int i=n-1; i>=0; i--) {
     sum=b[i];
-    for (j=i+1; j<n; j++) sum-= a[i][j]*b[j];
+    for (int j=i+1; j<n; j++) sum-= a[i][j]*b[j];
     b[i]=sum/a[i][i];
   }
 }
 
 
-void lubksb_double(double **a, int n, int *indx, double *b)
+void lubksb_double(std::vector<std::vector<double>> &a,
+                   int n,
+                   std::vector<int> &indx,
+                   std::vector<double> &b)
 {
   int i, ii=-1, ip,j;
   double sum;
   
-  for (i=0; i<n; i++) {
+  for (int i=0; i<n; i++) {
     ip = indx[i];
     sum = b[ip];
     b[ip]=b[i];
     if (ii>=0)
-      for (j=ii; j<i; j++) sum -= a[i][j]*b[j];
+      for (int j=ii; j<i; j++) sum -= a[i][j]*b[j];
     else if (sum != 0.0) ii=i;
     b[i]=sum;
   }
-  for (i=n-1; i>=0; i--) {
+  for (int i=n-1; i>=0; i--) {
     sum=b[i];
-    for (j=i+1; j<n; j++) sum-= a[i][j]*b[j];
+    for (int j=i+1; j<n; j++) sum-= a[i][j]*b[j];
     b[i]=sum/a[i][i];
   }
 }
 
 
-unsigned char mat_inv_float(float **mt, float **y, int dim)
-{
-  float d, *col;
-  int i,j,*indx;
-  float **a;
-  float *ptr1, *ptr2;
-  
-  a = matrix_2d_float(dim, dim);
-  if (!a)
-    return(0);
-  
-  for (i=0; i<dim; i++) {
-    ptr1 = mt[i];
-    ptr2 = a[i];
-    for (j=0; j<dim; j++) {
-      *(ptr2++) = *ptr1;
-      ptr1++;
-    }
-  }
-  
-  col = vector_float(dim);
-  if (!col)
-    return(0);
-  
-  indx = vector_int(dim);
-  if (!indx)
-    return(0);
-  
-  ludcmp_float(a,dim,indx,&d);
-  for (j=0; j<dim; j++) {
-    for (i=0; i<dim; i++) col[i]=0.0;
-    col[j]=1.0;
-    lubksb_float(a,dim,indx,col);
-    for (i=0; i<dim;i++)
-      y[i][j]=col[i];
-  }
-  
-  free(col);
-  free(indx);
-  free_matrix_2d_float(a, dim);
-  return(1);
-}
-
-unsigned char mat_inv_double(double **mt, double **y, int dim)
-{
-  double d, *col;
-  int i,j,*indx;
-  double **a;
-  double *ptr1, *ptr2;
-  
-  a = matrix_2d_double(dim, dim);
-  if (!a)
-    return(0);
-  
-  for (i=0; i<dim; i++) {
-    ptr1 = mt[i];
-    ptr2 = a[i];
-    for (j=0; j<dim; j++) {
-      *(ptr2++) = *ptr1;
-      ptr1++;
-    }
-  }
-  
-  col = vector_double(dim);
-  if (!col)
-    return(0);
-  indx = vector_int(dim);
-  if (!indx)
-    return(0);
-  
-  ludcmp_double(a,dim,indx,&d);
-  for (j=0; j<dim; j++) {
-    for (i=0; i<dim; i++) col[i]=0.0;
-    col[j]=1.0;
-    lubksb_double(a,dim,indx,col);
-    for (i=0; i<dim;i++)
-      y[i][j]=col[i];
-  }
-  
-  free(col);
-  free(indx);
-  free_matrix_2d_double(a, dim);
-  return(1);
-}
-
-float mat_det_ludcmp_float(float **mt, int dim)
+unsigned char mat_inv_float(std::vector<std::vector<float>> &mt,
+                            std::vector<std::vector<float>> &y,
+                            int dim)
 {
   float d;
-  int i,j, *indx;
-  float **a;
-  float *ptr1, *ptr2;
+  std::vector<std::vector<float>> a(dim, std::vector<float>(dim, 0.0));
   
-  a = matrix_2d_float(dim, dim);
-  if (!a)
-    return(0);
-  
-  for (i=0; i<dim; i++) {
-    ptr1 = mt[i];
-    ptr2 = a[i];
-    for (j=0; j<dim; j++) {
-      *(ptr2++) = *ptr1;
-      ptr1++;
+  for (int i=0; i<dim; i++) {
+    for (int j=0; j<dim; j++) {
+      a[i][j] = mt[i][j];
     }
   }
-  indx = vector_int(dim);
-  if (!indx)
-    exit(1);
   
-  ludcmp_float(a,dim,indx,&d);
-  for (j=0; j<dim; j++) d *= a[j][j];
+  std::vector<float> col(dim);
+  std::vector<int> indx(dim);
   
-  free(indx);
-  free_matrix_2d_float(a, dim);
+  ludcmp_float(a,dim,indx,d);
+  for (int j=0; j<dim; j++) {
+    for (int i=0; i<dim; i++) col[i]=0.0;
+    col[j]=1.0;
+    lubksb_float(a,dim,indx,col);
+    for (int i=0; i<dim;i++)
+      y[i][j]=col[i];
+  }
+  
+  return(1);
+}
+
+unsigned char mat_inv_double(std::vector<std::vector<float>> &mt,
+                             std::vector<std::vector<float>> &y,
+                             int dim)
+{
+  double d;
+  
+  std::vector<std::vector<double>> a(dim, std::vector<double>(dim,0.0));
+  
+  for (int i=0; i<dim; i++) {
+    for (int j=0; j<dim; j++) {
+      a[i][j] = mt[i][j];
+    }
+  }
+  
+  std::vector<double> col(dim);
+  std::vector<int> indx(dim);
+  
+  ludcmp_double(a,dim,indx,d);
+  for (int j=0; j<dim; j++) {
+    for (int i=0; i<dim; i++) col[i]=0.0;
+    col[j]=1.0;
+    lubksb_double(a,dim,indx,col);
+    for (int i=0; i<dim;i++)
+      y[i][j]=col[i];
+  }
+  return(1);
+}
+
+float mat_det_ludcmp_float(std::vector<std::vector<float>> &mt,
+                           int dim)
+{
+  float d;
+  
+  std::vector<std::vector<float>> a(dim, std::vector<float>(dim, 0.0));
+  for (int i=0; i<dim; i++) {
+    for (int j=0; j<dim; j++) {
+      a[i][j] = mt[i][j];
+    }
+  }
+  std::vector<int> indx(dim, 0);
+  
+  ludcmp_float(a,dim,indx,d);
+  for (int j=0; j<dim; j++) d *= a[j][j];
+
   return(d);
 }
 
-double mat_det_ludcmp_double(double **mt, int dim)
+double mat_det_ludcmp_double(std::vector<std::vector<float>> &mt,
+                             int dim)
 {
   double d;
-  int i, j, *indx;
-  double **a;
-  double *ptr1, *ptr2;
   
-  a = matrix_2d_double(dim,dim);
-  if (!a)
-    return(0);
+  std::vector<std::vector<double>> a(dim,std::vector<double>(dim, 0.0));
   
-  for (i=0; i<dim; i++) {
-    ptr1 = mt[i];
-    ptr2 = a[i];
-    for (j=0; j<dim; j++) {
-      *(ptr2++) = *ptr1;
-      ptr1++;
+  for (int i=0; i<dim; i++) {
+    for (int j=0; j<dim; j++) {
+      a[i][j] = mt[i][j];
     }
   }
-  indx = vector_int(dim);
-  if (!indx)
-    exit(1);
+  std::vector<int> indx(dim);
   
-  ludcmp_double(a,dim,indx,&d);
+  ludcmp_double(a,dim,indx,d);
   
-  for (j=0; j<dim; j++) d *= a[j][j];
-  
-  free(indx);
-  free_matrix_2d_double(a, dim);
+  for (int j=0; j<dim; j++) d *= a[j][j];
+
   return(d);
 }
 
@@ -1177,119 +479,70 @@ double mat_det_ludcmp_double(double **mt, int dim)
 /** combining these two operations save computation since they share   **/
 /** the call to ludcmp_double                      **/
 
-unsigned char mat_det_inv_double(double **mt, double **y, double *det,
-                 int dim)
+unsigned char mat_det_inv_double(std::vector<std::vector<double>> &mt,
+                                 std::vector<std::vector<double>> &y,
+                                 double &det,
+                                 int dim)
 {
-  double d, *col;
-  int i,j,m,n,*indx;
-  double **a;
-  double *ptr1, *ptr2;
+  double d;
+  std::vector<std::vector<double>> a(mt);
   
   /** initialize matrix determinant **/
-  *det=0.0;
+  det=0.0;
+  std::vector<double> col(dim, 0.0);
+  std::vector<int> indx(dim, 0);
   
-  a = matrix_2d_double(dim,dim);
-  if (!a)
-    return(0);
-  
-  for (i=0; i<dim; i++) {
-    ptr1 = mt[i];
-    ptr2 = a[i];
-    for (j=0; j<dim; j++) {
-      *(ptr2++) = *ptr1;
-      ptr1++;
-    }
-  }
-  col = vector_double( dim);
-  if (col == NULL)
-    return(0);
-  
-  indx = vector_int(dim);
-  if (indx == NULL)
-    return(0);
-  
-  m=ludcmp_double(a,dim,indx,&d);
+  int m=ludcmp_double(a,dim,indx,d);
   if (m==2) {  /** singular matrix **/
-    *det=0.0;
-    free(col);
-    free(indx);
-    free_matrix_2d_double(a, dim);
+    det=0.0;
     return(2);
   }
   
-  for (j=0; j<dim; j++) d *= a[j][j];
-  *det=d;
+  for (int j=0; j<dim; j++) d *= a[j][j];
+  det=d;
   
-  for (j=0; j<dim; j++) {
-    for (i=0; i<dim; i++) col[i]=0.0;
+  for (int j=0; j<dim; j++) {
+    for (int i=0; i<dim; i++) col[i]=0.0;
     col[j]=1.0;
     lubksb_double(a,dim,indx,col);
-    for (i=0; i<dim;i++)
+    for (int i=0; i<dim;i++)
       y[i][j]=col[i];
   }
-  
-  free(col);
-  free(indx);
-  free_matrix_2d_double(a, dim);
   return(1);
 }
 
 
 
-unsigned char mat_det_inv_float(float **mt, float **y, float *det,
-                int dim)
+unsigned char mat_det_inv_float(std::vector<std::vector<float>> &mt,
+                                std::vector<std::vector<float>> &y,
+                                float &det,
+                                int dim)
 {
-  float d, *col;
-  int i,j,m,*indx;
-  float **a;
-  float *ptr1, *ptr2;
+  float d;
   
   /** initialize matrix determinant **/
-  *det=0.0;
-  a = matrix_2d_float(dim,dim);
-  if (!a)
-    return(0);
+  det=0.0;
+  std::vector<std::vector<float>> a(mt);
   
-  for (i=0; i<dim; i++) {
-    ptr1 = mt[i];
-    ptr2 = a[i];
-    for (j=0; j<dim; j++) {
-      *(ptr2++) = *ptr1;
-      ptr1++;
-    }
-  }
+  std::vector<float> col(dim);
+  std::vector<int> indx(dim);
   
-  col = vector_float( dim);
-  if (!col)
-    return(0);
-  
-  indx = vector_int(dim);
-  if (!indx)
-    return(0);
-  
-  m=ludcmp_float(a,dim,indx,&d);
+  int m=ludcmp_float(a,dim,indx,d);
   if (m==2) {  /** singular matrix **/
-    *det=0.0;
-    free(col);
-    free(indx);
-    free_matrix_2d_float(a, dim);
+    det=0.0;
     return(2);
   }
   
-  for (j=0; j<dim; j++) d *= a[j][j];
-  *det=d;
+  for (int j=0; j<dim; j++) d *= a[j][j];
+  det=d;
   
-  for (j=0; j<dim; j++) {
-    for (i=0; i<dim; i++) col[i]=0.0;
+  for (int j=0; j<dim; j++) {
+    for (int i=0; i<dim; i++) col[i]=0.0;
     col[j]=1.0;
     lubksb_float(a,dim,indx,col);
-    for (i=0; i<dim;i++)
+    for (int i=0; i<dim;i++)
       y[i][j]=col[i];
   }
-  
-  free(col);
-  free(indx);
-  free_matrix_2d_float(a, dim);
   return(1);
 }
 
