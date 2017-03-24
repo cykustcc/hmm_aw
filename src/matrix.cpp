@@ -76,6 +76,7 @@ void print_matrix_uchar(std::vector<std::vector<unsigned char>> &mt)
 {
   int rows = mt.size();
   int cols = rows > 0 ? mt[0].size(): 0;
+
   for (int i=0; i<rows; i++) {
     for (int j=0; j<cols; j++) {
       fprintf(stdout, "%d  ", mt[i][j]);
@@ -90,6 +91,7 @@ void print_matrix_int(std::vector<std::vector<int>> &mt)
 {
   int rows = mt.size();
   int cols = rows > 0 ? mt[0].size(): 0;
+
   for (int i=0; i<rows; i++) {
     for (int j=0; j<cols; j++) {
       fprintf(stdout, "%d  ", mt[i][j]);
@@ -104,6 +106,7 @@ void print_matrix_float(std::vector<std::vector<float>> &mt)
 {
   int rows = mt.size();
   int cols = rows > 0 ? mt[0].size(): 0;
+
   for (int i=0; i<rows; i++) {
     for (int j=0; j<cols; j++) {
       fprintf(stdout, "%f  ", mt[i][j]);

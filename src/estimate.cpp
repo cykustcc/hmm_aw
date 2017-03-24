@@ -41,6 +41,7 @@ void forward(std::vector<float> &u,
       if (buf[l]>maxv) maxv=buf[l];
 
 
+
     for (int m=0, mm=jj*numst; m<numst; m++,mm++) {
       v3=gauss_pdf_log(u, md.stpdf[m], jj*dim);
       v1=0.0;
@@ -938,6 +939,7 @@ int baumwelch(std::vector<std::vector<float>> &u,
   oldlhsum=HUGE;
 
   while (ite<minite || twomdflag==0 || ratio>epsilon) {
+    fprintf(stderr, "Inside While iter=%d\n", ite);
     /* Initialization */
     for (int i=0; i<numst; i++) {
       lsum[i]=0.0;
@@ -985,7 +987,7 @@ int baumwelch(std::vector<std::vector<float>> &u,
           asum[j][l]+=wt[t]*a[j][l];
 
     } // for (t=0; ...)
-
+    fprintf(stderr, "After Initialization\n");
     /* Normalization */
     for (int i=0; i<numst; i++) {
       for (int j=0; j<dim; j++)
@@ -1131,5 +1133,6 @@ void hmmfit(HmmModel& md,
   } else {
     baumwelch(u, nseq, len, md, loglikehd, lhsumpt, epsilon, wt, forcediag);
   }
+  return md;
 }
 

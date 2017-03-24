@@ -41,6 +41,7 @@ void same_hmm(HmmModel& md1, HmmModel& md2, double tol){
   }
 }
 
+
 class HMMFitTest: public ::testing::Test{
 protected:
   HmmModel est_hmm_diag, est_hmm_notdiag;
@@ -84,3 +85,4 @@ TEST_F(HMMFitTest, ForceSigmaBeDiagnal){
   same_hmm(gt_hmm, est_hmm_diag, 0.4);
   est_hmm_diag.print_model("");
 }
+
