@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "mex.h"
 #include <string.h>
+#include <vector>
 
 #define MEX_ARGS int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs
 
@@ -43,14 +44,26 @@ void mexPrint_mat_double(double* X, int dim, int n){
     }
 }
 
-unsigned char mexPrint_model(HmmModel *md)
+template<typename DType>
+void mex_print_vector(std::vector<DType>& vt, int m, int n){
+  int size = vt.size();
+  assert(m*n <= size);
+  for (int i=0; i<m; i++) {
+    for (int j=0; j<n; i++) {
+      mexPrintf("%f,\t", vt[i*n + j]);
+    }
+    mexPrintf(";\n");
+  }
+}
+
+unsigned char mexPrint_model(HmmModel &md)
 {
   int i,j,k,m,n;
   int dim,numst,numcls;
 
-  dim=md->dim;
-  numst=md->numst;
-  numcls=md->numcls;
+  dim=md.dim;
+  numst=md.numst;
+  numcls=md.numcls;
   
   mexPrintf("dim=%d\n", dim);
   mexPrintf("numst=%d\n", numst);
@@ -58,47 +71,47 @@ unsigned char mexPrint_model(HmmModel *md)
 
   mexPrintf("\nState class membership:\n");
   for (i=0; i<numst; i++)
-    mexPrintf("%d ", md->stcls[i]);
+    mexPrintf("%d ", md.stcls[i]);
   mexPrintf("\n");
 
   mexPrintf("\nTransition probability a00:\n");
   for (i=0; i<numst; i++)
-    mexPrintf("%8e ", md->a00[i]);
+    mexPrintf("%8e ", md.a00[i]);
   mexPrintf("\n");
 
   mexPrintf("Transition probability a:\n");
   for (i=0; i<numst; i++) {
     for (j=0; j<numst; j++)
-      mexPrintf("%8e ", md->a[i][j]);
+      mexPrintf("%8e ", md.a[i][j]);
     mexPrintf("\n");
   }
 
   mexPrintf("\nThe Gaussian distributions of states:\n");
   for (i=0; i<numst; i++) {
     mexPrintf("\nState %d =============================\n", i);
-    mexPrintf("exist=%d, dim=%d\n", md->stpdf[i]->exist, 
-      md->stpdf[i]->dim);
+    mexPrintf("exist=%d, dim=%d\n", md.stpdf[i].exist, 
+      md.stpdf[i].dim);
 
     mexPrintf("Mean vector:\n");
     for (j=0; j<dim; j++)
-      mexPrintf("%.5e ", md->stpdf[i]->mean[j]);
+      mexPrintf("%.5e ", md.stpdf[i].mean[j]);
     mexPrintf("\n");
 
-    mexPrintf("Sigma_det=%e\n",md->stpdf[i]->sigma_det);
+    mexPrintf("Sigma_det=%e\n",md.stpdf[i].sigma_det);
 
     mexPrintf("Covariance matrix Sigma:\n");
  
-    for (m=0; m<md->stpdf[i]->dim; m++) {
-      for (n=0; n<md->stpdf[i]->dim; n++)
-      mexPrintf("%.5e ", md->stpdf[i]->sigma[m][n]);
+    for (m=0; m<md.stpdf[i].dim; m++) {
+      for (n=0; n<md.stpdf[i].dim; n++)
+      mexPrintf("%.5e ", md.stpdf[i].sigma[m][n]);
       mexPrintf("\n");
     }
 
     mexPrintf("Covariance matrix inverse Sigma_inv:\n");
  
-    for (m=0; m<md->stpdf[i]->dim; m++) {
-      for (n=0; n<md->stpdf[i]->dim; n++)
-      mexPrintf("%.5e ", md->stpdf[i]->sigma_inv[m][n]);
+    for (m=0; m<md.stpdf[i].dim; m++) {
+      for (n=0; n<md.stpdf[i].dim; n++)
+      mexPrintf("%.5e ", md.stpdf[i].sigma_inv[m][n]);
       mexPrintf("\n");
     }
   }
@@ -134,31 +147,6 @@ void mexFunction(MEX_ARGS)
   /*----------------------------------------------------------------*/
   /*---------------- Read in parameters from command line-----------*/
   /*----------------------------------------------------------------*/
-  // size_t buflen;
-  // int status;
-  // if (!mxIsChar(prhs[0]) || (mxGetM(prhs[0]) != 1 ) )  {
-  //     mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput", 
-  //               "Input infilename must be a string.");
-  // }
-  // /* Get number of characters in the input string.  Allocate enough
-  //  memory to hold the converted string. */
-  // buflen = mxGetN(prhs[0]) + 1;
-  // infilename = mxMalloc(buflen);
-  // /* Copy the string data into buf. */ 
-  // status = mxGetString(prhs[0], infilename, (mwSize)buflen);   
-  // mexPrintf("The input string is:  %s\n", infilename);
-
-  // if (!mxIsChar(prhs[1]) || (mxGetM(prhs[1]) != 1 ) )  {
-  //     mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput", 
-  //               "Input mdfilename must be a string.");
-  // }
-  // /* Get number of characters in the input string.  Allocate enough
-  //  memory to hold the converted string. */
-  // buflen = mxGetN(prhs[1]) + 1;
-  // mdfilename = mxMalloc(buflen);
-  // /* Copy the string data into buf. */ 
-  // status = mxGetString(prhs[1], mdfilename, (mwSize)buflen);   
-  // mexPrintf("The input string is:  %s\n", mdfilename);
 
   dim = mxGetScalar(prhs[1]);
   nseq = mxGetScalar(prhs[2]);
@@ -200,118 +188,94 @@ void mexFunction(MEX_ARGS)
   int dimension=dim;
   int seq_len=onelen;
   if(verbose){
-  mexPrintf("dimension=%d, n=%d\n",dimension,seq_len);
-  mexPrintf("data:\n");
-  mexPrint_mat_float(dat,dim,numdat);
+    mexPrintf("dimension=%d, n=%d\n",dimension,seq_len);
+    mexPrintf("data:\n");
+    for (i=0;i<nseq;i++) {
+      mex_print_vector(u[i],dim,len[i]);
+    }
   }
-
-  /*----------------------------------------------------------------*/
-  /*----------------- Estimate HMM  ---------------------------------*/
-  /*----------------------------------------------------------------*/
-
-  //fprintf(stderr, "numdat=%d, nseq=%d\n",numdat,nseq);
-
-  // loglikehd=(double *)calloc(nseq,sizeof(double));
-  
-
-  // hmmfit(u, nseq, len, dim, md, numst, NULL, loglikehd, &lhsum,
-	 // (double)epsilon, wt);
-
 
   /*-----------------------------------------------------------------*/
   /*----------------- Read in HMM   ---------------------------------*/
   /*-----------------------------------------------------------------*/
-  md=(HmmModel *)calloc(1,sizeof(HmmModel));
-  md->dim=dimension;
-  md->numst=numst;
-  md->numcls=numst;
+  HmmModel md(dimension, numst, numst, );
+  md.dim=dimension;
+  md.numst=numst;
+  md.numcls=numst;
 
   // prhs[6] = mxCreateDoubleMatrix(1, numst, mxREAL);
   double *pa00;
   pa00 = mxGetPr(prhs[6]);
-  md->a00=(double *)calloc(numst,sizeof(double));
-  for (i=0; i<md->numst; i++)
-    md->a00[i] = *(pa00+i);
+  for (i=0; i<md.numst; i++)
+    md.a00[i] = *(pa00+i);
   if(verbose){
     mexPrintf("a00:\n");
-    mexPrint_mat_double(md->a00,numst,1);
+    // mexPrint_mat_double(md.a00,numst,1);
+    mex_print_vector(md.a00,1,numst);
   }
   // prhs[1] = mxCreateDoubleMatrix(numst, numst, mxREAL);
   double *pa;
   pa = mxGetPr(prhs[7]);
-  md->a=(double **)calloc(numst,sizeof(double *));
-  for(i=0; i<md->numst; i++){
-    md->a[i]=(double *)calloc(numst,sizeof(double));
-    for(j=0; j<md->numst; j++){
-      md->a[i][j]=*(pa+i*md->numst+j);
+  for(i=0; i<md.numst; i++){
+    for(j=0; j<md.numst; j++){
+      md.a[i][j]=*(pa+i*md.numst+j);
     }
   }
   if(verbose){
     mexPrintf("a:\n");
-    for(i=0; i<md->numst; i++){
-      mexPrint_mat_double(md->a[i],numst,1);
+    for(i=0; i<md.numst; i++){
+      mexPrint_mat_double(md.a[i],numst,1);
+      mex_print_vector(md.a[i],1,numst);
     }
   }
   // const int NUMBER_OF_FIELDS=2;
 
   /*----------- Assign State class membership ---------------------*/
-  md->stcls=(int *)calloc(numst,sizeof(int));
   for (i=0; i<numst; i++)
-    md->stcls[i]=i;
-
-  md->stpdf=(GaussModel **)calloc(numst, sizeof(GaussModel *));
-  for (i=0; i<numst; i++)
-    md->stpdf[i]=(GaussModel *)calloc(1, sizeof(GaussModel));
+    md.stcls[i]=i;
 
   mwSize sizebuf;
   for (i=0; i<numst; i++) {
-      md->stpdf[i]->exist=1;
-      md->stpdf[i]->dim=dimension;
+      md.stpdf[i].exist=1;
+      md.stpdf[i].dim=dimension;
       /*----------- read mean vector ---------------------*/
-      md->stpdf[i]->mean=(double *)calloc(md->stpdf[i]->dim,sizeof(double));
       double * mean_ptr = mxGetPr(prhs[8]);
-      for (j=0; j<md->stpdf[i]->dim; j++){
-          md->stpdf[i]->mean[j]=*(mean_ptr+j+i*dimension);
+      for (j=0; j<md.stpdf[i].dim; j++){
+          md.stpdf[i].mean[j]=*(mean_ptr+j+i*dimension);
       }
       if(verbose){
         mexPrintf("i=%d \t ",i);
         for (j=0; j<dimension; j++){
-          mexPrintf("%f (%f)\t",md->stpdf[i]->mean[j],*(mean_ptr+j+i*dimension));
+          mexPrintf("%f (%f)\t",md.stpdf[i].mean[j],*(mean_ptr+j+i*dimension));
         }
         mexPrintf("\n");
       }
       /*----------- read sigma       ---------------------*/
-      md->stpdf[i]->sigma_det=1;
-      md->stpdf[i]->sigma=(double **)calloc(md->stpdf[i]->dim,sizeof(double *));
+      md.stpdf[i].sigma_det=1;
       double *sigma_ptr = mxGetPr(prhs[9]);
-      for (m=0; m<md->stpdf[i]->dim; m++) {
-        md->stpdf[i]->sigma[m]=(double *)calloc(md->stpdf[i]->dim, 
-            sizeof(double));
-        for (n=0; n<md->stpdf[i]->dim; n++){
-          md->stpdf[i]->sigma[m][n] = *(sigma_ptr+i*(md->stpdf[i]->dim*md->stpdf[i]->dim)+m*md->stpdf[i]->dim+n);
+      for (m=0; m<md.stpdf[i].dim; m++) {
+        for (n=0; n<md.stpdf[i].dim; n++){
+          md.stpdf[i].sigma[m][n] = *(sigma_ptr+i*(md.stpdf[i].dim*md.stpdf[i].dim)+m*md.stpdf[i].dim+n);
           }
       }
       if(verbose){
         mexPrintf("i=%d \t ",i);
-        for(m=0; m<md->stpdf[i]->dim;m++){
-          mexPrint_mat_double(md->stpdf[i]->sigma[m],md->stpdf[i]->dim,1);
+        for(m=0; m<md.stpdf[i].dim;m++){
+          mexPrint_mat_double(md.stpdf[i].sigma[m],md.stpdf[i].dim,1);
         }
         mexPrintf("\n");
       }
       /*----------- read sigma_inv       ---------------------*/
-      md->stpdf[i]->sigma_inv=(double **)calloc(md->stpdf[i]->dim,sizeof(double *));
       double *sigma_inv_ptr = mxGetPr(prhs[10]);
-      for (m=0; m<md->stpdf[i]->dim; m++) {
-        md->stpdf[i]->sigma_inv[m]=(double *)calloc(md->stpdf[i]->dim, 
-            sizeof(double));
-        for (n=0; n<md->stpdf[i]->dim; n++){
-          md->stpdf[i]->sigma_inv[m][n] = *(sigma_inv_ptr+i*(md->stpdf[i]->dim*md->stpdf[i]->dim)+m*md->stpdf[i]->dim+n);
+      for (m=0; m<md.stpdf[i].dim; m++) {
+        for (n=0; n<md.stpdf[i]->dim; n++){
+          md.stpdf[i].sigma_inv[m][n] = *(sigma_inv_ptr+i*(md.stpdf[i].dim*md.stpdf[i].dim)+m*md.stpdf[i]->dim+n);
           }
       }
       if(verbose){
         mexPrintf("\n i=%d \t ",i);
-        for(m=0; m<md->stpdf[i]->dim;m++){
-          mexPrint_mat_double(md->stpdf[i]->sigma_inv[m],md->stpdf[i]->dim,1);
+        for(m=0; m<md.stpdf[i].dim;m++){
+          mexPrint_mat_double(md.stpdf[i].sigma_inv[m],md.stpdf[i].dim,1);
         }
         mexPrintf("\n");
       }
@@ -325,7 +289,7 @@ void mexFunction(MEX_ARGS)
   /*----------------------------------------------------------------*/
   // double loglikelihood,oneseq_likelihood;
   // double *thetalog;
-  // thetalog=(double *)calloc(seq_len*md->numst, sizeof(double));
+  // thetalog=(double *)calloc(seq_len*md.numst, sizeof(double));
   // for (i=0, loglikelihood=0.0; i<nseq; i++) {
   //     forward(u[i], len[i], thetalog,  md, &oneseq_likelihood);
   //     mexPrintf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
@@ -333,12 +297,11 @@ void mexFunction(MEX_ARGS)
   // }
 
   double loglikelihood,oneseq_likelihood;
-  double *thetalog;
-  thetalog=(double *)calloc(seq_len*md->numst, sizeof(double));
+  std::vector<double> thetalog(seq_len*md.numst, 0.0);
   for (i=0, loglikelihood=0.0; i<nseq; i++) {
-      forward(u[i], len[i], thetalog,  md, &oneseq_likelihood);
+      md.forward(u[i], len[i], thetalog, oneseq_likelihood);
       // printf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
-      loglikelihood+=oneseq_likelihood;
+      loglikelihood += oneseq_likelihood;
   }
   plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
   double *b;
@@ -347,6 +310,4 @@ void mexFunction(MEX_ARGS)
 
   free(dat);
   free(thetalog);
-  freehmm(&md);
-
 }

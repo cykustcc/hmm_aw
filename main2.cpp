@@ -116,8 +116,8 @@ int main(int argc, char *argv[])
     dimension=size[0];
     seq_len=size[1];
     printf("dimension=%d, n=%d\n",dimension,seq_len);
+    print_vector(dat, dim, numdat);
     fread(dat,sizeof(float),numdat*dim, infile);
-    print_mat_float(dat,dim,numdat);
     /*for (m=0;m<numdat;m++) {*/
     /*if (feof(nfile)) {*/
     /*fprintf(stderr, "Error: not enough data in input file\n");*/

@@ -4,7 +4,7 @@ PROJECT=hmmaw
 CC=gcc
 CXX=g++
 LDFLAGS=
-CFLAGS=
+CFLAGS=-std=c++11
 
 UNAME=$(shell uname -s)
 ifeq ($(UNAME), Linux)
@@ -58,7 +58,8 @@ GTEST_SRC := src/gtest/gtest-all.cpp
 
 .PHONY: clean all test
 
-all: $(PROJECT)_train mex/hmm_fit.mex mex/hmm_likelihood.mex
+all: $(PROJECT)_train mex/hmm_fit.mex 
+	#mex/hmm_likelihood.mex
 
 build/%.o: src/%.cpp
 	@mkdir -p $(@D)

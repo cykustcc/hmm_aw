@@ -2,11 +2,18 @@
 #define __hmm_aw_matrix_h
 #include <vector>
 #include <iostream>
+#include <cassert>
 /*-------------------------- mat_simple.c --------------------------*/
 
 /*-------------------------------------------------------------------*/
 /*------------------------ Print out Vector -------------------------*/
 /*-------------------------------------------------------------------*/
+
+template<typename DType>
+void print_vector(std::vector<DType>& vt);
+template<typename DType>
+void print_vector(std::vector<DType>& vt, int m, int n);
+
 template<typename DType>
 void print_vector(std::vector<DType>& vt){
   int size = vt.size();
@@ -15,6 +22,20 @@ void print_vector(std::vector<DType>& vt){
   }
   std::cout<<std::endl;
 }
+
+template<typename DType>
+void print_vector(std::vector<DType>& vt, int m, int n){
+  int size = vt.size();
+  assert(m*n <= size);
+  for (int i=0; i<m; i++) {
+    for (int j=0; j<n; i++) {
+      std::cout<<vt[i*n + j]<<" ";
+    }
+    std::cout<<std::endl;
+  }
+}
+
+
 /*-------------------------------------------------------------------*/
 /*------------------------ Print out Matrix -------------------------*/
 /*-------------------------------------------------------------------*/
@@ -28,6 +49,18 @@ extern void print_matrix(std::vector<std::vector<DType>> &mt){
       std::cout<<mt[i][j]<<" ";
     }
     std::cout<<std::endl;
+  }
+}
+
+template<typename DType>
+void print_matrix(DType* X, int dim, int n){
+  for (int i = 0; i < n; i++)
+  {
+    for (int j = 0; j < dim; j++)
+    {
+      printf("%lf,\t", X[j+i*dim]);
+    }
+    printf(";\n");
   }
 }
 

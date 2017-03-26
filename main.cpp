@@ -36,8 +36,6 @@ int main(int argc, char *argv[])
                             "  statenum        number of states in HMM\n"
                             "  l               sequence length");
   gflags::ParseCommandLineFlags(&argc, &argv, true);
-//  char infilename[100];
-//  char mdfilename[100];
   FILE *infile, *mdfile;
   int i,j,k,m,n;
   int dim=2;
@@ -115,7 +113,7 @@ int main(int argc, char *argv[])
   printf("dimension=%d, n=%d\n",dimension,seq_len);
   for (i=0,m=0;i<nseq;i++) {
     input.read(reinterpret_cast<char*>(&u[i][0]), u[i].size());
-    print_mat_float(u[i],dim,u[i].size());
+    print_vector(u[i], len[i], dim);
   }
 //  fread(dat,sizeof(float),numdat*dim, infile);
   

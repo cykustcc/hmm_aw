@@ -42,5 +42,5 @@ TEST(MatchByDistmatTest, MatchByDistmat){
       EXPECT_NEAR(match[i*m+j], gt_match[i][j], 0.0001);
     }
   }
-  print_mat_double(match, n, m);
+  print_matrix(match, n, m);
 }
