@@ -21,7 +21,7 @@ void HmmModel::forward(std::vector<float> &u,
   /* treat the first postion */
   for (int l=0; l<numst; l++) {
     if (a00[l]>0.0)
-      thetalog[l]=log(a00[l])+gauss_pdf_log(u, stpdf[l], 0);
+      thetalog[l]=log(a00[l])+stpdf[l].gauss_pdf_log(u, 0);
     else
       thetalog[l]=-HUGE;
   }
@@ -38,7 +38,7 @@ void HmmModel::forward(std::vector<float> &u,
 
 
     for (int m=0, mm=jj*numst; m<numst; m++,mm++) {
-      v3=gauss_pdf_log(u, stpdf[m], jj*dim);
+      v3=stpdf[m].gauss_pdf_log(u, jj*dim);
       v1=0.0;
       for (int l=0;l<numst;l++) {
         v1+=exp(buf[l]-maxv)*a[l][m];
@@ -92,7 +92,7 @@ void HmmModel::backward(std::vector<float> &u,
   for (int jj=ncols-2; jj>=0; jj--) {
     for (int l=0; l<numst; l++) {
       buf[l]=betalog[(jj+1)*numst+l]+
-        gauss_pdf_log(u,stpdf[l],(jj+1)*dim);
+        stpdf[l].gauss_pdf_log(u,(jj+1)*dim);
     }
 
     maxv=buf[0];
@@ -182,7 +182,7 @@ void HmmModel::CompHml(std::vector<float> &u,
 
     for (int l=0;l<numst;l++) {
       Hml[baseidx + l]=-loglikehd+thetalog[(j-1)*numst+west]+betalog[j*numst+l]+
-        gauss_pdf_log(u,stpdf[l], j*dim);
+        stpdf[l].gauss_pdf_log(u, j*dim);
       Hml[baseidx + l]=exp(Hml[baseidx + l])*a[west][l];
     }
   }
@@ -209,7 +209,7 @@ void HmmModel::viterbi(std::vector<float> &u,
   if (inita.size()==0){
     for (int l=0; l<numst; l++) {
       if (a00[l]>0.0) {
-        merit[l]=log(a00[l])+gauss_pdf_log(u, stpdf[l], 0);
+        merit[l]=log(a00[l])+stpdf[l].gauss_pdf_log(u, 0);
       }
       else {
         merit[l]=-HUGE;
@@ -218,7 +218,7 @@ void HmmModel::viterbi(std::vector<float> &u,
   }else{
     for (int l=0; l<numst; l++) {
       if (inita[l]>0.0) {
-        merit[l]=log(inita[l])+gauss_pdf_log(u, stpdf[l], 0);
+        merit[l]=log(inita[l])+stpdf[l].gauss_pdf_log(u, 0);
       }
       else {
         merit[l]=-HUGE;
@@ -230,7 +230,7 @@ void HmmModel::viterbi(std::vector<float> &u,
   for (int j=1; j<len; j++) {
 
     for (int l=0; l<numst; l++) {
-      v1=gauss_pdf_log(u, stpdf[l], j*dim);
+      v1=stpdf[l].gauss_pdf_log(u, j*dim);
       v2=(a[0][l]>0.0)?(merit[(j-1)*numst]+log(a[0][l])):(-HUGE);
       prest[j*numst+l]=0;
       for (int m=1; m<numst; m++) {

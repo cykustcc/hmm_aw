@@ -69,7 +69,21 @@ public:
     return *this;
   }
   ~GaussModel() = default;
+  /*-------------------------------------*/
+  /*-------------- prob.c ---------------*/
+  /*-------------------------------------*/
+  
+  double gauss_pdf_log(std::vector<float> &ft,
+                       int baseidx);
+  
+  double gauss_pdf(std::vector<float> &ft,
+                   int baseidx);
 };
+extern double mix_gauss_pdf_log(std::vector<float> &ft,
+                                std::vector<GaussModel> &gmlist,
+                                std::vector<double> &prior,
+                                int ncmp,
+                                int baseidx);
 
 class HmmModel{
 public:
@@ -163,6 +177,7 @@ public:
   void write_model(std::string filename);
   void print_model(std::string filename);
   /*--------- model estimation ----------*/
+  /*--------- estimate.c ----------------*/
   void forward(std::vector<float> &u,
                int ncols,
                std::vector<double> &thetalog,
@@ -252,40 +267,10 @@ public:
 };
 
 
-/*---------- functions ---------------*/
-/*--------- estimate.c ---------------*/
-/*------------------------------------*/
 
 
 
 
-/*-------------------------------------*/
-/*-------------- prob.c ---------------*/
-/*-------------------------------------*/
-
-extern double gauss_pdf_log(std::vector<float> &ft,
-                            GaussModel &gm,
-                            int baseidx);
-
-extern double gauss_pdf(std::vector<float> &ft,
-                        GaussModel &gm,
-                        int baseidx);
-
-extern double mix_gauss_pdf_log(std::vector<float> &ft,
-                                std::vector<GaussModel> &gmlist,
-                                std::vector<double> &prior,
-                                int ncmp,
-                                int baseidx);
-
-/*-------------------------------------*/
-/*------------- modelio.c -------------*/
-/*-------------------------------------*/
-
-//extern unsigned char write_model(  HmmModel &md, FILE *outfile);
-//extern unsigned char read_model(  HmmModel &md, FILE *infile);
-//extern unsigned char print_model(  HmmModel &md, FILE *outfile);
-//int hmm_read(  HmmModel &md, const char* filename);
-//int hmm_write(  HmmModel &md, const char* filename);
 
 #endif
 
