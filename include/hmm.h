@@ -68,11 +68,7 @@ public:
     }
     return *this;
   }
-  ~GaussModel(){
-//    mean.clear();
-//    sigma.clear();
-//    sigma_inv.clear();
-  }
+  ~GaussModel() = default;
 };
 
 class HmmModel{
@@ -139,12 +135,7 @@ public:
     }
     return *this;
   }
-  ~HmmModel(){
-//    stcls.clear();
-//    stpdf.clear();
-//    a.clear();
-//    a00.clear();
-  }
+  ~HmmModel() = default;
   void resize(int _dim, int _numst, int _numcls, std::vector<int> _stcls){
     dim = _dim;
     numst = _numst;
