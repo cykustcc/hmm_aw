@@ -64,8 +64,8 @@ protected:
     std::vector<int> lens; lens.push_back(len);
     est_hmm_notdiag.resize(dim, numst, numcls, stcls);
     est_hmm_diag.resize(dim, numst, numcls, stcls);
-    hmmfit(est_hmm_notdiag, u, 1, lens, loglikehd, lhsum, EPSILON, tmpwt, false);
-    hmmfit(est_hmm_diag, u, 1, lens, loglikehd, lhsum, EPSILON, tmpwt, true);
+    est_hmm_notdiag.hmmfit(u, 1, lens, loglikehd, lhsum, EPSILON, tmpwt, false);
+    est_hmm_diag.hmmfit(u, 1, lens, loglikehd, lhsum, EPSILON, tmpwt, true);
     
     std::string filenamein = root_path + "/data/test/hmm_forhmmfittest.in";
     gt_hmm.read_model(filenamein);

@@ -3,11 +3,10 @@
 #include "hmm.h"
 #include <iostream>
 
-void forward(std::vector<float> &u,
-             int ncols,
-             std::vector<double> &thetalog,
-             HmmModel &md,
-             double &loglikehd)
+void HmmModel::forward(std::vector<float> &u,
+                       int ncols,
+                       std::vector<double> &thetalog,
+                       double &loglikehd)
 // ncols is the length of the sequence
 // u[sequence length*dim] stores the sequence of vectors as one array
 // thetalog is the log of the forward probabilities
@@ -15,18 +14,14 @@ void forward(std::vector<float> &u,
 // *loglikehd is the log likelihood for the entire sequence
 {
   int precls, curcls;
-  int numst,dim;
   double v1,v2,v3,maxv;
-
-  numst=md.numst;
-  dim=md.dim;
 
   std::vector<double> buf(numst,0.0);
 
   /* treat the first postion */
   for (int l=0; l<numst; l++) {
-    if (md.a00[l]>0.0)
-      thetalog[l]=log(md.a00[l])+gauss_pdf_log(u, md.stpdf[l], 0);
+    if (a00[l]>0.0)
+      thetalog[l]=log(a00[l])+gauss_pdf_log(u, stpdf[l], 0);
     else
       thetalog[l]=-HUGE;
   }
@@ -43,10 +38,10 @@ void forward(std::vector<float> &u,
 
 
     for (int m=0, mm=jj*numst; m<numst; m++,mm++) {
-      v3=gauss_pdf_log(u, md.stpdf[m], jj*dim);
+      v3=gauss_pdf_log(u, stpdf[m], jj*dim);
       v1=0.0;
       for (int l=0;l<numst;l++) {
-        v1+=exp(buf[l]-maxv)*md.a[l][m];
+        v1+=exp(buf[l]-maxv)*a[l][m];
       }
       if (v1>0.0)
         thetalog[mm]=maxv+log(v1)+v3;
@@ -75,21 +70,16 @@ void forward(std::vector<float> &u,
 }
 
 
-void backward(std::vector<float> &u,
-              int ncols,
-              std::vector<double> &betalog,
-              HmmModel &md)
+void HmmModel::backward(std::vector<float> &u,
+                        int ncols,
+                        std::vector<double> &betalog)
 // ncols is the length of the sequence
 // u[sequence length*dim] stores the sequence of vectors as one array
 // betalog is the log of the forward probabilities
 // md is the input HMM
 {
   int nextcls, curcls;
-  int numst,dim;
   double v1 = 0.0,v3  = 0.0,maxv;
-
-  numst=md.numst;
-  dim=md.dim;
 
   std::vector<double> buf(numst,0.0);
 
@@ -102,7 +92,7 @@ void backward(std::vector<float> &u,
   for (int jj=ncols-2; jj>=0; jj--) {
     for (int l=0; l<numst; l++) {
       buf[l]=betalog[(jj+1)*numst+l]+
-        gauss_pdf_log(u,md.stpdf[l],(jj+1)*dim);
+        gauss_pdf_log(u,stpdf[l],(jj+1)*dim);
     }
 
     maxv=buf[0];
@@ -113,7 +103,7 @@ void backward(std::vector<float> &u,
     for (int m=0, mm=jj*numst; m<numst; m++,mm++) {
       v1 = 0.0;
       for (int l=0;l<numst;l++) {
-        v1+=exp(buf[l]-maxv)*md.a[m][l];
+        v1+=exp(buf[l]-maxv)*a[m][l];
       }
       if (v1>0.0)
         betalog[mm]=maxv+log(v1);
@@ -125,18 +115,14 @@ void backward(std::vector<float> &u,
 }
 
 
-void CompLm(std::vector<float> &u,
-            int ncols,
-            std::vector<double> &thetalog,
-            std::vector<double> &betalog,
-            std::vector<double> &Lm,
-            HmmModel &md)
+void HmmModel::CompLm(std::vector<float> &u,
+                      int ncols,
+                      std::vector<double> &thetalog,
+                      std::vector<double> &betalog,
+                      std::vector<double> &Lm)
      /* Lm=double[ncols*numst], space allocated */
 {
   double v1,v2;
-  int numst;
-
-  numst=md.numst;
 
   for (int j=0; j<ncols; j++) {
     int baseidx = j*numst;
@@ -159,23 +145,17 @@ void CompLm(std::vector<float> &u,
 }
 
 
-//void CompHml(std::vector<float> &u, int ncols, double *thetalog, double *betalog,
-//	      double *Hml, int west, HmmModel *md)
-void CompHml(std::vector<float> &u,
-             int ncols,
-             std::vector<double> &thetalog,
-             std::vector<double> &betalog,
-             std::vector<double> &Hml,
-             int west,
-             HmmModel &md)
+void HmmModel::CompHml(std::vector<float> &u,
+                       int ncols,
+                       std::vector<double> &thetalog,
+                       std::vector<double> &betalog,
+                       std::vector<double> &Hml,
+                       int west)
      /* Hml=double[ncols*numst], space allocated */
 {
   double v1,v2;
-  int dim,numst;
   double loglikehd;
-
-  dim=md.dim;
-  numst=md.numst;
+  
   /* Hml, m is fixed state of the previous neighbor */
 
   /* compute the log likelihood for the whole sequence */
@@ -202,8 +182,8 @@ void CompHml(std::vector<float> &u,
 
     for (int l=0;l<numst;l++) {
       Hml[baseidx + l]=-loglikehd+thetalog[(j-1)*numst+west]+betalog[j*numst+l]+
-        gauss_pdf_log(u,md.stpdf[l], j*dim);
-      Hml[baseidx + l]=exp(Hml[baseidx + l])*md.a[west][l];
+        gauss_pdf_log(u,stpdf[l], j*dim);
+      Hml[baseidx + l]=exp(Hml[baseidx + l])*a[west][l];
     }
   }
 }
@@ -211,20 +191,16 @@ void CompHml(std::vector<float> &u,
 /*-------------------------------*/
 /* Viterbi for a single sequence */
 /*-------------------------------*/
-void viterbi(HmmModel &md,
-             std::vector<float> &u,
-             int len,
-             std::vector<int> &optst,
-             std::vector<double> &inita,
-             std::vector<double> &lastmerit)
+void HmmModel::viterbi(std::vector<float> &u,
+                       int len,
+                       std::vector<int> &optst,
+                       std::vector<double> &inita,
+                       std::vector<double> &lastmerit)
 // optst stores the optimal sequence of states with maximum posterior
 {
   int m;
-  int numst, dim;
   double v1,v2,v3;
 
-  numst=md.numst;
-  dim=md.dim;
 
   std::vector<int> prest(len*numst,0);
   std::vector<double> merit(len*numst,0.0);
@@ -232,8 +208,8 @@ void viterbi(HmmModel &md,
   /* treat the first location */
   if (inita.size()==0){
     for (int l=0; l<numst; l++) {
-      if (md.a00[l]>0.0) {
-        merit[l]=log(md.a00[l])+gauss_pdf_log(u, md.stpdf[l], 0);
+      if (a00[l]>0.0) {
+        merit[l]=log(a00[l])+gauss_pdf_log(u, stpdf[l], 0);
       }
       else {
         merit[l]=-HUGE;
@@ -242,7 +218,7 @@ void viterbi(HmmModel &md,
   }else{
     for (int l=0; l<numst; l++) {
       if (inita[l]>0.0) {
-        merit[l]=log(inita[l])+gauss_pdf_log(u, md.stpdf[l], 0);
+        merit[l]=log(inita[l])+gauss_pdf_log(u, stpdf[l], 0);
       }
       else {
         merit[l]=-HUGE;
@@ -252,10 +228,9 @@ void viterbi(HmmModel &md,
 
   /* treat the rest locations */
   for (int j=1; j<len; j++) {
-    auto a=md.a.begin();
 
     for (int l=0; l<numst; l++) {
-      v1=gauss_pdf_log(u, md.stpdf[l], j*dim);
+      v1=gauss_pdf_log(u, stpdf[l], j*dim);
       v2=(a[0][l]>0.0)?(merit[(j-1)*numst]+log(a[0][l])):(-HUGE);
       prest[j*numst+l]=0;
       for (int m=1; m<numst; m++) {
@@ -293,24 +268,21 @@ void viterbi(HmmModel &md,
 /* Viterbi for a single sequence, each component is a gaussian mixture */
 /*---------------------------------------------------------------------*/
 
-void formmix(HmmModel &md,
-             std::vector<double> &inita,
-             std::vector<std::vector<double>> &a,
-             std::vector<double> &astart,
-             std::vector<std::vector<GaussModel>> &pdflist,
-             std::vector<std::vector<double>> &prior,
-             std::vector<int> &nstpercls)
+void HmmModel::formmix(std::vector<double> &inita,
+                       std::vector<std::vector<double>> &tm,
+                       std::vector<double> &astart,
+                       std::vector<std::vector<GaussModel>> &pdflist,
+                       std::vector<std::vector<double>> &prior,
+                       std::vector<int> &nstpercls)
 {
-  int k,numst,numcls;
+  int k;
   double v1;
-
-  numst=md.numst;
-  numcls=md.numcls;
+  
   std::vector<int> cls2st(numcls,0);
 
   for (int i=0;i<numcls;i++) {
     for (int j=0;j<numst;j++) {
-      if (md.stcls[j]==i) {
+      if (stcls[j]==i) {
         cls2st[i]=j;
         break;
       }
@@ -319,35 +291,35 @@ void formmix(HmmModel &md,
 
   if (inita.size() == 0) {
     for (int i=0;i<numcls;i++) astart[i]=0.0;
-    for (int j=0;j<numst;j++) astart[md.stcls[j]]+=md.a00[j];
+    for (int j=0;j<numst;j++) astart[stcls[j]]+=a00[j];
   }
   else {
     for (int i=0;i<numcls;i++) astart[i]=0.0;
-    for (int j=0;j<numst;j++) astart[md.stcls[j]]+=inita[j];
+    for (int j=0;j<numst;j++) astart[stcls[j]]+=inita[j];
   }
 
   for (int i=0;i<numcls;i++) {
     for (int j=0;j<numcls;j++) {
-      a[i][j]=0.0;
+      tm[i][j]=0.0;
       for (int k=0;k<numst;k++) {
-        if (md.stcls[k]==j) {
-          a[i][j] += md.a[cls2st[i]][k];
+        if (stcls[k]==j) {
+          tm[i][j] += a[cls2st[i]][k];
         }
       }
     }
   }
 
   for (int i=0;i<numcls;i++) nstpercls[i]=0;
-  for (int j=0;j<numst;j++) nstpercls[md.stcls[j]]++;
+  for (int j=0;j<numst;j++) nstpercls[stcls[j]]++;
 
   for (int i=0;i<numcls;i++) {
     v1=0.0;
     for (int j=0,k=0;j<numst;j++) {
-      if (md.stcls[j]==i) {
-        prior[i][k]=md.a00[j];
+      if (stcls[j]==i) {
+        prior[i][k]=a00[j];
         v1+=prior[i][k];
 
-        pdflist[i][k]=md.stpdf[j];
+        pdflist[i][k]=stpdf[j];
 
         k++;
       }
@@ -362,31 +334,25 @@ void formmix(HmmModel &md,
 }
 
 
-void viterbicls(HmmModel &md,
-                std::vector<float> &u,
-                int len,
-                std::vector<int> &optst,
-                std::vector<double> &inita,
-                std::vector<double> &lastmerit,
-                int &bestnext)
+void HmmModel::viterbicls(std::vector<float> &u,
+                          int len,
+                          std::vector<int> &optst,
+                          std::vector<double> &inita,
+                          std::vector<double> &lastmerit,
+                          int &bestnext)
 {
   int i,j,k,l,m,n;
-  int numst, dim, numcls;
   double v1,v2,v3;
-
-  numst=md.numst;
-  numcls=md.numcls;
-  dim=md.dim;
 
   std::vector<int> prest(len*numcls, 0);
   std::vector<double> merit(len*numcls,0.0);
   std::vector<std::vector<GaussModel>> pdflist(numcls, std::vector<GaussModel>(numcls));
-  std::vector<std::vector<double>> a(numcls, std::vector<double>(numcls, 0.0));
+  std::vector<std::vector<double>> tm(numcls, std::vector<double>(numcls, 0.0));
   std::vector<double> astart(numcls,0.0);
   std::vector<std::vector<double>> prior(numcls, std::vector<double>(numcls, 0.0));
   std::vector<int> nstpercls(numcls,0);
 
-  formmix(md, inita, a, astart, pdflist, prior, nstpercls);
+  formmix(inita, tm, astart, pdflist, prior, nstpercls);
 
   /* treat the first location */
   for (l=0; l<numcls; l++) {
@@ -406,7 +372,7 @@ void viterbicls(HmmModel &md,
       v2=(a[0][l]>0.0)?(merit[(j-1)*numcls]+log(a[0][l])):(-HUGE);
       prest[j*numcls+l]=0;
       for (m=1; m<numcls; m++) {
-        v3=(a[m][l]>0.0)?(merit[(j-1)*numcls+m]+log(a[m][l])):(-HUGE);
+        v3=(a[m][l]>0.0)?(merit[(j-1)*numcls+m]+log(tm[m][l])):(-HUGE);
         if (v2<v3) {
           v2=v3;
           prest[j*numcls+l]=m;
@@ -436,9 +402,9 @@ void viterbicls(HmmModel &md,
     k=-1;
     v1=0.0;
     for (l=0;l<numcls;l++) {
-      v2=(a[0][l]>0.0)?(lastmerit[0]+log(a[0][l])):(-HUGE);
+      v2=(tm[0][l]>0.0)?(lastmerit[0]+log(tm[0][l])):(-HUGE);
       for (m=1; m<numcls; m++) {
-        v3=(a[m][l]>0.0)?(lastmerit[m]+log(a[m][l])):(-HUGE);
+        v3=(tm[m][l]>0.0)?(lastmerit[m]+log(tm[m][l])):(-HUGE);
         if (v2<v3) {
           v2=v3;
         }
@@ -465,37 +431,31 @@ void viterbicls(HmmModel &md,
 /* Viterbi for multiple sequences */
 /*--------------------------------*/
 
-void viterbi_mulseq(HmmModel &md,
-                    std::vector<std::vector<float>> &u,
-                    int nseq,
-                    std::vector<int> &len,
-                    std::vector<std::vector<int>> &st)
+void HmmModel::viterbi_mulseq(std::vector<std::vector<float>> &u,
+                              int nseq,
+                              std::vector<int> &len,
+                              std::vector<std::vector<int>> &st)
      /* st=int[nseq][len[?]], space allocated */
 {
   /* treat the rest rows */
   for (int i=0; i<nseq; i++) {
     std::vector<double> inita;
     std::vector<double> lastmerit;
-    viterbi(md, u[i], len[i], st[i], inita, lastmerit);
+    viterbi(u[i], len[i], st[i], inita, lastmerit);
   }
 }
 
 
-void updatepar_adder(std::vector<float> &u,
-                     int ncols,
-                     std::vector<double> &thetalog,
-                     std::vector<double> &betalog,
-                     double loglikehd, HmmModel &md,
-                     std::vector<double> &musum,
-                     std::vector<std::vector<double>> &mom2sum,
-                     std::vector<std::vector<double>> &asum,
-                     std::vector<double> &lsum)
+void HmmModel::updatepar_adder(std::vector<float> &u,
+                               int ncols,
+                               std::vector<double> &thetalog,
+                               std::vector<double> &betalog,
+                               double loglikehd,
+                               std::vector<double> &musum,
+                               std::vector<std::vector<double>> &mom2sum,
+                               std::vector<std::vector<double>> &asum,
+                               std::vector<double> &lsum)
 {
-  int dim,numst;
-
-  dim=md.dim;
-  numst=md.numst;
-
   /** allocate space **/
   std::vector<double> Hml(ncols*numst, 0.0);
   std::vector<double> Lm(ncols*numst, 0.0);
@@ -513,7 +473,7 @@ void updatepar_adder(std::vector<float> &u,
     for (int k=0; k<numst; k++)
       asum[j][k]=0.0;
   
-  CompLm(u, ncols, thetalog, betalog, Lm, md);
+  CompLm(u, ncols, thetalog, betalog, Lm);
 
   for (int i=0; i<ncols; i++) {
     for (int m=0; m<numst; m++) {
@@ -530,7 +490,7 @@ void updatepar_adder(std::vector<float> &u,
   }
 
   for (int jj=0; jj<numst; jj++) {
-    CompHml(u, ncols, thetalog, betalog, Hml, jj, md);
+    CompHml(u, ncols, thetalog, betalog, Hml, jj);
     for (int i=0; i<ncols; i++) {
       for (int m=0; m<numst; m++)
         asum[jj][m] += Hml[i*numst+m];
@@ -543,19 +503,17 @@ void updatepar_adder(std::vector<float> &u,
 /** initialization using kmeans **/
 /*-------------------------------*/
 
-void initialize(std::vector<std::vector<float>> &u,
-                int nseq,
-                std::vector<int> &len,
-                int dim,
-                HmmModel &md,
-                int ranflag)
+void HmmModel::initialize(std::vector<std::vector<float>> &u,
+                          int nseq,
+                          std::vector<int> &len,
+                          int dim,
+                          int ranflag)
 {
   int i,j,k,l,m,n,ii,jj, mm,nn, k1, k2;
-  int numst, numdata;
+  int numdata;
   double tpdb, epsilon=1.0e-2, lambda=0.5;
 
   /** use kmeans to decide the initial states **/
-  numst=md.numst;
   for (i=0,numdata=0;i<nseq;i++) numdata+=len[i];
 
   std::vector<float> buf(numdata*dim, 0.0);
@@ -585,22 +543,22 @@ void initialize(std::vector<std::vector<float>> &u,
   /* compute gaussian mean */
   for (m=0; m<numst; m++) {
     for (jj=0; jj<dim; jj++)
-      md.stpdf[m].mean[jj]=0.0;
+      stpdf[m].mean[jj]=0.0;
     for (i=0,n=0; i<numdata; i++) {
       if (code[i]==m) {
         n++;
         for (jj=0; jj<dim; jj++)
-          md.stpdf[m].mean[jj]+=buf[i*dim+jj];
+          stpdf[m].mean[jj]+=buf[i*dim+jj];
       }
     }
 
     if (n==0) { //don't divide for empty cell
       for (jj=0; jj<dim; jj++)
-        md.stpdf[m].mean[jj] = 0.0;
+        stpdf[m].mean[jj] = 0.0;
     }
     else {
       for (jj=0; jj<dim; jj++)
-        md.stpdf[m].mean[jj] /= (double)n;
+        stpdf[m].mean[jj] /= (double)n;
     }
   }
 
@@ -612,8 +570,8 @@ void initialize(std::vector<std::vector<float>> &u,
   for (i=0; i<numdata; i++) {
     for (k1=0; k1<dim; k1++)
       for (k2=k1; k2<dim; k2++)
-        sigcom[k1][k2]+=(buf[i*dim+k1]-md.stpdf[code[i]].mean[k1])*
-        (buf[i*dim+k2]-md.stpdf[code[i]].mean[k2]);
+        sigcom[k1][k2]+=(buf[i*dim+k1]-stpdf[code[i]].mean[k1])*
+        (buf[i*dim+k2]-stpdf[code[i]].mean[k2]);
   }
 
   for (k1=0; k1<dim; k1++)
@@ -633,80 +591,80 @@ void initialize(std::vector<std::vector<float>> &u,
     if (n==0) { //don't divide for empty cell
       for (k1=0; k1<dim; k1++)
         for (k2=0; k2<dim; k2++)
-          md.stpdf[m].sigma[k1][k2]=sigcom[k1][k2];  // use common covariance
+          stpdf[m].sigma[k1][k2]=sigcom[k1][k2];  // use common covariance
     }
     else {
       for (k1=0; k1<dim; k1++)
         for (k2=0; k2<dim; k2++)
-          md.stpdf[m].sigma[k1][k2]=0.0;
+          stpdf[m].sigma[k1][k2]=0.0;
       for (i=0; i<numdata; i++) {
         if (code[i]==m) {
           for (k1=0; k1<dim; k1++)
             for (k2=k1; k2<dim; k2++)
-              md.stpdf[m].sigma[k1][k2]+=
-              (buf[i*dim+k1]-md.stpdf[m].mean[k1])*
-              (buf[i*dim+k2]-md.stpdf[m].mean[k2]);
+              stpdf[m].sigma[k1][k2]+=
+              (buf[i*dim+k1]-stpdf[m].mean[k1])*
+              (buf[i*dim+k2]-stpdf[m].mean[k2]);
         }
       }
       for (k1=0; k1<dim; k1++)
         for (k2=k1; k2<dim; k2++) {
-          md.stpdf[m].sigma[k1][k2]/=(double)n;
+          stpdf[m].sigma[k1][k2]/=(double)n;
           if (k2!=k1)
-            md.stpdf[m].sigma[k2][k1]=md.stpdf[m].sigma[k1][k2];
+            stpdf[m].sigma[k2][k1]=stpdf[m].sigma[k1][k2];
         }
       for (k1=0; k1<dim; k1++)
         for (k2=0; k2<dim; k2++) {
           if (!ranflag) //dilate slightly
-            md.stpdf[m].sigma[k1][k2]=md.stpdf[m].sigma[k1][k2]*lambda+(1.1-lambda)*sigcom[k1][k2];
+            stpdf[m].sigma[k1][k2]=stpdf[m].sigma[k1][k2]*lambda+(1.1-lambda)*sigcom[k1][k2];
           else
-            md.stpdf[m].sigma[k1][k2]=md.stpdf[m].sigma[k1][k2]*lambda+(1.0-lambda)*sigcom[k1][k2];
+            stpdf[m].sigma[k1][k2]=stpdf[m].sigma[k1][k2]*lambda+(1.0-lambda)*sigcom[k1][k2];
 
         }
     }
     
-    mm = mat_det_inv(md.stpdf[m].sigma,
-                     md.stpdf[m].sigma_inv,
-                     md.stpdf[m].sigma_det,
+    mm = mat_det_inv(stpdf[m].sigma,
+                     stpdf[m].sigma_inv,
+                     stpdf[m].sigma_det,
                      dim);
     if (mm==2) { /* singular matrix */
       for (k1=0, tpdb=0.0; k1<dim; k1++)
-        tpdb+=md.stpdf[m].sigma[k1][k1];
+        tpdb+=stpdf[m].sigma[k1][k1];
       tpdb=(tpdb>0.0)?(tpdb/(double)dim*epsilon):epsilon;
       /* modify sigma by adding a scalar matrix */
       for (k1=0; k1<dim; k1++)
-        md.stpdf[m].sigma[k1][k1]+=tpdb;
-      mat_det_inv(md.stpdf[m].sigma,
-                  md.stpdf[m].sigma_inv,
-                  md.stpdf[m].sigma_det,
+        stpdf[m].sigma[k1][k1]+=tpdb;
+      mat_det_inv(stpdf[m].sigma,
+                  stpdf[m].sigma_inv,
+                  stpdf[m].sigma_det,
                   dim);
     }
   }
 
   /** Set the transition probabilities to uniform **/
   tpdb=1.0/(double)numst;
-  for (i=0;i<numst;i++) md.a00[i]=tpdb;
+  for (i=0;i<numst;i++)
+    a00[i]=tpdb;
   for (i=0;i<numst;i++)
     for (j=0; j<numst; j++)
-      md.a[i][j]=tpdb;
+      a[i][j]=tpdb;
 }
 
 /*-----------------------------------------------------------*/
 /** compute the log likelihood of sequences under HMM        */
 /*-----------------------------------------------------------*/
-double comploglike(HmmModel &md,
-                   std::vector<std::vector<float>> &u,
-                   int nseq,
-                   std::vector<int> &len,
-                   std::vector<double>& wt)
+double HmmModel::comploglike(std::vector<std::vector<float>> &u,
+                             int nseq,
+                             std::vector<int> &len,
+                             std::vector<double>& wt)
 // weight wt can be turned off by setting it to NULL
 {
   // max length:
   int m = *std::max_element(len.begin(), len.end());
   double v1, loglikehd;
-  std::vector<double> thetalog(m*md.numst, 0.0);
+  std::vector<double> thetalog(m*numst, 0.0);
 
   for (int i=0, loglikehd=0.0; i<nseq; i++) {
-    forward(u[i], len[i], thetalog,  md, v1);
+    forward(u[i], len[i], thetalog, v1);
     if (wt.size() == 0ULL) loglikehd+=v1;
     else loglikehd += wt[i]*v1;
   }
@@ -722,21 +680,18 @@ double comploglike(HmmModel &md,
 /** This subroutine also returns the log likelihood as the   */
 /** function comploglike.                                    */
 /*-----------------------------------------------------------*/
-double classlikehd(HmmModel &md,
-                   std::vector<std::vector<float>> &u,
-                   int nseq,
-                   std::vector<int> &len,
-                   std::vector<std::vector<double>> &cprob,
-                   std::vector<double>& wt)
+double HmmModel::classlikehd(std::vector<std::vector<float>> &u,
+                             int nseq,
+                             std::vector<int> &len,
+                             std::vector<std::vector<double>> &cprob,
+                             std::vector<double>& wt)
      /* cprob[nseq][len[?]] has been allocated with space */
 {
   double loglikehd,v1;
   double dbtp;
   int i,j,k,m,n,ii,mm;
-  int numst;
   int *c, *stcls;
 
-  numst=md.numst;
 
 
   for (i=0,mm=0;i<nseq;i++) {
@@ -747,9 +702,9 @@ double classlikehd(HmmModel &md,
 
   loglikehd=0.0;
   for (ii=0;ii<nseq;ii++) {
-    forward(u[ii], len[ii], thetalog, md, v1);
-    backward(u[ii], len[ii], betalog, md);
-    CompLm(u[ii], len[ii], thetalog, betalog, cprob[ii], md);
+    forward(u[ii], len[ii], thetalog, v1);
+    backward(u[ii], len[ii], betalog);
+    CompLm(u[ii], len[ii], thetalog, betalog, cprob[ii]);
 
     if (wt.size() == 0) loglikehd+= v1;
     else loglikehd+= wt[ii]*v1;
@@ -860,26 +815,22 @@ void transprob(std::vector<std::vector<double>> &asum,
 /*---------------------------------------------------------------*/
 /** EM estimation assuming that the initial model is set up     **/
 /*---------------------------------------------------------------*/
-int baumwelch(std::vector<std::vector<float>> &u,
-              int nseq,
-              std::vector<int> &len,
-              HmmModel &md,
-              std::vector<double> &loglikehd,
-              double &lhsumpt,
-              double epsilon,
-              std::vector<double> &wt,
-              bool forcediag)
+int HmmModel::baumwelch(std::vector<std::vector<float>> &u,
+                        int nseq,
+                        std::vector<int> &len,
+                        std::vector<double> &loglikehd,
+                        double &lhsumpt,
+                        double epsilon,
+                        std::vector<double> &wt,
+                        bool forcediag)
      /* The only outputs are loglikehd, lhsumpt, and updated md */
 // Input wt[nseq] gives a weight to each sequence, normally it contains all 1
 {
   int i,j,k,l,m,n,mm,k1,m1,t,ite,minite=3, maxrow, maxcol;
-  int dim,numst, numcls;
   double ratio=10.0, epsilon2=5.0e-2;
   double oldlhsum = 0.0, lhsum = 0.0;
   double lambda=LAMBDA;
-  int step;
   GaussModel *curg;
-  HmmModel *oldmd;
   double v1,tpdb=0;
   int twomdflag=0;
   int res=0;
@@ -888,10 +839,6 @@ int baumwelch(std::vector<std::vector<float>> &u,
 
   if (nseq==0) return res;
 
-  dim=md.dim;
-  numst=md.numst;
-  numcls=md.numcls;
-
   std::vector<double> musum( numst*dim, 0.0);
   std::vector<double> mu( numst*dim, 0.0);
   std::vector<std::vector<double>> mom2sum( numst*dim, std::vector<double>(dim,0.0));
@@ -899,7 +846,7 @@ int baumwelch(std::vector<std::vector<float>> &u,
   std::vector<std::vector<double>> sigma( numst*dim, std::vector<double>(dim,0.0));
   std::vector<std::vector<double>> sigcom( dim, std::vector<double>(dim,0.0));
   std::vector<std::vector<double>> asum( numst, std::vector<double>(numst,0.0));
-  std::vector<std::vector<double>> a( numst, std::vector<double>(numst,0.0));
+  std::vector<std::vector<double>> tm( numst, std::vector<double>(numst,0.0));
   std::vector<std::vector<double>> amn( numst, std::vector<double>(numst,0.0));
   std::vector<std::vector<double>> bnl( numst, std::vector<double>(numst,0.0));
   std::vector<double>lsum( numst, 0.0);
@@ -909,8 +856,8 @@ int baumwelch(std::vector<std::vector<float>> &u,
   for (int i=1; i<nseq; i++) {
     if (len[i]>maxcol) maxcol=len[i];
   }
-  std::vector<double> thetalog(maxcol*md.numst, 0.0);
-  std::vector<double> betalog(maxcol*md.numst, 0.0);
+  std::vector<double> thetalog(maxcol*numst, 0.0);
+  std::vector<double> betalog(maxcol*numst, 0.0);
 
   ite=0;
   twomdflag=0;
@@ -930,10 +877,10 @@ int baumwelch(std::vector<std::vector<float>> &u,
       for (int l=0; l<numst; l++)
         asum[j][l]=0.0;
     for (int t=0; t<nseq; t++) {
-      forward(u[t],len[t],thetalog,md,loglikehd[t]);
-      backward(u[t],len[t],betalog, md);
+      forward(u[t],len[t],thetalog,loglikehd[t]);
+      backward(u[t],len[t],betalog);
       updatepar_adder(u[t],len[t],thetalog, betalog, loglikehd[t],
-          md, mu, mom2, a, l1img);
+           mu, mom2, tm, l1img);
 
       for (int i=0; i<numst; i++) {
         lsum[i]+=wt[t]*l1img[i];
@@ -945,7 +892,7 @@ int baumwelch(std::vector<std::vector<float>> &u,
       }
       for (int j=0; j<numst; j++)
         for (int l=0; l<numst; l++)
-          asum[j][l]+=wt[t]*a[j][l];
+          asum[j][l]+=wt[t]*tm[j][l];
 
     } // for (t=0; ...)
     
@@ -967,7 +914,7 @@ int baumwelch(std::vector<std::vector<float>> &u,
       }
     }
     // asum adjustment
-    transprob(asum,numst,amn,numcls,bnl,md.stcls,lsum);
+    transprob(asum,numst,amn,numcls,bnl,stcls,lsum);
 
     lhsum=0.0;
     for (int t=0;t<nseq;t++) lhsum+=wt[t]*loglikehd[t];
@@ -1006,17 +953,17 @@ int baumwelch(std::vector<std::vector<float>> &u,
       v1+=lsum[i];
     if (v1>0.0) {
       for (int i=0; i<numst; i++)
-        md.a00[i]=lsum[i]/v1;
+        a00[i]=lsum[i]/v1;
     }
     else {
       for (int i=0; i<numst; i++)
       //	md->a00[i]=1.0/(double)lsum[i];
-          md.a00[i]=1.0/(double)numst;
+          a00[i]=1.0/(double)numst;
     }
 
     for (int j=0; j<numst; j++)
       for (int k=0; k<numst; k++)
-        md.a[j][k]=asum[j][k];
+        a[j][k]=asum[j][k];
 
     for (int j=0;j<dim;j++)
       for (int k=0;k<dim;k++)
@@ -1025,11 +972,11 @@ int baumwelch(std::vector<std::vector<float>> &u,
     for (int i=0;i<numst;i++) {
       for (int j=0;j<dim;j++)
         for (int k=0;k<dim;k++)
-          sigcom[j][k] += md.a00[i]*sigma[i*dim+j][k];
+          sigcom[j][k] += a00[i]*sigma[i*dim+j][k];
     }
 
     for (int i=0; i<numst; i++) {
-      curg = &md.stpdf[i];
+      curg = &stpdf[i];
       for (int j=0; j<dim; j++){
         curg->mean[j]=musum[i*dim+j];
       }
@@ -1064,29 +1011,28 @@ int baumwelch(std::vector<std::vector<float>> &u,
 }
 
 
-void hmmfit(HmmModel& md,
-            std::vector<std::vector<float>> &u,
-            int nseq,
-            std::vector<int> &len,
-            std::vector<double> &loglikehd,
-            double &lhsumpt,
-            double epsilon,
-            std::vector<double> &wt,
-            bool forcediag)
+void HmmModel::hmmfit(std::vector<std::vector<float>> &u,
+                      int nseq,
+                      std::vector<int> &len,
+                      std::vector<double> &loglikehd,
+                      double &lhsumpt,
+                      double epsilon,
+                      std::vector<double> &wt,
+                      bool forcediag)
 {
   // The stcls[numst] stores the class label for each state. It's only meaningful
   // for HMM with GMM at each state. If the default HMM with a single Gaussian
   // for each state, stcls[] can be set to NULL
   
   /*** initialize parameters using the states given by kmeans **/
-  initialize(u, nseq, len, md.dim, md, 0);
+  initialize(u, nseq, len, dim, 0);
 
   /** start em iterative estimation **/
   if (wt.size() == 0) {
     std::vector<double> thiswt(nseq, 1.0);
-    baumwelch(u, nseq, len, md, loglikehd, lhsumpt, epsilon, thiswt, forcediag);
+    baumwelch(u, nseq, len, loglikehd, lhsumpt, epsilon, thiswt, forcediag);
   } else {
-    baumwelch(u, nseq, len, md, loglikehd, lhsumpt, epsilon, wt, forcediag);
+    baumwelch(u, nseq, len, loglikehd, lhsumpt, epsilon, wt, forcediag);
   }
 }
 

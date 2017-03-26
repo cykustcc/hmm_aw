@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
   std::vector<int> stcls;
   std::vector<double> wt;
   HmmModel md(dim, numst, numst, stcls);
-  HmmModel md = hmmfit(u, nseq, len, loglikehd, lhsum,
+  md.hmmfit(u, nseq, len, loglikehd, lhsum,
 	 (double)epsilon, wt, FLAGS_forcediag);
 
   //Output loglikehd from hmmfit() is not written out

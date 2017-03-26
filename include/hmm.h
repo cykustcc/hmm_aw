@@ -158,9 +158,97 @@ public:
     }
     a00.resize(numst);
   }
+  /*--------- model io         ----------*/
   void read_model(std::string filename);
   void write_model(std::string filename);
   void print_model(std::string filename);
+  /*--------- model estimation ----------*/
+  void forward(std::vector<float> &u,
+               int ncols,
+               std::vector<double> &thetalog,
+               double &loglikehd);
+  void backward(std::vector<float> &u,
+               int ncols,
+               std::vector<double> &betalog);
+  void CompLm(std::vector<float> &u,
+              int ncols,
+              std::vector<double> &thetalog,
+              std::vector<double> &betalog,
+              std::vector<double> &Lm);
+  void CompHml(std::vector<float> &u,
+               int ncols,
+               std::vector<double> &thetalog,
+               std::vector<double> &betalog,
+               std::vector<double> &Hml,
+               int west);
+  void viterbi(std::vector<float> &u,
+               int len, std::vector<int> &optst,
+               std::vector<double> & inita,
+               std::vector<double> &lastmerit);
+  
+  void formmix(std::vector<double> &inita,
+               std::vector<std::vector<double>> &tm,
+               std::vector<double> &astart,
+               std::vector<std::vector<GaussModel>> &pdflist,
+               std::vector<std::vector<double>> &prior,
+               std::vector<int> &nstpercls);
+  
+  void viterbicls(std::vector<float> &u,
+                  int len,
+                  std::vector<int> &optst,
+                  std::vector<double> &inita,
+                  std::vector<double> &lastmerit,
+                  int &bestnext);
+  
+  void viterbi_mulseq(std::vector<std::vector<float>> &u,
+                      int nseq,
+                      std::vector<int> &len,
+                      std::vector<std::vector<int>> &st);
+  
+  void updatepar_adder(std::vector<float> &u,
+                       int ncols,
+                       std::vector<double> &thetalog,
+                       std::vector<double> &betalog,
+                       double loglikehd,
+                       std::vector<double> &musum,
+                       std::vector<std::vector<double>> &mom2sum,
+                       std::vector<std::vector<double>> &asum,
+                       std::vector<double> &lsum);
+  
+  void initialize(std::vector<std::vector<float>> &u,
+                  int nseq,
+                  std::vector<int> &len,
+                  int dim,
+                  int ranflag);
+  
+  double comploglike(std::vector<std::vector<float>> &u,
+                     int nseq,
+                     std::vector<int> &len,
+                     std::vector<double>&wt);
+  
+  double classlikehd(std::vector<std::vector<float>> &u,
+                     int nseq,
+                     std::vector<int> &len,
+                     std::vector<std::vector<double>> &cprob,
+                     std::vector<double>& wt);
+  
+  int baumwelch(std::vector<std::vector<float>> &u,
+                int nseq,
+                std::vector<int> &len,
+                std::vector<double> &loglikehd,
+                double &lhsumpt,
+                double epsilon,
+                std::vector<double> &wt,
+                bool forcediag);
+  
+  void hmmfit(std::vector<std::vector<float>> &u,
+              int nseq,
+              std::vector<int> &len,
+              std::vector<double> &loglikehd,
+              double &lhsumpt,
+              double epsilon,
+              std::vector<double> &wt,
+              bool forcediag);
 };
 
 
@@ -168,102 +256,8 @@ public:
 /*--------- estimate.c ---------------*/
 /*------------------------------------*/
 
-extern void forward(std::vector<float> &u,
-                    int ncols,
-                    std::vector<double> &thetalog,
-                    HmmModel &md,
-                    double &loglikehd);
 
-extern void backward(std::vector<float> &u,
-                     int ncols,
-                     std::vector<double> &betalog,
-                     HmmModel &md);
 
-extern void CompLm(std::vector<float> &u,
-                   int ncols,
-                   std::vector<double> &thetalog,
-                   std::vector<double> &betalog,
-                   std::vector<double> &Lm,
-                   HmmModel &md);
-
-extern void CompHml(std::vector<float> &u,
-                    int ncols,
-                    std::vector<double> &thetalog,
-                    std::vector<double> &betalog,
-                    std::vector<double> &Hml,
-                    int west,
-                    HmmModel &md);
-
-extern void viterbi(HmmModel &md,
-                    std::vector<float> &u,
-                    int len, std::vector<int> &optst,
-                    std::vector<double> & inita,
-                    std::vector<double> &lastmerit);
-
-extern void viterbicls(HmmModel &md,
-                       std::vector<float> &u,
-                       int len,
-                       std::vector<int> &optst,
-                       std::vector<double> &inita,
-                       std::vector<double> &lastmerit,
-                       int &bestnext);
-
-extern void viterbi_mulseq(HmmModel &md,
-                           std::vector<std::vector<float>> &u,
-                           int nseq,
-                           std::vector<int> &len,
-                           std::vector<std::vector<int>> &st);
-
-extern void updatepar_adder(std::vector<float> &u,
-                            int ncols,
-                            std::vector<double> &thetalog,
-                            std::vector<double> &betalog,
-                            double loglikehd,
-                            HmmModel &md,
-                            std::vector<double> &musum,
-                            std::vector<std::vector<double>> &mom2sum,
-                            std::vector<std::vector<double>> &asum,
-                            std::vector<double> &lsum);
-
-extern void initialize(std::vector<std::vector<float>> &u,
-                       int nseq,
-                       std::vector<int> &len,
-                       int dim,
-                       HmmModel &md,
-                       int ranflag);
-
-extern double comploglike(HmmModel &md,
-                          std::vector<std::vector<float>> &u,
-                          int nseq,
-                          std::vector<int> &len,
-                          std::vector<double>&wt);
-
-extern double classlikehd(HmmModel &md,
-                          std::vector<std::vector<float>> &u,
-                          int nseq,
-                          std::vector<int> &len,
-                          std::vector<std::vector<double>> &cprob,
-                          std::vector<double>& wt);
-
-extern int baumwelch(std::vector<std::vector<float>> &u,
-                     int nseq,
-                     std::vector<int> &len,
-                     HmmModel &md,
-                     std::vector<double> &loglikehd,
-                     double &lhsumpt,
-                     double epsilon,
-                     std::vector<double> &wt,
-                     bool forcediag);
-
-extern void hmmfit(HmmModel& md,
-                   std::vector<std::vector<float>> &u,
-                   int nseq,
-                   std::vector<int> &len,
-                   std::vector<double> &loglikehd,
-                   double &lhsumpt,
-                   double epsilon,
-                   std::vector<double> &wt,
-                   bool forcediag);
 
 /*-------------------------------------*/
 /*-------------- prob.c ---------------*/
