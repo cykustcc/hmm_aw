@@ -74,10 +74,10 @@ public:
   /*-------------------------------------*/
   
   double gauss_pdf_log(std::vector<float> &ft,
-                       int baseidx);
+                       int baseidx) const;
   
   double gauss_pdf(std::vector<float> &ft,
-                   int baseidx);
+                   int baseidx) const;
 };
 extern double mix_gauss_pdf_log(std::vector<float> &ft,
                                 std::vector<GaussModel> &gmlist,
@@ -174,8 +174,8 @@ public:
   }
   /*--------- model io         ----------*/
   void read_model(std::string filename);
-  void write_model(std::string filename);
-  void print_model(std::string filename);
+  void write_model(std::string filename) const;
+  void print_model(std::string filename) const;
   /*--------- model estimation ----------*/
   /*--------- estimate.c ----------------*/
   void forward(std::vector<float> &u,

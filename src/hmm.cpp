@@ -64,7 +64,7 @@ void HmmModel::read_model(std::string filename){
   fclose(fp);
 }
 
-void HmmModel::write_model(std::string filename){
+void HmmModel::write_model(std::string filename) const{
   FILE *fp = NULL;
   fp = filename.size()>0? fopen(filename.c_str(), "w+") : stdout;
   assert(fp);
@@ -104,7 +104,7 @@ void HmmModel::write_model(std::string filename){
 
 
 /*------------------------------------------------------------*/
-void HmmModel::print_model(std::string filename)
+void HmmModel::print_model(std::string filename) const
 {
   //Using "" as input filename if you want to print to stdout.
   FILE *outfile = filename.size()>0? fopen(filename.c_str(), "w+") : stdout;

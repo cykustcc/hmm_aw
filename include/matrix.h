@@ -10,11 +10,6 @@
 /*-------------------------------------------------------------------*/
 
 template<typename DType>
-void print_vector(std::vector<DType>& vt);
-template<typename DType>
-void print_vector(std::vector<DType>& vt, int m, int n);
-
-template<typename DType>
 void print_vector(std::vector<DType>& vt){
   int size = vt.size();
   for (int i=0; i<size; i++) {

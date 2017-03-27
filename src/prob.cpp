@@ -5,7 +5,7 @@
 #define LOG_2_PI 1.83787706640935
 
 double GaussModel::gauss_pdf_log(std::vector<float> &ft,
-                                 int baseidx)
+                                 int baseidx) const
 {
   double res, tpdb, tpdb2;
   int i,j,k,m,n;
@@ -36,7 +36,7 @@ double GaussModel::gauss_pdf_log(std::vector<float> &ft,
 }
 
 double GaussModel::gauss_pdf(std::vector<float> &ft,
-                             int baseidx)
+                             int baseidx) const
 {
   return(exp(gauss_pdf_log(ft, baseidx)));
 }
