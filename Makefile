@@ -58,8 +58,7 @@ GTEST_SRC := src/gtest/gtest-all.cpp
 
 .PHONY: clean all test
 
-all: $(PROJECT)_train mex/hmm_fit.mex 
-	#mex/hmm_likelihood.mex
+all: $(PROJECT)_train mex/hmm_fit.mex mex/hmm_likelihood.mex
 
 build/%.o: src/%.cpp
 	@mkdir -p $(@D)
