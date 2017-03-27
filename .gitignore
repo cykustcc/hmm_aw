@@ -32,4 +32,5 @@ hmmaw_*
 ./data/md.dat
 
 ## mex files:
-.mex*
+*.mex*
+*.mexmaci64

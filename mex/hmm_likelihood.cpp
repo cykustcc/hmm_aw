@@ -1,5 +1,5 @@
 //
-//  hmm_likelihood_jia.c
+//  hmm_likelihood.c
 //
 //  Created by Yukun Chen on 11/20/15.
 //  Copyright © 2015 Yukun Chen. All rights reserved.
@@ -290,11 +290,14 @@ void mexFunction(MEX_ARGS)
 
   double loglikelihood,oneseq_likelihood;
   std::vector<double> thetalog(seq_len*md.numst, 0.0);
-  for (i=0, loglikelihood=0.0; i<nseq; i++) {
-      md.forward(u[i], len[i], thetalog, oneseq_likelihood);
-      // printf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
-      loglikelihood += oneseq_likelihood;
-  }
+  std::vector<double> wt;
+  loglikelihood = md.comploglike(u, 1, len, wt);
+  // for (i=0, loglikelihood=0.0; i<nseq; i++) {
+
+  //     // md.forward(u[i], len[i], thetalog, oneseq_likelihood);
+  //     // printf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
+  //     loglikelihood += oneseq_likelihood;
+  // }
   plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
   double *b;
   b = mxGetPr(plhs[0]);

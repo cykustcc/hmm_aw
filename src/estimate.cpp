@@ -665,7 +665,7 @@ double HmmModel::comploglike(std::vector<std::vector<float>> &u,
 
   for (int i=0, loglikehd=0.0; i<nseq; i++) {
     forward(u[i], len[i], thetalog, v1);
-    if (wt.size() == 0ULL) loglikehd+=v1;
+    if (wt.size() == 0) loglikehd+=v1;
     else loglikehd += wt[i]*v1;
   }
 
