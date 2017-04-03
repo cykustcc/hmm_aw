@@ -39,6 +39,7 @@ public:
     for (int i=0; i<g.dim; i++) {
       mean[i] = g.mean[i];
     }
+    sigma_det=g.sigma_det;
     for (int i=0; i<g.dim; i++) {
       for (int j=0; j<g.dim; j++) {
         sigma[i][j] = g.sigma[i][j];
@@ -54,6 +55,7 @@ public:
     for (int i=0; i<g.dim; i++) {
       mean[i] = g.mean[i];
     }
+    sigma_det=g.sigma_det;
     sigma.resize(dim);
     sigma_inv.resize(dim);
     for (int i=0; i<g.dim; i++) {
@@ -79,6 +81,7 @@ public:
   double gauss_pdf(std::vector<float> &ft,
                    int baseidx) const;
 };
+
 extern double mix_gauss_pdf_log(std::vector<float> &ft,
                                 std::vector<GaussModel> &gmlist,
                                 std::vector<double> &prior,
@@ -98,7 +101,8 @@ public:
     std::vector<int> stcls_tmp;
     HmmModel(0,0,0,stcls_tmp);
   }
-  HmmModel(int _dim, int _numst, int _numcls, std::vector<int>& _stcls): dim(_dim), numst(_numst), numcls(_numcls){
+  HmmModel(int _dim, int _numst, int _numcls, std::vector<int>& _stcls)
+    : dim(_dim), numst(_numst), numcls(_numcls){
     assert(_stcls.size() == 0 || _stcls.size() == numst);
     stcls.resize(numst);
     if (numcls == numst || stcls.size() == 0) {
@@ -264,6 +268,11 @@ public:
               double epsilon,
               std::vector<double> &wt,
               bool forcediag);
+  
+  double dist_KL(HmmModel &hmm2);
+  double dist_MAW(HmmModel &hmm2);
+  double dist_IAW(HmmModel &hmm2);
+  void gen_seq(std::vector<float> &seq, int n);
 };
 
 

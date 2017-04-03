@@ -34,11 +34,13 @@ void mexPrint_mat_double(double* X, int dim, int n){
 }
 
 template<typename DType>
-void mex_print_vector(std::vector<DType>& vt, int m, int n){
+void mex_print_vector(std::vector<DType>& vt,
+                      /* # of rows*/ int m,
+                      /* # of cols*/ int n){
   int size = vt.size();
   assert(m*n <= size);
   for (int i=0; i<m; i++) {
-    for (int j=0; j<n; i++) {
+    for (int j=0; j<n; j++) {
       mexPrintf("%f,\t", vt[i*n + j]);
     }
     mexPrintf(";\n");
@@ -49,7 +51,7 @@ template<typename DType>
 void mex_print_matrix(std::vector<std::vector<DType>> &mt){
   int rows = mt.size();
   int cols = rows > 0 ? mt[0].size(): 0;
-  
+
   for (int i=0; i<rows; i++) {
     for (int j=0; j<cols; j++) {
       mexPrintf("%f,\t", mt[i][j]);
@@ -66,7 +68,7 @@ unsigned char mexPrint_model(HmmModel &md)
   dim=md.dim;
   numst=md.numst;
   numcls=md.numcls;
-  
+
   mexPrintf("dim=%d\n", dim);
   mexPrintf("numst=%d\n", numst);
   mexPrintf("numcls=%d\n", numcls);
@@ -91,7 +93,7 @@ unsigned char mexPrint_model(HmmModel &md)
   mexPrintf("\nThe Gaussian distributions of states:\n");
   for (i=0; i<numst; i++) {
     mexPrintf("\nState %d =============================\n", i);
-    mexPrintf("exist=%d, dim=%d\n", md.stpdf[i].exist, 
+    mexPrintf("exist=%d, dim=%d\n", md.stpdf[i].exist,
       md.stpdf[i].dim);
 
     mexPrintf("Mean vector:\n");
@@ -102,7 +104,7 @@ unsigned char mexPrint_model(HmmModel &md)
     mexPrintf("Sigma_det=%e\n",md.stpdf[i].sigma_det);
 
     mexPrintf("Covariance matrix Sigma:\n");
- 
+
     for (m=0; m<md.stpdf[i].dim; m++) {
       for (n=0; n<md.stpdf[i].dim; n++)
       mexPrintf("%.5e ", md.stpdf[i].sigma[m][n]);
@@ -110,14 +112,14 @@ unsigned char mexPrint_model(HmmModel &md)
     }
 
     mexPrintf("Covariance matrix inverse Sigma_inv:\n");
- 
+
     for (m=0; m<md.stpdf[i].dim; m++) {
       for (n=0; n<md.stpdf[i].dim; n++)
       mexPrintf("%.5e ", md.stpdf[i].sigma_inv[m][n]);
       mexPrintf("\n");
     }
   }
-  
+
   return(1);
 }
 void mexFunction(MEX_ARGS)
@@ -158,6 +160,7 @@ void mexFunction(MEX_ARGS)
 
   // Assume the same length for all the sequences
   std::vector<int> len(nseq, 0);
+
   if (onelen>0) {
     for (i=0;i<nseq;i++) len[i]=onelen;
   }
@@ -166,15 +169,18 @@ void mexFunction(MEX_ARGS)
       fscanf(stdin, "%d", &len[i]);
     }
   }
+  int maxlen = *std::max_element(len.begin(), len.end());
 
   for (i=0,numdat=0;i<nseq;i++) { numdat+=len[i];}
-  double * dat_temp;
-  dat_temp=(double *)mxGetData(prhs[0]);
+
+  double* dat_temp;
+  dat_temp= (double *)mxGetData(prhs[0]);
   std::vector<std::vector<float>> u(nseq, std::vector<float>());
+
   for (i=0;i<nseq;i++) {
-    for (int j = 0; j < len[i]; j++)
+    for (int j = 0; j < dim*len[i]; j++)
     {
-      u[i][j] = dat_temp[j];
+      u[i].push_back(dat_temp[j]);
     }
   }
 
@@ -182,9 +188,8 @@ void mexFunction(MEX_ARGS)
   int seq_len=onelen;
   if(verbose){
     mexPrintf("dimension=%d, n=%d\n",dimension,seq_len);
-    mexPrintf("data:\n");
     for (i=0;i<nseq;i++) {
-      mex_print_vector(u[i],dim,len[i]);
+      mex_print_vector(u[i],len[i],dim);
     }
   }
 
@@ -263,6 +268,8 @@ void mexFunction(MEX_ARGS)
           md.stpdf[i].sigma_inv[m][n] = *(sigma_inv_ptr+i*(md.stpdf[i].dim*md.stpdf[i].dim)+m*md.stpdf[i].dim+n);
           }
       }
+      int tmp=mat_det_inv(md.stpdf[i].sigma, md.stpdf[i].sigma_inv,
+                              md.stpdf[i].sigma_det,md.stpdf[i].dim);
       if(verbose){
         mexPrintf("\n i=%d \t ",i);
         mex_print_matrix(md.stpdf[i].sigma_inv);
@@ -279,25 +286,20 @@ void mexFunction(MEX_ARGS)
   /*----------------------------------------------------------------*/
   /*------------ Compute the likelihood of the sequence  -----------*/
   /*----------------------------------------------------------------*/
-  // double loglikelihood,oneseq_likelihood;
-  // double *thetalog;
-  // thetalog=(double *)calloc(seq_len*md.numst, sizeof(double));
-  // for (i=0, loglikelihood=0.0; i<nseq; i++) {
-  //     forward(u[i], len[i], thetalog,  md, &oneseq_likelihood);
-  //     mexPrintf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
-  //     loglikelihood+=oneseq_likelihood;
-  // }
 
   double loglikelihood,oneseq_likelihood;
   std::vector<double> thetalog(seq_len*md.numst, 0.0);
   std::vector<double> wt;
-  loglikelihood = md.comploglike(u, 1, len, wt);
-  // for (i=0, loglikelihood=0.0; i<nseq; i++) {
+  // loglikelihood = md.comploglike(u, 1, len, wt);
+  for (i=0, loglikelihood=0.0; i<nseq; i++) {
 
-  //     // md.forward(u[i], len[i], thetalog, oneseq_likelihood);
-  //     // printf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
-  //     loglikelihood += oneseq_likelihood;
-  // }
+      md.forward(u[i], len[i], thetalog, oneseq_likelihood);
+      // printf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
+      loglikelihood += oneseq_likelihood;
+      if (verbose)
+        mex_print_vector(thetalog, len[i], numst);
+  }
+
   plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
   double *b;
   b = mxGetPr(plhs[0]);

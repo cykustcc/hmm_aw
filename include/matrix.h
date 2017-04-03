@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <cassert>
+#include <cmath>
 /*-------------------------- mat_simple.c --------------------------*/
 
 /*-------------------------------------------------------------------*/
@@ -159,6 +160,44 @@ unsigned char ludcmp(std::vector<std::vector<DType>> &a,
     }
   }
   return(1);
+}
+
+//	Cholesky_Decomposition returns the Cholesky Decomposition Matrix.
+// mt_P = mt_S * mt_S^T
+template<typename DType>
+extern void cholesky_decomp(std::vector<std::vector<DType>> &mt_P,
+                            /*Output: */ std::vector<std::vector<DType>> &mt_S,
+                            bool diag=false)
+{
+  DType temp = 0, temp2 = 0;
+  size_t m = mt_P.size(), n = m>0?mt_P[0].size():0;
+  assert(m == n && mt_S.size() == m);
+  //	Initialize and populate matrix L which will be the lower Cholesky
+  if (diag) {
+    for (int i = 0; i < m; i++){
+      mt_S[i][i] = sqrt(mt_P[i][i]);
+    }
+  }else{
+    for (int i = 0; i < m; i++){
+      for (int j = 0; j < m; j++){
+        temp = 0; temp2 = 0;
+        if (i > j){
+          if (j > 0){
+            for (int k = 1; k < j + 1; k++)
+              temp2 += (mt_S[i][k - 1] * mt_S[j][k - 1]);
+          }
+          mt_S[i][j] = (mt_P[i][j] - temp2) / mt_S[j][j];
+        }
+        else if (i == j){
+          for (int k = 0; k < i; k++)
+            temp += pow(mt_S[i][k], 2);
+          mt_S[i][j] = sqrt(mt_P[i][j] - temp);
+        }
+        else
+          mt_S[i][j] = 0;
+      }
+    }
+  }
 }
 
 template<typename DType>

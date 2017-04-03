@@ -68,10 +68,12 @@ build/%.o: src/%.cpp
 mex/hmm_fit.mex: mex/hmm_fit.cpp lib/libhmm.a
 	$(MEXCC) $(INCLUDES) -L./lib -lhmm mex/hmm_fit.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
 	mv hmm_fit.mexmaci64 mex/
+	cp mex/hmm_fit.mexmaci64 ~/Dropbox/GMMHMM/aggregated_wasserstein_hmm_pami/utils/hmm
 
 mex/hmm_likelihood.mex: mex/hmm_likelihood.cpp lib/libhmm.a
 	$(MEXCC) $(INCLUDES) -L./lib -lhmm mex/hmm_likelihood.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
 	mv hmm_likelihood.mexmaci64 mex/
+	cp mex/hmm_likelihood.mexmaci64 ~/Dropbox/GMMHMM/aggregated_wasserstein_hmm_pami/utils/hmm
 
 ifeq ($(OSX),1)
 $(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a lib/libmosek64_wrapper.dylib

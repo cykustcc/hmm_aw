@@ -145,12 +145,7 @@ int main(int argc, char *argv[])
 	 (double)epsilon, wt, FLAGS_forcediag);
 
   //Output loglikehd from hmmfit() is not written out
-
-  // Binary file for the output model
   md.write_model("");
-  // hmm_write(md, hmmmdfilename);
-
-  //Ascii file for the model
   md.print_model("");
   return 0;
 }

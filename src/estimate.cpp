@@ -2,6 +2,7 @@
 
 #include "hmm.h"
 #include <iostream>
+#define E 2.71828182846
 
 void HmmModel::forward(std::vector<float> &u,
                        int ncols,
@@ -34,8 +35,6 @@ void HmmModel::forward(std::vector<float> &u,
     maxv=buf[0];
     for (int l=0; l<numst; l++)
       if (buf[l]>maxv) maxv=buf[l];
-
-
 
     for (int m=0, mm=jj*numst; m<numst; m++,mm++) {
       v3=stpdf[m].gauss_pdf_log(u, jj*dim);

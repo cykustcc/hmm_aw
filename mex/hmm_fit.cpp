@@ -23,11 +23,13 @@ void mexPrint_mat(float* X, int dim, int n){
 }
 
 template<typename DType>
-void mex_print_vector(std::vector<DType>& vt, int m, int n){
+void mex_print_vector(std::vector<DType>& vt, 
+                      /* # of rows*/ int m,
+                      /* # of cols*/ int n){
   int size = vt.size();
   assert(m*n <= size);
   for (int i=0; i<m; i++) {
-    for (int j=0; j<n; i++) {
+    for (int j=0; j<n; j++) {
       mexPrintf("%f,\t", vt[i*n + j]);
     }
     mexPrintf(";\n");
@@ -127,9 +129,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   /*----------------------------------------------------------------*/
   /*----------------- Read in data ---------------------------------*/
   /*----------------------------------------------------------------*/
-
   // Assume the same length for all the sequences
-  std::vector<int >len(nseq, 0);
+  std::vector<int> len(nseq, 0);
+  // std::cout<<len.size()<<std::endl;
   if (onelen>0) {
     for (i=0;i<nseq;i++) len[i]=onelen;
   }
@@ -138,25 +140,23 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
       fscanf(stdin, "%d", &len[i]);
     }
   }
-
   for (i=0,numdat=0;i<nseq;i++) { numdat+=len[i];}
   double * dat_temp;
   dat_temp=(double *)mxGetData(prhs[0]);
   // dat=(float *)calloc(numdat*dim,sizeof(float));
   std::vector<std::vector<float>> u(nseq, std::vector<float>());
   for (i=0;i<nseq;i++) {
-    for (int j = 0; j < len[i]; j++)
+    for (int j = 0; j < len[i]*dim; j++)
     {
-      u[i][j] = dat_temp[j];
+      u[i].push_back(dat_temp[j]);
     }
   }
-
   int dimension=dim;
   int seq_len=onelen;
   if(verbose){
     mexPrintf("dimension=%d, n=%d\n",dimension,seq_len);
     for (i=0;i<nseq;i++) {
-      mex_print_vector(u[i],dim,len[i]);
+      mex_print_vector(u[i],len[i],dim);
     }
   }
 
