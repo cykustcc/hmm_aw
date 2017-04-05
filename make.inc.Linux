@@ -1,0 +1,11 @@
+MOSEK=/home/yzc147/work/libs/mosek/7/tools/platform/osx64x86
+MOSEK_VERSION=7.1
+BLAS_LIB=-lblas
+
+#matlab
+MEXCC=/usr/global/matlab/R2016a/bin/mex
+MATLABINC=-I/usr/global/matlab/R2016a/extern/include/
+
+#gflags and glog
+GFLAGS=/usr/local/Cellar/gflags/2.2.0
+GLOG=/usr/local/Cellar/glog/0.3.4_1

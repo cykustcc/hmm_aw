@@ -11,12 +11,15 @@
 #include "gtest/gtest.h"
 
 using namespace std;
-class VectorTest: public ::testing::Test{
+class MatrixTest: public ::testing::Test{
 protected:
-    float mat_1x3[3] = {1.0, 1.0, 1.0};
-    float mat_1x10[10] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+  std::vector<std::vector<float>> P = {{4,12,-16},
+                                      {12,37,-43},
+                                      {-16,-43,98}};
 };
 
-TEST(GeneralVector, TestVectorUchar){
-    cout<<"hello"<<endl;
+TEST_F(MatrixTest, CholeskyDecomp){
+  std::vector<std::vector<float>> S(3, std::vector<float>(3, 0.0));
+  cholesky_decomp(P, S);
+  print_matrix(S);
 }

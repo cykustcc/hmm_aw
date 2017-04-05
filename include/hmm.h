@@ -269,10 +269,20 @@ public:
               std::vector<double> &wt,
               bool forcediag);
   
-  double dist_KL(HmmModel &hmm2);
+  double dist_KL(HmmModel &hmm2, int sample_size, bool diag = false);
   double dist_MAW(HmmModel &hmm2);
   double dist_IAW(HmmModel &hmm2);
-  void gen_seq(std::vector<float> &seq, int n);
+  
+  void gen_seq(std::vector<float> &seq,
+               int n,
+               bool diag);
+  
+  void gauss_sample(std::vector<float> &seq,
+                    int idx,
+                    int state,
+                    std::vector<std::vector<double>> &mt_S,
+                    bool diag);
+  
 };
 
 

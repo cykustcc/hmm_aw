@@ -21,6 +21,8 @@
 		676D6FFB1E92E2DC00ECB684 /* librefblas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 676D6FFA1E92E2DC00ECB684 /* librefblas.a */; };
 		676D70051E92E72200ECB684 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 676D70041E92E72200ECB684 /* main.cpp */; };
 		676D70091E92E73500ECB684 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F962071E7078A000482330 /* Accelerate.framework */; };
+		676D700C1E92EC5600ECB684 /* lapacke_example_aux.c in Sources */ = {isa = PBXBuildFile; fileRef = 676D700A1E92EC5600ECB684 /* lapacke_example_aux.c */; };
+		676D700E1E92ED2600ECB684 /* libgfortran.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 676D700D1E92ED2600ECB684 /* libgfortran.dylib */; };
 		67A95F721E81AB210039AD66 /* test_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67A95F711E81AB210039AD66 /* test_common.cpp */; };
 		67F962081E7078A000482330 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F962071E7078A000482330 /* Accelerate.framework */; };
 		67F9625B1E707FBF00482330 /* cluster.h in Headers */ = {isa = PBXBuildFile; fileRef = 67F962471E707FBF00482330 /* cluster.h */; };
@@ -159,6 +161,9 @@
 		676D6FFD1E92E31200ECB684 /* lapacke.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lapacke.h; sourceTree = "<group>"; };
 		676D70021E92E72200ECB684 /* testclapack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = testclapack; sourceTree = BUILT_PRODUCTS_DIR; };
 		676D70041E92E72200ECB684 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		676D700A1E92EC5600ECB684 /* lapacke_example_aux.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lapacke_example_aux.c; sourceTree = "<group>"; };
+		676D700B1E92EC5600ECB684 /* lapacke_example_aux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lapacke_example_aux.h; sourceTree = "<group>"; };
+		676D700D1E92ED2600ECB684 /* libgfortran.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgfortran.dylib; path = ../../../../../../../usr/local/Cellar/gcc/6.3.0_1/lib/gcc/6/libgfortran.dylib; sourceTree = "<group>"; };
 		67A95F711E81AB210039AD66 /* test_common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_common.cpp; sourceTree = "<group>"; };
 		67F961F91E6F92EB00482330 /* libglog.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglog.dylib; path = ../../../../../../usr/local/Cellar/glog/0.3.4_1/lib/libglog.dylib; sourceTree = "<group>"; };
 		67F962071E7078A000482330 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -253,6 +258,7 @@
 				676D6FF61E92E28E00ECB684 /* liblapack.a in Frameworks */,
 				676D6FF71E92E28E00ECB684 /* liblapacke.a in Frameworks */,
 				676D6FFB1E92E2DC00ECB684 /* librefblas.a in Frameworks */,
+				676D700E1E92ED2600ECB684 /* libgfortran.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +314,7 @@
 		6717BEED1E651AFB00E2521D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				676D700D1E92ED2600ECB684 /* libgfortran.dylib */,
 				676D6FFA1E92E2DC00ECB684 /* librefblas.a */,
 				676D6FF81E92E2C200ECB684 /* libcblas.a */,
 				676D6FF41E92E28E00ECB684 /* liblapack.a */,
@@ -326,6 +333,8 @@
 		676D6FEE1E92E27200ECB684 /* testlapacke */ = {
 			isa = PBXGroup;
 			children = (
+				676D700A1E92EC5600ECB684 /* lapacke_example_aux.c */,
+				676D700B1E92EC5600ECB684 /* lapacke_example_aux.h */,
 				676D6FEF1E92E27200ECB684 /* main.cpp */,
 			);
 			path = testlapacke;
@@ -709,6 +718,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				676D6FF01E92E27200ECB684 /* main.cpp in Sources */,
+				676D700C1E92EC5600ECB684 /* lapacke_example_aux.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1039,6 +1049,7 @@
 					/usr/local/Cellar/gflags/2.2.0/lib,
 					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin",
 					/usr/local/lib,
+					/usr/local/Cellar/gcc/6.3.0_1/lib/gcc/6,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1056,6 +1067,7 @@
 					/usr/local/Cellar/gflags/2.2.0/lib,
 					"~/Documents/MATLAB/mosek/7/tools/platform/osx64x86/bin",
 					/usr/local/lib,
+					/usr/local/Cellar/gcc/6.3.0_1/lib/gcc/6,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

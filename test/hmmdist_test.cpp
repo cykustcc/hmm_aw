@@ -24,8 +24,31 @@ protected:
 };
 
 TEST_F(HMMDistTest, GenSeq){
-  int n = 200;
-  std::vector<float> seq(n, 0.0);
-  gt_hmm.gen_seq(seq, n);
+  int n = 800;
+  std::vector<std::vector<float>> seq(1, std::vector<float>(n*gt_hmm.dim, 0.0));
+  gt_hmm.gen_seq(seq[0], n, false);
+//  for (int i=0; i<n*gt_hmm.dim; i++) {
+//    std::cout<<seq[0][i]<<" ";
+//    if (i%gt_hmm.dim == gt_hmm.dim-1) {
+//      std::cout<<std::endl;
+//    }
+//  }
+  int dim = gt_hmm.dim, numst = gt_hmm.numst;
+  std::vector<int> stcls;
+  HmmModel est_hmm;
+  est_hmm.resize(dim, numst, numst, stcls);
+  std::vector<int> len = {n};
+  std::vector<double> loglikehd = {0.0};
+  double lhsumpt;
+  std::vector<double> tmpwt;
+  est_hmm.hmmfit(seq, 1, len, loglikehd, lhsumpt, EPSILON, tmpwt, false);
+  est_hmm.print_model("");
+  
+  expect_same_hmm(gt_hmm, est_hmm, 0.4);
+}
+
+TEST_F(HMMDistTest, DistKL){
+  double dist = gt_hmm.dist_KL(gt_hmm, 200);
+  EXPECT_NEAR(dist, 0.0, 0.01);
 }
 

@@ -156,9 +156,9 @@ int main(int argc, char *argv[])
     double *thetalog;
     thetalog=(double *)calloc(seq_len*md->numst, sizeof(double));
     for (i=0, loglikelihood=0.0; i<nseq; i++) {
-        forward(u[i], len[i], thetalog,  md, &oneseq_likelihood);
-        printf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
-        loglikelihood+=oneseq_likelihood;
+      forward(u[i], len[i], thetalog,  md, &oneseq_likelihood);
+      printf("loglikelihood for %d seq = %f\n", i, oneseq_likelihood);
+      loglikelihood+=oneseq_likelihood;
     }
     printf("seq_len= %d, loglikelihood = %f\n",seq_len, loglikelihood);
     

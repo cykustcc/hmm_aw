@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-#ifdef _D2_DOUBLE
 void _dgzero(size_t n, double *a) {
   size_t i;
   for (i=0; i<n; ++i) assert(a[i] > 1E-10);
@@ -124,14 +123,14 @@ void _dcnorm(size_t m, size_t n, double *a, double *sa) {
   bool isAllocated = true;
   if (!sa) {
     isAllocated = false;
-    sa = _D2_MALLOC_DOUBLE(n);
+    sa = _MALLOC_DOUBLE(n);
   }
   _dcsum(m, n, a, sa);
   for (i=0; i<n; ++i) assert(sa[i] > 0);
   for (i=0, pa=sa; i<n; ++i, ++pa) {
     for (j=0; j<m; ++j, ++a) (*a) /= *pa;
   }
-  if (!isAllocated) _D2_FREE(sa);
+  if (!isAllocated) _FREE(sa);
 }
 
 // normalize by row
@@ -141,7 +140,7 @@ void _drnorm(size_t m, size_t n, double *a, double *sa) {
   bool isAllocated = true;
   if (!sa) {
     isAllocated = false;
-    sa = _D2_MALLOC_DOUBLE(m);
+    sa = _MALLOC_DOUBLE(m);
   }
   _drsum(m, n, a, sa);
   for (i=0; i<m; ++i) assert(sa[i] > 0);
@@ -149,7 +148,7 @@ void _drnorm(size_t m, size_t n, double *a, double *sa) {
     pa = sa;
     for (j=0; j<m; ++j, ++a, ++pa) (*a) /= *pa;
   }
-  if (!isAllocated) _D2_FREE(sa);
+  if (!isAllocated) _FREE(sa);
 }
 
 // center by column
@@ -159,14 +158,14 @@ void _dccenter(size_t m, size_t n, double *a, double *sa) {
   bool isAllocated = true;
   if (!sa) {
     isAllocated = false;
-    sa = _D2_MALLOC_DOUBLE(n);
+    sa = _MALLOC_DOUBLE(n);
   }
   _dcsum(m, n, a, sa);
   cblas_dscal(n, 1./m, sa, 1);
   for (i=0, pa=sa; i<n; ++i, ++pa) {
     for (j=0; j<m; ++j, ++a) (*a) -= *pa;
   }
-  if (!isAllocated) _D2_FREE(sa);
+  if (!isAllocated) _FREE(sa);
 }
 
 // center by row
@@ -176,7 +175,7 @@ void _drcenter(size_t m, size_t n, double *a, double *sa) {
   bool isAllocated = true;
   if (!sa) {
     isAllocated = false;
-    sa = _D2_MALLOC_DOUBLE(m);
+    sa = _MALLOC_DOUBLE(m);
   }
   _drsum(m, n, a, sa);
   cblas_dscal(m, 1./n, sa, 1);
@@ -184,7 +183,7 @@ void _drcenter(size_t m, size_t n, double *a, double *sa) {
     pa = sa;
     for (j=0; j<m; ++j, ++a, ++pa) (*a) -= *pa;
   }
-  if (!isAllocated) _D2_FREE(sa);
+  if (!isAllocated) _FREE(sa);
 }
 
 // c = a.*b
@@ -198,7 +197,7 @@ void _dvmul(size_t n, double *a, double *b, double *c) {
 void _dpdist2(int d, size_t n, size_t m, double * A, double * B, double *C) {
   size_t i, j, ki, kj; int k;
   assert(d>0 && n>0 && m>0);
-  
+
   for (i=0; i<m*n; ++i) C[i] = 0;
   for (i=0; i<m; ++i)
     for (j=0; j<n; ++j)
@@ -222,7 +221,7 @@ void _dpdist2_submat(size_t m, int *Bi, double *C,
                      const int vocab_size, const double *dist_mat) {
   size_t i; int j;
   assert(m>0);
-  
+
   for (i=0; i<m; ++i)
     for (j=0; j<vocab_size; ++j)
       C[i*vocab_size + j] = dist_mat[Bi[i]*vocab_size + j];
@@ -232,7 +231,7 @@ void _dpdist_symbolic(int d, size_t n, size_t m, int * A, int * B, double *C,
                       const int vocab_size, const double* dist_mat) {
   size_t i,j; int k;
   assert(d>0 && n>0 && m>0);
-  
+
   for (i=0; i<m*n; ++i) C[i] = 0;
   for (i=0; i<m; ++i)
     for (j=0; j<n; ++j)
@@ -246,4 +245,3 @@ void _dexp(size_t n, double *a) {
   for (i=0; i<n; ++i, ++a) *a = exp(*a);
 }
 
-#endif

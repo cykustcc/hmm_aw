@@ -1,4 +1,3 @@
-include make.inc
 
 PROJECT=hmmaw
 CC=gcc
@@ -9,31 +8,24 @@ CFLAGS=-std=c++11
 UNAME=$(shell uname -s)
 ifeq ($(UNAME), Linux)
 	LINUX := 1
+	include make.inc.Linux
 else ifeq ($(UNAME), Darwin)
 	OSX := 1
-endif
-
-ifeq ($(LINUX),1)
-MEXCC=/usr/global/matlab/R2016a/bin/mex
-MATLABINC=-I/usr/global/matlab/R2016a/extern/include/
-endif
-ifeq ($(OSX),1)
-MEXCC=/Applications/MATLAB_R2016a.app/bin/mex
-MATLABINC=-I/Applications/MATLAB_R2016a.app/extern/include/
+	include make.inc.macOS
 endif
 
 
 INCLUDES=-Iinclude/ -I$(MOSEK)/h $(CBLAS_INC) \
  -Igoogletest/googletest/include -Igoogletest/googletest\
- -I/usr/local/Cellar/gflags/2.2.0/include \
- -I/usr/local/Cellar/glog/0.3.4_1/include
+ -I$(GFLAGS)/include \
+ -I$(GLOG)/include
 LIBRARIES=-L$(MOSEK)/bin -lmosek64.7.1 -Wl,-rpath,. -Wl,-rpath,$(MOSEK)/bin $(BLAS_LIB) \
- -L/usr/local/Cellar/glog/0.3.4_1/lib -lglog \
- -L/usr/local/Cellar/gflags/2.2.0/lib -lgflags \
+ -L$(GLOG)/lib -lglog \
+ -L$(GFLAGS)/lib -lgflags \
  -L./lib
 MEXLIBRARIES=$(BLAS_LIB) \
- -L/usr/local/Cellar/glog/0.3.4_1/lib -lglog \
- -L/usr/local/Cellar/gflags/2.2.0/lib -lgflags \
+ -L$(GLOG)/lib -lglog \
+ -L$(GFLAGS)/lib -lgflags \
  -L./lib
 BUILD_DIR=build
 
@@ -66,12 +58,12 @@ build/%.o: src/%.cpp
 	$(CXX) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
 mex/hmm_fit.mex: mex/hmm_fit.cpp lib/libhmm.a
-	$(MEXCC) $(INCLUDES) -L./lib -lhmm mex/hmm_fit.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
+	$(MEXCC) $(INCLUDES) -L./lib -lhmm $(MEXLIBRARIES) mex/hmm_fit.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
 	mv hmm_fit.mexmaci64 mex/
 	cp mex/hmm_fit.mexmaci64 ~/Dropbox/GMMHMM/aggregated_wasserstein_hmm_pami/utils/hmm
 
 mex/hmm_likelihood.mex: mex/hmm_likelihood.cpp lib/libhmm.a
-	$(MEXCC) $(INCLUDES) -L./lib -lhmm mex/hmm_likelihood.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
+	$(MEXCC) $(INCLUDES) -L./lib -lhmm $(MEXLIBRARIES) mex/hmm_likelihood.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
 	mv hmm_likelihood.mexmaci64 mex/
 	cp mex/hmm_likelihood.mexmaci64 ~/Dropbox/GMMHMM/aggregated_wasserstein_hmm_pami/utils/hmm
 
@@ -82,7 +74,7 @@ $(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a lib/libmosek64_wrapper.dy
 lib/libmosek64_wrapper.dylib: build/mosek_solver.o
 	$(CXX) -dynamiclib $(INCLUDES) $(LIBRARIES) -Wl,-install_name,$@ -compatibility_version 7.0 -current_version $(MOSEK_VERSION) -o $@ $< $(MOSEKLIB)
 	# install_name_tool -change  @loader_path/libmosek64.$(MOSEK_VERSION).dylib  $(MOSEK)/bin/libmosek64.$(MOSEK_VERSION).dylib libmosek64_wrapper.$(MOSEK_VERSION).dylib
-	# ln -sf libmosek64_wrapper.$(MOSEK_VERSION).dylib $@ 
+	# ln -sf libmosek64_wrapper.$(MOSEK_VERSION).dylib $@
 
 lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
 	@echo $^
@@ -97,7 +89,7 @@ $(PROJECT)_train: lib/libhmm.a lib/libmosek64_wrapper.so
 
 lib/libmosek64_wrapper.so: build/mosek_solver.o
 	$(CXX) -shared $(LDFLAGS) $(INCLUDES) $(LIBRARIES) -Wl,-soname,$@ -o libmosek64_wrapper.$(MOSEK_VERSION).so $< $(MOSEKLIB)
-	ln -sf libmosek64_wrapper.$(MOSEK_VERSION).so $@ 
+	ln -sf libmosek64_wrapper.$(MOSEK_VERSION).so $@
 
 lib/libhmm.a: $(OBJ) libmosek64_wrapper.dylib
 	@echo $^
@@ -106,7 +98,7 @@ lib/libhmm.a: $(OBJ) libmosek64_wrapper.dylib
 
 endif
 
-clean: 
+clean:
 	rm -f ./build/*.o ./build/*.d
 	rm ./mex/*.mex*
 	rm $(PROJECT)_train
@@ -128,6 +120,7 @@ $(TEST_ALL_BIN): $(TEST_MAIN_SRC) $(TEST_SRCS) lib/libhmm.a lib/libgtest.so
 	$(CXX) $(TEST_MAIN_SRC) $(TEST_SRCS) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) -lhmm -lgtest -Wl,-rpath,./lib
 
 testvars:
+	@echo $(INCLUDES)
 	@echo $(HEADERS)
 	@echo $(SOURCES_CPP)
 	@echo $(OBJ)

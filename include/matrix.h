@@ -118,7 +118,7 @@ unsigned char ludcmp(std::vector<std::vector<DType>> &a,
       if ((temp=fabs(a[i][j]))>big)
         big = temp;
     if (big==0.0) {
-      fprintf(stderr, "Singular matrix in ludcmp_float\n");
+      fprintf(stderr, "Singular matrix in ludcmp\n");
       return(2); /* 2 stands for singular matrix */
     }
     vv[i]=1.0/big;
@@ -268,7 +268,7 @@ float mat_det_ludcmp(std::vector<std::vector<DType>> &mt,
   }
   std::vector<int> indx(dim, 0);
   
-  ludcmp_float(a,dim,indx,d);
+  ludcmp(a,dim,indx,d);
   for (int j=0; j<dim; j++) d *= a[j][j];
   
   return(d);
