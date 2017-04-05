@@ -9,10 +9,11 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 #include "hmm.h"
+#include "test_common.h"
 #include <utils/blas_utils.h>
 
 TEST(ModelIoTest, HmmRead){
-  std::string filename("/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm1.in");
+  std::string filename(root_path + "/data/test/hmm1.in");
   HmmModel hmm1;
   hmm1.read_model(filename);
   EXPECT_EQ(hmm1.dim, 2);
@@ -31,8 +32,8 @@ TEST(ModelIoTest, HmmRead){
 }
 
 TEST(ModelIoTest, HmmWrite){
-  std::string filenamein("/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm1.in");
-  std::string filenameout("/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm1.out");
+  std::string filenamein(root_path + "/data/test/hmm1.in");
+  std::string filenameout(root_path + "/data/test/hmm1.out");
   HmmModel hmm1;
   hmm1.read_model(filenamein);
   EXPECT_EQ(hmm1.dim, 2);

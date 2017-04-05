@@ -11,7 +11,9 @@
 #include<string>
 #include "hmm.h"
 
+
 extern std::string root_path;
+
 
 void expect_same_hmm(HmmModel& md1, HmmModel& md2, double tol);
 

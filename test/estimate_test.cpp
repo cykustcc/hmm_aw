@@ -21,7 +21,7 @@ protected:
   HmmModel est_hmm_diag, est_hmm_notdiag;
   HmmModel gt_hmm;
   virtual void SetUp(){
-    std::string datafile = root_path + "data/test/seqhmmdim2st2.txt";
+    std::string datafile = root_path + "/data/test/seqhmmdim2st2.txt";
     int len = 200, dim = 2, numst = 2;
     std::vector<double> loglikehd(1, 0.0);
     

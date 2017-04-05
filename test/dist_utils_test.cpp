@@ -9,10 +9,11 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 #include "dist_utils.h"
+#include "test_common.h"
 
 
 TEST(DistUtilTest, CalcDistmat){
-  std::string filename("/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/data/test/hmm2.in");
+  std::string filename(root_path + "/data/test/hmm2.in");
   HmmModel hmm1;
   hmm1.read_model(filename);
   double *C = (double *)calloc(hmm1.numst*hmm1.numst, sizeof(double));

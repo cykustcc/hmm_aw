@@ -16,7 +16,7 @@
 
 
 TEST(MatchByDistmatTest, MatchByDistmat){
-  std::string filename = root_path + "data/test/hmm2.in";
+  std::string filename = root_path + "/data/test/hmm2.in";
   HmmModel hmm1;
   hmm1.read_model(filename);
   int n = hmm1.numst, m = hmm1.numst;

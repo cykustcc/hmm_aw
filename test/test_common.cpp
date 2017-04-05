@@ -10,8 +10,11 @@
 #include "test_common.h"
 
 
-std::string root_path = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw/";
-
+#if defined __APPLE__
+std::string root_path = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw";
+#elif defined unix
+std::string root_path = "/home/yzc147/work/hmmaw";
+#endif
 
 void expect_same_hmm(HmmModel& md1, HmmModel& md2, double tol){
   int dim = md1.dim, numst = md1.numst;
