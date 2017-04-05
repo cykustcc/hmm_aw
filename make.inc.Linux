@@ -1,11 +1,20 @@
-MOSEK=/home/yzc147/work/libs/mosek/7/tools/platform/osx64x86
+MOSEK=/home/yzc147/work/libs/mosek/7/tools/platform/linux64x86
 MOSEK_VERSION=7.1
-BLAS_LIB=-lblas
+#BLAS_LIB=-L/opt/packages/ATLAS/3.10.2/lib -lcblas -lgfortran
+BLAS_LIB=-L/opt/packages/ATLAS/3.10.2/lib -llapack -lf77blas -lcblas -latlas
 
 #matlab
-MEXCC=/usr/global/matlab/R2016a/bin/mex
-MATLABINC=-I/usr/global/matlab/R2016a/extern/include/
+MEXCC=/opt/packages/matlab/R2016a/bin/mex
+MATLABINC=-I/usr/global/matlab/R2016a/include/
 
 #gflags and glog
-GFLAGS=/usr/local/Cellar/gflags/2.2.0
-GLOG=/usr/local/Cellar/glog/0.3.4_1
+GFLAGS=/home/yzc147/work/libs
+GLOG=/home/yzc147/work/libs
+
+#extra cflags
+AW_DEFINES=-D __BLAS_LEGACY__
+MEX_AW_DEFINES=-D__BLAS_LEGACY__
+
+
+#matlab project
+MATLAB_UTILS_HMM=/home/yzc147/work/aggregated_wasserstein_hmm_pami/utils/hmm

@@ -3,7 +3,7 @@ PROJECT=hmmaw
 CC=gcc
 CXX=g++
 LDFLAGS=
-CFLAGS=-std=c++11
+CFLAGS=-std=c++11 -fPIC $(AW_DEFINES)
 
 UNAME=$(shell uname -s)
 ifeq ($(UNAME), Linux)
@@ -19,7 +19,7 @@ INCLUDES=-Iinclude/ -I$(MOSEK)/h $(CBLAS_INC) \
  -Igoogletest/googletest/include -Igoogletest/googletest\
  -I$(GFLAGS)/include \
  -I$(GLOG)/include
-LIBRARIES=-L$(MOSEK)/bin -lmosek64.7.1 -Wl,-rpath,. -Wl,-rpath,$(MOSEK)/bin $(BLAS_LIB) \
+LIBRARIES=-L$(MOSEK)/bin -lmosek64 -Wl,-rpath,. -Wl,-rpath,$(MOSEK)/bin $(BLAS_LIB) \
  -L$(GLOG)/lib -lglog \
  -L$(GFLAGS)/lib -lgflags \
  -L./lib
@@ -58,14 +58,14 @@ build/%.o: src/%.cpp
 	$(CXX) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
 mex/hmm_fit.mex: mex/hmm_fit.cpp lib/libhmm.a
-	$(MEXCC) $(INCLUDES) -L./lib -lhmm $(MEXLIBRARIES) mex/hmm_fit.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
-	mv hmm_fit.mexmaci64 mex/
-	cp mex/hmm_fit.mexmaci64 ~/Dropbox/GMMHMM/aggregated_wasserstein_hmm_pami/utils/hmm
+	$(MEXCC) $(MEX_AW_DEFINES) $(INCLUDES) -L./lib -lhmm $(MEXLIBRARIES) mex/hmm_fit.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
+	mv hmm_fit.mex* mex/
+	cp mex/hmm_fit.mex* $(MATLAB_UTILS_HMM)
 
 mex/hmm_likelihood.mex: mex/hmm_likelihood.cpp lib/libhmm.a
-	$(MEXCC) $(INCLUDES) -L./lib -lhmm $(MEXLIBRARIES) mex/hmm_likelihood.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
-	mv hmm_likelihood.mexmaci64 mex/
-	cp mex/hmm_likelihood.mexmaci64 ~/Dropbox/GMMHMM/aggregated_wasserstein_hmm_pami/utils/hmm
+	$(MEXCC) $(MEX_AW_DEFINES) $(INCLUDES) -L./lib -lhmm $(MEXLIBRARIES) mex/hmm_likelihood.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
+	mv hmm_likelihood.mex* mex/
+	cp mex/hmm_likelihood.mex* $(MATLAB_UTILS_HMM)
 
 ifeq ($(OSX),1)
 $(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a lib/libmosek64_wrapper.dylib
@@ -88,10 +88,10 @@ $(PROJECT)_train: lib/libhmm.a lib/libmosek64_wrapper.so
 	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) -lhmm -lmosek64_wrapper $(LDFLAGS)
 
 lib/libmosek64_wrapper.so: build/mosek_solver.o
-	$(CXX) -shared $(LDFLAGS) $(INCLUDES) $(LIBRARIES) -Wl,-soname,$@ -o libmosek64_wrapper.$(MOSEK_VERSION).so $< $(MOSEKLIB)
-	ln -sf libmosek64_wrapper.$(MOSEK_VERSION).so $@
+	$(CXX) -shared 	$(INCLUDES) $(LIBRARIES) -Wl,-soname,$@ -o $@ $< $(MOSEKLIB)
+	#ln -sf libmosek64_wrapper.$(MOSEK_VERSION).so $@
 
-lib/libhmm.a: $(OBJ) libmosek64_wrapper.dylib
+lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
 	@echo $^
 	@mkdir -p $(@D)
 	ar crv $@ $^
