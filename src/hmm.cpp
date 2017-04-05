@@ -114,7 +114,7 @@ void HmmModel::print_model(std::string filename) const
   dim=this->dim;
   numst=this->numst;
   numcls=this->numcls;
-  
+
   fprintf(outfile, "dim=%d\n", dim);
   fprintf(outfile, "numst=%d\n", numst);
   fprintf(outfile, "numcls=%d\n", numcls);
@@ -150,7 +150,7 @@ void HmmModel::print_model(std::string filename) const
     fprintf(outfile, "Sigma_det=%e\n", this->stpdf[i].sigma_det);
 
     fprintf(outfile, "Covariance matrix Sigma:\n");
- 
+
     for (int m=0; m<this->stpdf[i].dim; m++) {
       for (int n=0; n<this->stpdf[i].dim; n++)
         fprintf(outfile, "%.5e ", this->stpdf[i].sigma[m][n]);
@@ -158,13 +158,13 @@ void HmmModel::print_model(std::string filename) const
     }
 
     fprintf(outfile, "Covariance matrix inverse Sigma_inv:\n");
- 
+
     for (int m=0; m<this->stpdf[i].dim; m++) {
       for (int n=0; n<this->stpdf[i].dim; n++)
         fprintf(outfile, "%.5e ", this->stpdf[i].sigma_inv[m][n]);
       fprintf(outfile, "\n");
     }
   }
-  
+
 }
 

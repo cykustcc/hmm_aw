@@ -12,8 +12,8 @@
 
 #if defined __APPLE__
 std::string root_path = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw";
-#elif defined unix
-std::string root_path = "/home/yzc147/work/hmmaw";
+#elif defined __unix__
+std::string root_path = "/home/yzc147/work/hmm_aw";
 #endif
 
 void expect_same_hmm(HmmModel& md1, HmmModel& md2, double tol){

@@ -26,15 +26,15 @@ DEFINE_bool(forcediag, false,
 
 int main(int argc, char *argv[])
 {
-    gflags::SetUsageMessage("train HMM with Gaussian (or GMMs) emission\n"
-                            "usage: train <command> <args>\n\n"
-                            "commands:\n"
-                            "  infilename      input data file name\n"
-                            "  mdfilename      output model file name\n"
-                            "  dim             data dimension\n"
-                            "  num             number of sequences\n"
-                            "  statenum        number of states in HMM\n"
-                            "  l               sequence length");
+  gflags::SetUsageMessage("train HMM with Gaussian (or GMMs) emission\n"
+                          "usage: train <command> <args>\n\n"
+                          "commands:\n"
+                          "  infilename      input data file name\n"
+                          "  mdfilename      output model file name\n"
+                          "  dim             data dimension\n"
+                          "  num             number of sequences\n"
+                          "  statenum        number of states in HMM\n"
+                          "  l               sequence length");
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   FILE *infile, *mdfile;
   int i,j,k,m,n;
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   const char * infilename = infilenamestr.c_str();
   const char * mdfilename = mdfilenamestr.c_str();
   const char * hmmmdfilename = hmmmdfilenamestr.c_str();
-  
+
   /*----------------------------------------------------------------*/
   /*--------------------- open files -------------------------------*/
   /*----------------------------------------------------------------*/
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
   //fprintf(stdout, "nseq=%d, numdat=%d, dim=%d\n",nseq,numdat,dim);
   //for (i=0;i<nseq;i++)
   // fprintf(stdout, "len[%d]=%d\n", i,len[i]);r
-  
+
   int dimension,seq_len;
   std::vector<int> size(2, 0);
   input.read(reinterpret_cast<char*>(&size[0]), size.size());
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     print_vector(u[i], len[i], dim);
   }
 //  fread(dat,sizeof(float),numdat*dim, infile);
-  
+
   /*for (m=0;m<numdat;m++) {*/
     /*if (feof(nfile)) {*/
       /*fprintf(stderr, "Error: not enough data in input file\n");*/

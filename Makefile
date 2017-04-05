@@ -16,6 +16,7 @@ endif
 
 
 INCLUDES=-Iinclude/ -I$(MOSEK)/h $(CBLAS_INC) \
+ -Itest \
  -Igoogletest/googletest/include -Igoogletest/googletest\
  -I$(GFLAGS)/include \
  -I$(GLOG)/include
@@ -40,7 +41,8 @@ SOURCE_CPP_WITH_MAIN=main.cpp
 # Test sources:
 GTEST_ALL = ./googletest/googletest/src/gtest-all.cc
 TEST_MAIN_SRC = ./test/gtest_main.cpp
-TEST_SRCS := $(shell find ./test -name "*_test.cpp")
+#TEST_SRCS := $(shell find ./test -name "*_test.cpp")
+TEST_SRCS := $(shell find ./test -name "*.cpp")
 TEST_SRCS := $(filter-out $(TEST_MAIN_SRC), $(TEST_SRCS))
 TEST_CXX_OBJS := $(patsubst ./test/%.cpp, ./build/%.o, $(TEST_SRCS))
 TEST_ALL_BIN := lib/hmm_awTest
@@ -107,17 +109,17 @@ run:
 	./$(PROJECT)_train --infilename ./data/gmm_hmm_samples_dim2_T1000.dat --mdfilename ./data/md.dat --dim 2 --num 1 --statenum 2 --len 1000 --forcediag
 	# ./$(PROJECT)_train -i ./data/gmm_hmm_samples_dim2_T1000.dat -m ./data/md.dat -d 2 -n 1 -s 2 -l 1000
 
-test: $(TEST_ALL_BIN) lib/libgtest.so
+test: $(TEST_ALL_BIN) lib/libgtest.a
 
 runtest:
 	$(TEST_ALL_BIN)
 
-lib/libgtest.so:
-	$(CXX) -shared -undefined dynamic_lookup -o $@ $(LDFLAGS) $(INCLUDES) $(GTEST_ALL) -Wl
+lib/libgtest.a:
+	$(CXX) -o $@ $(LDFLAGS) $(INCLUDES) $(GTEST_ALL)
 
-$(TEST_ALL_BIN): $(TEST_MAIN_SRC) $(TEST_SRCS) lib/libhmm.a lib/libgtest.so
+$(TEST_ALL_BIN): $(TEST_MAIN_SRC) $(TEST_SRCS) lib/libhmm.a lib/libgtest.a
 	@echo $@
-	$(CXX) $(TEST_MAIN_SRC) $(TEST_SRCS) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) -lhmm -lgtest -Wl,-rpath,./lib
+	$(CXX) $(TEST_MAIN_SRC) $(TEST_SRCS) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) -lhmm -lgtest -lmosek64_wrapper -Wl,-rpath,./lib
 
 testvars:
 	@echo $(INCLUDES)
