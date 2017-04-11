@@ -6,9 +6,17 @@ LDFLAGS=
 CFLAGS=-std=c++11 -fPIC $(AW_DEFINES)
 
 UNAME=$(shell uname -s)
+HNAME=$(shell hostname)
+IDENTIFIER=$(shell echo $(HNAME) | cut -d'.' -f 3)
+#lionxv.rcc.psu.edu
+#br005.pvt.bridges.psc.edu
 ifeq ($(UNAME), Linux)
 	LINUX := 1
-	include make.inc.Linux
+	ifeq ($(IDENTIFIER), psu)
+		include make.inc.Linux.Cyberstar
+	else ifeq ($(IDENTIFIER), bridges)
+		include make.inc.Linux
+	endif
 else ifeq ($(UNAME), Darwin)
 	OSX := 1
 	include make.inc.macOS
@@ -122,6 +130,7 @@ $(TEST_ALL_BIN): $(TEST_MAIN_SRC) $(TEST_SRCS) lib/libhmm.a lib/libgtest.a
 	$(CXX) $(TEST_MAIN_SRC) $(TEST_SRCS) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) -lhmm -lgtest -lmosek64_wrapper -Wl,-rpath,./lib
 
 testvars:
+	@echo $(IDENTIFIER)
 	@echo $(INCLUDES)
 	@echo $(HEADERS)
 	@echo $(SOURCES_CPP)
