@@ -13,6 +13,8 @@
 #include "utils/lapacke.h"
 #include "matrix.h"
 #include "dist_utils.h"
+#include "mosek_solver.h"
+
 
 double HmmModel::dist_KL(HmmModel &hmm2, int sample_size, bool diag){
   double res = 0.0;
@@ -26,10 +28,75 @@ double HmmModel::dist_KL(HmmModel &hmm2, int sample_size, bool diag){
   return res;
 }
 
+
+void normalize_row(double* x, double* x_r, int m, int n){
+  double *row_sums = (double *)malloc(m*sizeof(double));
+  for (int i=0; i<m; i++) {
+    row_sums[i] = 0;
+    for (int j=0; j<n; j++) {
+      row_sums[i] += x[i*n+j];
+    }
+    if (fabs(row_sums[i] - 0.0) < 1e-5) {
+      row_sums[i] = 1.0;
+    }
+  }
+  
+  for (int i=0; i<m; i++) {
+    for (int j=0; j<n; j++) {
+      x_r[i*n+j] = x[i*n+j] / row_sums[i];
+    }
+  }
+}
+
+void normalize_col(double* x, double* x_c, int m, int n){
+  double *col_sums = (double *)malloc(m*sizeof(double));
+  for (int i=0; i<n; i++) {
+    col_sums[i] = 0;
+    for (int j=0; j<m; j++) {
+      col_sums[i] += x[i+j*m];
+    }
+    if (fabs(col_sums[i] - 0.0) < 1e-5) {
+      col_sums[i] = 1.0;
+    }
+  }
+  
+  for (int i=0; i<n; i++) {
+    for (int j=0; j<m; j++) {
+      x_c[i+j*m] = x[i*n+j] / col_sums[i];
+    }
+  }
+}
+
+double HmmModel::dist_transmat_MAW(HmmModel &hmm2, double* C, double* x){
+  double *x_w = (double *)malloc(numst*hmm2.numst*sizeof(double));
+  double *x_r = (double *)malloc(numst*hmm2.numst*sizeof(double));
+  normalize_row(x, x_r, numst, hmm2.numst);
+  normalize_col(x, x_r, numst, hmm2.numst);
+  free(x_w);
+  free(x_r);
+  return 0.0;
+}
+
+
 double HmmModel::dist_MAW(HmmModel &hmm2){
   double *C = (double *)malloc(numst*hmm2.numst*sizeof(double));
+  double *x = (double *)malloc(numst*hmm2.numst*sizeof(double));
   calc_distmat(*this, hmm2, C);
-  return 0.0;
+  double lambda = 1;
+  
+  solver_setup();
+  double val = match_by_distmat(numst,
+                                hmm2.numst,
+                                C,
+                                a00,
+                                hmm2.a00,
+                                x,
+                                &lambda);
+  solver_release();
+  
+  free(C);
+  free(x);
+  return val;
 }
 
 double HmmModel::dist_IAW(HmmModel &hmm2){

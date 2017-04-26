@@ -270,6 +270,7 @@ public:
               bool forcediag);
   
   double dist_KL(HmmModel &hmm2, int sample_size, bool diag = false);
+  double dist_transmat_MAW(HmmModel &hmm2, double* C, double* x);
   double dist_MAW(HmmModel &hmm2);
   double dist_IAW(HmmModel &hmm2);
   
