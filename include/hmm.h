@@ -176,6 +176,14 @@ public:
     }
     a00.resize(numst);
   }
+  /*--------- model data getters --------*/
+  inline void get_transmat(double *transmat){
+    for (int i=0; i<numst; i++) {
+      for (int j=0; j<numst; j++) {
+        transmat[i*numst + j] = this->a[i][j];
+      }
+    }
+  }
   /*--------- model io         ----------*/
   void read_model(std::string filename);
   void write_model(std::string filename) const;
@@ -271,8 +279,8 @@ public:
   
   double dist_KL(HmmModel &hmm2, int sample_size, bool diag = false);
   double dist_transmat_MAW(HmmModel &hmm2, double* C, double* x);
-  double dist_MAW(HmmModel &hmm2);
-  double dist_IAW(HmmModel &hmm2);
+  double dist_MAW(HmmModel &hmm2, double alpha);
+  double dist_IAW(HmmModel &hmm2, double alpha);
   
   void gen_seq(std::vector<float> &seq,
                int n,

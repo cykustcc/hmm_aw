@@ -40,4 +40,27 @@
 #define _FREE(x)         mkl_free(x)
 #endif
 
+
+template <typename DType>
+void Gemm(const CBLAS_TRANSPOSE TransA,
+          const CBLAS_TRANSPOSE TransB,
+          const int M, /* # of rows of A and C */
+          const int N, /* # of cols of A and rows of B */
+          const int K, /* # of cols of B and C */
+          const DType alpha,
+          const DType* A,
+          const DType* B,
+          const DType beta,
+          DType* C,
+          bool isdouble = false /* float or double, default float*/) {
+  int lda = (TransA == CblasNoTrans) ? K : M;
+  int ldb = (TransB == CblasNoTrans) ? N : K;
+  if(!isdouble)
+    cblas_sgemm(CblasRowMajor, TransA, TransB, M, N, K, alpha, A, lda, B, ldb,
+              beta, C, N);
+  else
+    cblas_dgemm(CblasRowMajor, TransA, TransB, M, N, K, alpha, A, lda, B, ldb,
+                beta, C, N);
+}
+
 #endif /* blas_utils_h */

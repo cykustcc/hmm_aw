@@ -14,6 +14,7 @@
 #include "matrix.h"
 #include "dist_utils.h"
 #include "mosek_solver.h"
+#include "blas_utils.h"
 
 
 double HmmModel::dist_KL(HmmModel &hmm2, int sample_size, bool diag){
@@ -68,17 +69,87 @@ void normalize_col(double* x, double* x_c, int m, int n){
 }
 
 double HmmModel::dist_transmat_MAW(HmmModel &hmm2, double* C, double* x){
-  double *x_w = (double *)malloc(numst*hmm2.numst*sizeof(double));
-  double *x_r = (double *)malloc(numst*hmm2.numst*sizeof(double));
-  normalize_row(x, x_r, numst, hmm2.numst);
-  normalize_col(x, x_r, numst, hmm2.numst);
-  free(x_w);
+  int numst_1 = numst, numst_2 = hmm2.numst;
+  double *x_c = (double *)malloc(numst_1*numst_2*sizeof(double));
+  double *x_r = (double *)malloc(numst_1*numst_2*sizeof(double));
+  // make transmat in format usable to cblas.
+  double *transmat = (double *)malloc(numst_1*numst_1*sizeof(double));
+  double *transmat2 = (double *)malloc(numst_2*numst_2*sizeof(double));
+  get_transmat(transmat);
+  hmm2.get_transmat(transmat2);
+
+  normalize_row(x, x_r, numst_1, numst_2);
+  normalize_col(x, x_c, numst_1, numst_2);
+  
+  double *transmat1_to_2 = (double *)malloc(numst_2*numst_2*sizeof(double));
+  double *transmat1_to_2_tmp = (double *)malloc(numst_2*numst_1*sizeof(double));
+  //transmat1_to_2_tmp = 1.0*x_c'*transmat + 0.0*transmat1_to_2_tmp
+  //  (n_2 * n_1)    (n_1 * n_2)' * (n_1 * n_1)
+  Gemm(CblasTrans,
+       CblasNoTrans,
+       numst_1, /* # of rows of x_c and transmat1_to_2_tmp (A and C) */
+       numst_2, /* # of cols of x_c (A) and rows of transmat (B) */
+       numst_1, /* # of cols of transmat and transmat1_to_2_tmp (B and C) */
+       1.0,
+       x_c,
+       transmat,
+       0.0,
+       transmat1_to_2_tmp,
+       false);
+  //transmat1_to_2 = 1.0*transmat1_to_2_tmp*x_r + 0.0*transmat1_to_2
+  //  (n_2 * n_2)    (n_2 * n_1) * (n_1 * n_2)
+  Gemm(CblasNoTrans,
+       CblasNoTrans,
+       numst_2, /* # of rows of transmat1_to_2_tmp and x_r (A and C) */
+       numst_1, /* # of cols of transmat1_to_2_tmp (A) and rows of x_r (B) */
+       numst_2, /* # of cols of x_r and transmat1_to_2 (B and C) */
+       1.0,
+       transmat1_to_2_tmp,
+       x_r,
+       0.0,
+       transmat1_to_2,
+       false);
+  
+  double *transmat2_to_1 = (double *)malloc(numst_1*numst_1*sizeof(double));
+  double *transmat2_to_1_tmp = (double *)malloc(numst_1*numst_2*sizeof(double));
+  //transmat2_to_1_tmp = 1.0*x_r*transmat2 + 0.0*transmat2_to_1_tmp
+  //  (n_1 * n_2)    (n_1 * n_2) * (n_2 * n_2)
+  Gemm(CblasNoTrans,
+       CblasNoTrans,
+       numst_1, /* # of rows of x_r and transmat1_to_2_tmp (A and C) */
+       numst_2, /* # of cols of x_r (A) and rows of transmat (B) */
+       numst_2, /* # of cols of transmat2 and transmat1_to_2_tmp (B and C) */
+       1.0,
+       x_c,
+       transmat2,
+       0.0,
+       transmat1_to_2_tmp,
+       false);
+  //transmat2_to_1 = 1.0*transmat2_to_1_tmp*x_c' + 0.0*transmat2_to_1
+  //  (n_2 * n_2)    (n_2 * n_1) * (n_1 * n_2)'
+  Gemm(CblasNoTrans,
+       CblasTrans,
+       numst_2, /* # of rows of transmat2_to_1_tmp and x_c (A and C) */
+       numst_1, /* # of cols of transmat2_to_1_tmp (A) and rows of x_c (B) */
+       numst_2, /* # of cols of x_r and transmat2_to_1_tmp (B and C) */
+       1.0,
+       transmat1_to_2_tmp,
+       x_r,
+       0.0,
+       transmat1_to_2,
+       false);
+  
+  free(transmat1_to_2_tmp);
+  free(transmat1_to_2);
+  free(transmat2_to_1_tmp);
+  free(transmat2_to_1);
+  free(x_c);
   free(x_r);
   return 0.0;
 }
 
 
-double HmmModel::dist_MAW(HmmModel &hmm2){
+double HmmModel::dist_MAW(HmmModel &hmm2, double alpha){
   double *C = (double *)malloc(numst*hmm2.numst*sizeof(double));
   double *x = (double *)malloc(numst*hmm2.numst*sizeof(double));
   calc_distmat(*this, hmm2, C);
@@ -92,6 +163,7 @@ double HmmModel::dist_MAW(HmmModel &hmm2){
                                 hmm2.a00,
                                 x,
                                 &lambda);
+  double dist_trans = dist_transmat_MAW(hmm2, C, x);
   solver_release();
   
   free(C);
@@ -99,7 +171,7 @@ double HmmModel::dist_MAW(HmmModel &hmm2){
   return val;
 }
 
-double HmmModel::dist_IAW(HmmModel &hmm2){
+double HmmModel::dist_IAW(HmmModel &hmm2, double alpha){
   return 0.0;
 }
 
