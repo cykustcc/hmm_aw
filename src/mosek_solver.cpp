@@ -60,8 +60,8 @@ void solver_release() {
 double match_by_distmat(int n,
                         int m,
                         double *C,
-                        std::vector<double> &wX,
-                        std::vector<double> &wY,
+                        double* wX,
+                        double* wY,
                         /** OUT **/ double *x,
                         /** OUT **/ double *lambda) {
   
@@ -183,8 +183,8 @@ double match_by_distmat(int n,
             MSK_getxx(*p_task,
                       MSK_SOL_BAS,    /* Request the basic solution. */
                       x);
-//            printf("Optimal primal solution\n");
-//            for(j=0; j<numvar; ++j) printf("x[%d]: %e\n",j,xx[j]);
+            printf("Optimal primal solution\n");
+            for(int j=0; j<numvar; ++j) printf("x[%d]: %e\n",j,x[j]);
             
             //free(x);
           }
