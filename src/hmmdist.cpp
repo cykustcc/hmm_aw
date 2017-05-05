@@ -14,8 +14,9 @@
 #include "matrix.h"
 #include "dist_utils.h"
 #include "mosek_solver.h"
-#include "blas_utils.h"
-#include "common.h"
+#include "utils/blas_utils.h"
+#include "utils/blas_like.h"
+#include "utils/common.h"
 
 
 double HmmModel::dist_KL(HmmModel &hmm2, int sample_size, bool diag){
@@ -57,7 +58,7 @@ void normalize_col(double* x, double* x_c, int m, int n){
     for (int j=0; j<m; j++) {
       col_sums[i] += x[i+j*m];
     }
-    if (fabs(col_sums[i] - 0.0) < 1e-5) {
+    if (fabs(col_sums[i] - 0.0) < 1e-9) {
       col_sums[i] = 1.0;
     }
   }
@@ -172,7 +173,7 @@ double HmmModel::dist_transmat_MAW(HmmModel &hmm2, double* C, double* x){
 double HmmModel::dist_MAW(HmmModel &hmm2, double alpha){
   int numst_1 = numst, numst_2 = hmm2.numst;
   double *C = (double *)malloc(numst_1*numst_2*sizeof(double));
-  double *match = (double *)calloc(numst_1*numst_2, sizeof(double));
+  double *match = (double *)malloc(numst_1*numst_2*sizeof(double));
   calc_distmat(*this, hmm2, C);
   double lambda = 1;
   double* hmm1_a00 = (double*) malloc(numst_1*sizeof(double));
@@ -199,24 +200,33 @@ double HmmModel::dist_MAW(HmmModel &hmm2, double alpha){
   return res;
 }
 
-double HmmModel::dist_IAW(HmmModel &hmm2, double alpha){
+double HmmModel::dist_IAW(HmmModel &hmm2, double alpha, int sample_size, bool diag){
+  std::vector<std::vector<float>> seq(2, std::vector<float>(dim*sample_size, 0.0));
+  gen_gmm(seq[0], sample_size, diag);
+  hmm2.gen_gmm(seq[1], sample_size, diag);
+  print_matrix(seq);
+//  match_by_distmat_BADMM();
   return 0.0;
 }
 
-// based on current state('s gaussian), generate the idx th point of the sequence.
+// based on current state('s gaussian), generate the [idx, idx + N -1] th points of the sequence.
 // i.e. seq[idx*dim:idx*(dim+1)-1] are filled in.
 void HmmModel::gauss_sample(std::vector<float> &seq, /*output*/
                             int idx,
+                            int N,
                             int state,
                             std::vector<std::vector<double>> &mt_S,
                             bool diag){
   std::vector<double> res(dim, 0.0);
-  for (int i=0; i<dim; i++) {
-    for (int j=0; j<dim; j++) {
-      res[i] += mt_S[i][j]*seq[idx*dim+j];
+  for (int k=0; k<N; k++){
+    for (int i=0; i<dim; i++) {
+      for (int j=0; j<dim; j++) {
+        res[i] += mt_S[i][j]*seq[(idx + k)*dim+j];
+      }
+      res[i] += stpdf[state].mean[i];
+      seq[(idx + k)*dim+i] = res[i];
     }
-    res[i] += stpdf[state].mean[i];
-    seq[idx*dim+i] = res[i];
+    std::fill(res.begin(), res.end(), 0.0);
   }
 }
 
@@ -234,6 +244,8 @@ void HmmModel::gen_seq(std::vector<float> &seq, int n, bool diag){
     state_dd.push_back(tmp);
   }
   int cur_state = init_state_dd(gen);
+  
+  //mt_Ss stores the cholesky_decomp of sigmas.
   std::vector<std::vector<double>> mt_S(dim, std::vector<double>(dim, 0.0));
   std::vector<std::vector<std::vector<double>>> mt_Ss;
   for (int i=0; i<numst; i++) {
@@ -242,6 +254,7 @@ void HmmModel::gen_seq(std::vector<float> &seq, int n, bool diag){
                     mt_Ss[i],
                     diag);
   }
+  
   for(int i = 0; i < n; i++){
     double cumulate = 0.0;
     cur_state = state_dd[cur_state](gen);
@@ -249,7 +262,7 @@ void HmmModel::gen_seq(std::vector<float> &seq, int n, bool diag){
       seq[i*dim+j] = gauss_std(gen);
 //      ++hist[std::round(seq[i*dim+j])];
     }
-    gauss_sample(seq, i, cur_state, mt_Ss[cur_state], diag);
+    gauss_sample(seq, i, 1, cur_state, mt_Ss[cur_state], diag);
     m[cur_state]++;
   }
   // to be deleted
@@ -261,3 +274,41 @@ void HmmModel::gen_seq(std::vector<float> &seq, int n, bool diag){
     std::cout << p.first << " generated " << p.second << " times\n";
   }
 };
+
+void HmmModel::gen_gmm(std::vector<float> &seq, int n, bool diag){
+  assert(seq.size() == n*dim);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::map<int, int> m;
+  std::vector<std::discrete_distribution<>> state_dd;
+  std::normal_distribution<> gauss_std(0,1);
+
+  std::vector<std::vector<double>> mt_S(dim, std::vector<double>(dim, 0.0));
+  std::vector<std::vector<std::vector<double>>> mt_Ss;
+  for (int i=0; i<numst; i++) {
+    mt_Ss.push_back(mt_S);
+    cholesky_decomp(stpdf[i].sigma,
+                    mt_Ss[i],
+                    diag);
+  }
+  
+  std::vector<int> sample_per_gaussian(numst, 0);
+  int samples_cnt = 0;
+  for (int i=0; i<numst - 1; i++) {
+    sample_per_gaussian[i] = a00[i] * n;
+    samples_cnt += sample_per_gaussian[i];
+  }
+  sample_per_gaussian[numst-1] = n - samples_cnt;
+  
+  for(int i=0; i<n; i++){
+    for (int j = 0; j < dim; j++) {
+      seq[i*dim+j] = gauss_std(gen);
+      //      ++hist[std::round(seq[i*dim+j])];
+    }
+  }
+  for (int i=0, start_idx=0; i<numst; i++) {// i is the idx of state
+    gauss_sample(seq, start_idx, sample_per_gaussian[i], i, mt_Ss[i], diag);
+    start_idx += sample_per_gaussian[i];
+  }
+};
+

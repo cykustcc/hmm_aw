@@ -17,106 +17,108 @@ void _dadd(size_t n, double *a, double b) {
   for (i=0; i<n; ++i) a[i] += b;
 }
 
-// a(:,*) = a(:,*) .+ b
+// a(:,*) = a(:,*) .+ b  row-major
 void _dgcmv(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
   double *pa, *pb;
-  for (i=0,pa=a; i<n; ++i)
-    for (j=0,pb=b; j<m; ++j, ++pa, ++pb)
+  for (i=0; i<m; ++i,++pb)
+    for (j=0; j<n; ++j, ++pa)
       *pa += *pb;
 }
 
-// a(*,:) = a(*,:) .+ b
+// a(*,:) = a(*,:) .+ b  row-major
 void _dgrmv(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
   double *pa =a, *pb =b;
-  for (i=0; i<n; ++i,++pb)
-    for (j=0; j<m; ++j, ++pa)
+  for (i=0,pa=a; i<n; ++i)
+    for (j=0,pb=b; j<m; ++j, ++pa, ++pb)
       *pa += *pb;
 }
 
-// a = diag(b) * a
+//diag([1,2,3]) = [1,0,0;
+//                 0,2,0;
+//                 0,0,3]
+// a = diag(b) * a  row-major
 void _dgcms(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
-  double *pa = a, *pb;
-  for (i=0; i<n; ++i)
-    for (j=0, pb=b; j<m; ++j, ++pa, ++pb)
+  double *pa = a, *pb = b;
+  for (i=0; i<m; ++i,++pb)
+    for (j=0; j<n; ++j, ++pa)
       *pa *= *pb;
 }
 
-// a = a * diag(b)
+// a = a * diag(b) row-major
 void _dgrms(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
-  double *pa = a, *pb = b;
-  for (i=0; i<n; ++i,++pb)
-    for (j=0; j<m; ++j, ++pa)
+  double *pa = a, *pb;
+  for (i=0; i<m; ++i)
+    for (j=0, pb=b; j<n; ++j, ++pa, ++pb)
       *pa *= *pb;
 }
 
-// a = diag(1./b) * a
+// a = diag(1./b) * a row-major
 void _dicms(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
   double *pa, *pb;
-  for (j=0; j<m; ++j) assert(b[j] > 0);
-  for (i=0,pa=a; i<n; ++i)
-    for (j=0,pb=b; j<m; ++j, ++pa, ++pb)
+  for (i=0; i<m; ++i) assert(b[i] > 0);
+  for (i=0,pa=a,pb=b; i<m; ++i,++pb) {
+    for (j=0; j<n; ++j, ++pa)
       *pa /= *pb;
+  }
 }
 
-// a = a * diag(1./b)
+// a = a * diag(1./b) row-major
 void _dirms(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
   double *pa, *pb;
-  for (i=0; i<n; ++i) assert(b[i] > 0);
-  for (i=0,pa=a,pb=b; i<n; ++i,++pb) {
-    for (j=0; j<m; ++j, ++pa)
+  for (j=0; j<n; ++j) assert(b[j] > 0);
+  for (i=0,pa=a; i<m; ++i)
+    for (j=0,pb=b; j<n; ++j, ++pa, ++pb)
       *pa /= *pb;
-  }
 }
 
-// b(*) = sum(a(:,*))
+// b(*) = sum(a(:,*)) row-major
 void _dcsum(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
   double *pa, *pb;
-  for (i=0,pa=a,pb=b; i<n; ++i, ++pb) {
+  for (j=0,pb=b; j<n; ++j, ++pb)
     *pb = 0;
-    for (j=0; j<m; ++j, ++pa)
+  for (i=0,pa=a; i<m; ++i)
+    for (j=0,pb=b; j<n; ++j, ++pa, ++pb)
       *pb += *pa;
-  }
 }
 
-// b(*) += sum(a(:,*))
+// b(*) += sum(a(:,*)) row-major
 void _dcsum2(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
   double *pa, *pb;
-  for (i=0,pa=a,pb=b; i<n; ++i, ++pb) {
-    for (j=0; j<m; ++j, ++pa)
+  for (i=0,pa=a; i<m; ++i)
+    for (j=0,pb=b; j<n; ++j, ++pa, ++pb)
+      *pb += *pa;
+}
+
+// b(*) = sum(a(*,:)) row-major
+void _drsum(size_t m, size_t n, double *a, double *b) {
+  size_t i,j;
+  double *pa, *pb;
+  for (i=0,pa=a,pb=b; i<m; ++i, ++pb) {
+    *pb = 0;
+    for (j=0; j<n; ++j, ++pa)
       *pb += *pa;
   }
 }
 
-
-// b(*) = sum(a(*,:))
-void _drsum(size_t m, size_t n, double *a, double *b) {
-  size_t i,j;
-  double *pa, *pb;
-  for (j=0,pb=b; j<m; ++j, ++pb)
-    *pb = 0;
-  for (i=0,pa=a; i<n; ++i)
-    for (j=0,pb=b; j<m; ++j, ++pa, ++pb)
-      *pb += *pa;
-}
-
-// b(*) += sum(a(*,:))
+// b(*) += sum(a(*,:)) row-major
 void _drsum2(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
   double *pa, *pb;
-  for (i=0,pa=a; i<n; ++i)
-    for (j=0,pb=b; j<m; ++j, ++pa, ++pb)
+  for (i=0,pa=a,pb=b; i<m; ++i, ++pb) {
+    for (j=0; j<n; ++j, ++pa)
       *pb += *pa;
+  }
 }
 
-// normalize by column
+// normalize by column row-major
 void _dcnorm(size_t m, size_t n, double *a, double *sa) {
   size_t i, j;
   double *pa;
@@ -127,13 +129,14 @@ void _dcnorm(size_t m, size_t n, double *a, double *sa) {
   }
   _dcsum(m, n, a, sa);
   for (i=0; i<n; ++i) assert(sa[i] > 0);
-  for (i=0, pa=sa; i<n; ++i, ++pa) {
-    for (j=0; j<m; ++j, ++a) (*a) /= *pa;
+  for (i=0; i<m; ++i) {
+    pa = sa;
+    for (j=0; j<n; ++j, ++a, ++pa) (*a) /= *pa;
   }
   if (!isAllocated) _FREE(sa);
 }
 
-// normalize by row
+// normalize by row row-major
 void _drnorm(size_t m, size_t n, double *a, double *sa) {
   size_t i, j;
   double *pa;
@@ -144,14 +147,13 @@ void _drnorm(size_t m, size_t n, double *a, double *sa) {
   }
   _drsum(m, n, a, sa);
   for (i=0; i<m; ++i) assert(sa[i] > 0);
-  for (i=0; i<n; ++i) {
-    pa = sa;
-    for (j=0; j<m; ++j, ++a, ++pa) (*a) /= *pa;
+  for (i=0, pa=sa; i<m; ++i, ++pa) {
+    for (j=0; j<n; ++j, ++a) (*a) /= *pa;
   }
   if (!isAllocated) _FREE(sa);
 }
 
-// center by column
+// center by column row-major
 void _dccenter(size_t m, size_t n, double *a, double *sa) {
   size_t i, j;
   double *pa;
@@ -162,13 +164,14 @@ void _dccenter(size_t m, size_t n, double *a, double *sa) {
   }
   _dcsum(m, n, a, sa);
   cblas_dscal(n, 1./m, sa, 1);
-  for (i=0, pa=sa; i<n; ++i, ++pa) {
-    for (j=0; j<m; ++j, ++a) (*a) -= *pa;
+  for (i=0; i<m; ++i) {
+    pa = sa;
+    for (j=0; j<n; ++j, ++a, ++pa) (*a) -= *pa;
   }
   if (!isAllocated) _FREE(sa);
 }
 
-// center by row
+// center by row row-major
 void _drcenter(size_t m, size_t n, double *a, double *sa) {
   size_t i, j;
   double *pa;
@@ -179,9 +182,8 @@ void _drcenter(size_t m, size_t n, double *a, double *sa) {
   }
   _drsum(m, n, a, sa);
   cblas_dscal(m, 1./n, sa, 1);
-  for (i=0; i<n; ++i) {
-    pa = sa;
-    for (j=0; j<m; ++j, ++a, ++pa) (*a) -= *pa;
+  for (i=0, pa=sa; i<m; ++i, ++pa) {
+    for (j=0; j<n; ++j, ++a) (*a) -= *pa;
   }
   if (!isAllocated) _FREE(sa);
 }

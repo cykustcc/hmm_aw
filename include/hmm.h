@@ -280,14 +280,19 @@ public:
   double dist_KL(HmmModel &hmm2, int sample_size, bool diag = false);
   double dist_transmat_MAW(HmmModel &hmm2, double* C, double* x);
   double dist_MAW(HmmModel &hmm2, double alpha);
-  double dist_IAW(HmmModel &hmm2, double alpha);
+  double dist_IAW(HmmModel &hmm2, double alpha, int sample_size, bool diag);
   
   void gen_seq(std::vector<float> &seq,
                int n,
                bool diag);
   
+  void gen_gmm(std::vector<float> &seq,
+               int n,
+               bool diag);
+  
   void gauss_sample(std::vector<float> &seq,
                     int idx,
+                    int N,
                     int state,
                     std::vector<std::vector<double>> &mt_S,
                     bool diag);

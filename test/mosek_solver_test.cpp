@@ -12,7 +12,6 @@
 #include "test_common.h"
 #include "dist_utils.h"
 #include "mosek_solver.h"
-#include "utils.h"
 
 
 TEST(MatchByDistmatTest, MatchByDistmat){

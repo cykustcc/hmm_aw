@@ -1,5 +1,4 @@
 #include "hmm.h"
-#include "utils.h"
 #include <cstring>
 #include <iostream>
 #include <fstream>
@@ -115,20 +114,6 @@ int main(int argc, char *argv[])
     input.read(reinterpret_cast<char*>(&u[i][0]), u[i].size());
     print_vector(u[i], len[i], dim);
   }
-//  fread(dat,sizeof(float),numdat*dim, infile);
-
-  /*for (m=0;m<numdat;m++) {*/
-    /*if (feof(nfile)) {*/
-      /*fprintf(stderr, "Error: not enough data in input file\n");*/
-      /*exit(0);*/
-    /*}*/
-    /*for (j=0;j<dim;j++) {*/
-      /*fscanf(infile, "%e",&tp1);*/
-      /*dat[m*dim+j]=tp1;*/
-    /*}
-    */
-    /*fscanf(infile, "\n");*/
-  /*}*/
 
   /*----------------------------------------------------------------*/
   /*----------------- Estimate HMM  ---------------------------------*/

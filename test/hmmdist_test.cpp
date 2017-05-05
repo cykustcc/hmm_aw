@@ -57,3 +57,8 @@ TEST_F(HMMDistTest, DistMAW){
   EXPECT_NEAR(dist, 0.0, 0.01);
 }
 
+TEST_F(HMMDistTest, DistIAW){
+  double dist = gt_hmm.dist_IAW(gt_hmm, 0.2, 100, true);
+  EXPECT_NEAR(dist, 0.0, 0.01);
+}
+
