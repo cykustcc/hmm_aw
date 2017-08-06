@@ -20,7 +20,7 @@ void _dadd(size_t n, double *a, double b) {
 // a(:,*) = a(:,*) .+ b  row-major
 void _dgcmv(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
-  double *pa, *pb;
+  double *pa = a, *pb = b;
   for (i=0; i<m; ++i,++pb)
     for (j=0; j<n; ++j, ++pa)
       *pa += *pb;
@@ -29,9 +29,9 @@ void _dgcmv(size_t m, size_t n, double *a, double *b) {
 // a(*,:) = a(*,:) .+ b  row-major
 void _dgrmv(size_t m, size_t n, double *a, double *b) {
   size_t i,j;
-  double *pa =a, *pb =b;
-  for (i=0,pa=a; i<n; ++i)
-    for (j=0,pb=b; j<m; ++j, ++pa, ++pb)
+  double *pa = a, *pb = b;
+  for (i=0, pa=a; i<n; ++i)
+    for (j=0, pb=b; j<m; ++j, ++pa, ++pb)
       *pa += *pb;
 }
 
