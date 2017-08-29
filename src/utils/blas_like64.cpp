@@ -163,7 +163,7 @@ void _dccenter(size_t m, size_t n, double *a, double *sa) {
     sa = _MALLOC_DOUBLE(n);
   }
   _dcsum(m, n, a, sa);
-  cblas_dscal(n, 1./m, sa, 1);
+  cblas_dscal((int) n, 1./m, sa, 1);
   for (i=0; i<m; ++i) {
     pa = sa;
     for (j=0; j<n; ++j, ++a, ++pa) (*a) -= *pa;
@@ -181,7 +181,7 @@ void _drcenter(size_t m, size_t n, double *a, double *sa) {
     sa = _MALLOC_DOUBLE(m);
   }
   _drsum(m, n, a, sa);
-  cblas_dscal(m, 1./n, sa, 1);
+  cblas_dscal((int) m, 1./n, sa, 1);
   for (i=0, pa=sa; i<m; ++i, ++pa) {
     for (j=0; j<n; ++j, ++a) (*a) -= *pa;
   }

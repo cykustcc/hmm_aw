@@ -175,7 +175,6 @@ double HmmModel::dist_MAW(HmmModel &hmm2, double alpha){
   double *C = (double *)malloc(numst_1*numst_2*sizeof(double));
   double *match = (double *)malloc(numst_1*numst_2*sizeof(double));
   calc_distmat(*this, hmm2, C);
-  double lambda = 1;
   double* hmm1_a00 = (double*) malloc(numst_1*sizeof(double));
   double* hmm2_a00 = (double*) malloc(numst_2*sizeof(double));
   for (int i=0; i<numst_1; i++)
@@ -204,7 +203,8 @@ double HmmModel::dist_IAW(HmmModel &hmm2, double alpha, int sample_size, bool di
   std::vector<std::vector<float>> seq(2, std::vector<float>(dim*sample_size, 0.0));
   gen_gmm(seq[0], sample_size, diag);
   hmm2.gen_gmm(seq[1], sample_size, diag);
-  print_matrix(seq);
+  
+//  print_matrix(seq);
 //  match_by_distmat_BADMM();
   return 0.0;
 }
@@ -256,7 +256,6 @@ void HmmModel::gen_seq(std::vector<float> &seq, int n, bool diag){
   }
   
   for(int i = 0; i < n; i++){
-    double cumulate = 0.0;
     cur_state = state_dd[cur_state](gen);
     for (int j = 0; j < dim; j++) {
       seq[i*dim+j] = gauss_std(gen);

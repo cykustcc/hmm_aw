@@ -7,15 +7,13 @@
 void HmmModel::forward(std::vector<float> &u,
                        int ncols,
                        std::vector<double> &thetalog,
-                       double &loglikehd)
+                       double &loglikehd){
 // ncols is the length of the sequence
 // u[sequence length*dim] stores the sequence of vectors as one array
 // thetalog is the log of the forward probabilities
 // md is the input HMM
 // *loglikehd is the log likelihood for the entire sequence
-{
-  int precls, curcls;
-  double v1,v2,v3,maxv;
+  double v1,v3,maxv;
 
   std::vector<double> buf(numst,0.0);
 
@@ -77,8 +75,7 @@ void HmmModel::backward(std::vector<float> &u,
 // betalog is the log of the forward probabilities
 // md is the input HMM
 {
-  int nextcls, curcls;
-  double v1 = 0.0,v3  = 0.0,maxv;
+  double v1 = 0.0, maxv;
 
   std::vector<double> buf(numst,0.0);
 
@@ -98,7 +95,6 @@ void HmmModel::backward(std::vector<float> &u,
     for (int l=0; l<numst; l++)
       if (buf[l]>maxv) maxv=buf[l];
 
-
     for (int m=0, mm=jj*numst; m<numst; m++,mm++) {
       v1 = 0.0;
       for (int l=0;l<numst;l++) {
@@ -110,7 +106,6 @@ void HmmModel::backward(std::vector<float> &u,
         betalog[mm]=-HUGE;
     }
   }
-
 }
 
 
@@ -152,7 +147,7 @@ void HmmModel::CompHml(std::vector<float> &u,
                        int west)
      /* Hml=double[ncols*numst], space allocated */
 {
-  double v1,v2;
+  double v1;
   double loglikehd;
   
   /* Hml, m is fixed state of the previous neighbor */
@@ -338,9 +333,7 @@ void HmmModel::viterbicls(std::vector<float> &u,
                           std::vector<int> &optst,
                           std::vector<double> &inita,
                           std::vector<double> &lastmerit,
-                          int &bestnext)
-{
-  int i,j,k,l,m,n;
+                          int &bestnext){
   double v1,v2,v3;
 
   std::vector<int> prest(len*numcls, 0);
@@ -354,7 +347,7 @@ void HmmModel::viterbicls(std::vector<float> &u,
   formmix(inita, tm, astart, pdflist, prior, nstpercls);
 
   /* treat the first location */
-  for (l=0; l<numcls; l++) {
+  for (int l=0; l<numcls; l++) {
     if (astart[l]>0.0) {
       merit[l]=log(astart[l])+
       mix_gauss_pdf_log(u, pdflist[l], prior[l],nstpercls[l], 0);
@@ -365,12 +358,12 @@ void HmmModel::viterbicls(std::vector<float> &u,
   }
 
   /* treat the rest locations */
-  for (j=1; j<len; j++) {
-    for (l=0; l<numcls; l++) {
+  for (int j=1; j<len; j++) {
+    for (int l=0; l<numcls; l++) {
       v1=mix_gauss_pdf_log(u, pdflist[l], prior[l], nstpercls[l], j*dim);
       v2=(a[0][l]>0.0)?(merit[(j-1)*numcls]+log(a[0][l])):(-HUGE);
       prest[j*numcls+l]=0;
-      for (m=1; m<numcls; m++) {
+      for (int m=1; m<numcls; m++) {
         v3=(a[m][l]>0.0)?(merit[(j-1)*numcls+m]+log(tm[m][l])):(-HUGE);
         if (v2<v3) {
           v2=v3;
@@ -381,9 +374,9 @@ void HmmModel::viterbicls(std::vector<float> &u,
     }
   }
 
-  m=0;
+  int m = 0;
   v1=merit[(len-1)*numcls];
-  for (l=1;l<numcls;l++) {
+  for (int l=1;l<numcls;l++) {
     if (merit[(len-1)*numcls+l]>v1) {
       v1=merit[(len-1)*numcls+l];
       m=l;
@@ -391,18 +384,18 @@ void HmmModel::viterbicls(std::vector<float> &u,
   }
 
   optst[len-1]=m;
-  for (j=len-2; j>=0; j--) {
+  for (int j=len-2; j>=0; j--) {
     optst[j]=prest[(j+1)*numcls+optst[j+1]];
   }
 
   if (lastmerit.size()!=0) {
-    for (l=0;l<numcls;l++) lastmerit[l]=merit[(len-1)*numcls+l];
+    for (int l=0;l<numcls;l++) lastmerit[l]=merit[(len-1)*numcls+l];
 
-    k=-1;
+    int k=-1;
     v1=0.0;
-    for (l=0;l<numcls;l++) {
+    for (int l=0;l<numcls;l++) {
       v2=(tm[0][l]>0.0)?(lastmerit[0]+log(tm[0][l])):(-HUGE);
-      for (m=1; m<numcls; m++) {
+      for (int m=1; m<numcls; m++) {
         v3=(tm[m][l]>0.0)?(lastmerit[m]+log(tm[m][l])):(-HUGE);
         if (v2<v3) {
           v2=v3;
@@ -422,7 +415,6 @@ void HmmModel::viterbicls(std::vector<float> &u,
 
     bestnext=k;
   }
-
 }
 
 
@@ -501,32 +493,31 @@ void HmmModel::updatepar_adder(std::vector<float> &u,
 /*-------------------------------*/
 /** initialization using kmeans **/
 /*-------------------------------*/
-
 void HmmModel::initialize(std::vector<std::vector<float>> &u,
                           int nseq,
                           std::vector<int> &len,
                           int dim,
                           int ranflag)
 {
-  int i,j,k,l,m,n,ii,jj, mm,nn, k1, k2;
+  int i,j,k,m,n, k1, k2;
   int numdata;
   double tpdb, epsilon=1.0e-2, lambda=0.5;
-
+  
   /** use kmeans to decide the initial states **/
   for (i=0,numdata=0;i<nseq;i++) numdata+=len[i];
-
+  
   std::vector<float> buf(numdata*dim, 0.0);
   std::vector<int> code(numdata, 0);
   std::vector<float> cdbk(numdata*dim, 0.0);
   std::vector<std::vector<double>> sigcom(dim, std::vector<double>(dim, 0.0));
-
+  
   for (i=0,k=0; i<nseq; i++) {
     for (j=0; j<len[i]; j++) {
-      for (jj=0; jj<dim; jj++) buf[k*dim+jj]=u[i][j*dim+jj];
+      for (int jj=0; jj<dim; jj++) buf[k*dim+jj] = u[i][j*dim+jj];
       k++;
     }
   }
-
+  
   if (!ranflag) {
     lloyd(cdbk,dim,numst,buf,numdata,1.0e-4);
     encode(cdbk,dim,numst,buf,code,numdata);
@@ -538,30 +529,30 @@ void HmmModel::initialize(std::vector<std::vector<float>> &u,
       if (code[i]>=numst) code[i]=numst-1;
     }
   }
-
+  
   /* compute gaussian mean */
   for (m=0; m<numst; m++) {
-    for (jj=0; jj<dim; jj++)
+    for (int jj=0; jj<dim; jj++)
       stpdf[m].mean[jj]=0.0;
     for (i=0,n=0; i<numdata; i++) {
       if (code[i]==m) {
         n++;
-        for (jj=0; jj<dim; jj++)
+        for (int jj=0; jj<dim; jj++)
           stpdf[m].mean[jj]+=buf[i*dim+jj];
       }
     }
-
+    
     if (n==0) { //don't divide for empty cell
-      for (jj=0; jj<dim; jj++)
+      for (int jj=0; jj<dim; jj++)
         stpdf[m].mean[jj] = 0.0;
     }
     else {
-      for (jj=0; jj<dim; jj++)
+      for (int jj=0; jj<dim; jj++)
         stpdf[m].mean[jj] /= (double)n;
     }
   }
-
-
+  
+  
   // Compute common covariance matrix
   for (k1=0; k1<dim; k1++)
     for (k2=0; k2<dim; k2++)
@@ -572,21 +563,21 @@ void HmmModel::initialize(std::vector<std::vector<float>> &u,
         sigcom[k1][k2]+=(buf[i*dim+k1]-stpdf[code[i]].mean[k1])*
         (buf[i*dim+k2]-stpdf[code[i]].mean[k2]);
   }
-
+  
   for (k1=0; k1<dim; k1++)
     for (k2=k1; k2<dim; k2++) {
       sigcom[k1][k2]/=(double)numdata;
       if (k1!=k2) sigcom[k1][k2]=0.0;  //remove if no spherification
-
+      
       if (k2!=k1) sigcom[k2][k1]=sigcom[k1][k2];
     }
-
+  
   /* compute gaussian mean and covariance matrix */
   for (m=0; m<numst; m++) {
     for (i=0,n=0; i<numdata; i++) {
       if (code[i]==m) 	n++;
     }
-
+    
     if (n==0) { //don't divide for empty cell
       for (k1=0; k1<dim; k1++)
         for (k2=0; k2<dim; k2++)
@@ -614,17 +605,19 @@ void HmmModel::initialize(std::vector<std::vector<float>> &u,
       for (k1=0; k1<dim; k1++)
         for (k2=0; k2<dim; k2++) {
           if (!ranflag) //dilate slightly
-            stpdf[m].sigma[k1][k2]=stpdf[m].sigma[k1][k2]*lambda+(1.1-lambda)*sigcom[k1][k2];
+            stpdf[m].sigma[k1][k2] = stpdf[m].sigma[k1][k2] * lambda +
+                (1.1-lambda)*sigcom[k1][k2];
           else
-            stpdf[m].sigma[k1][k2]=stpdf[m].sigma[k1][k2]*lambda+(1.0-lambda)*sigcom[k1][k2];
-
+            stpdf[m].sigma[k1][k2] = stpdf[m].sigma[k1][k2] * lambda +
+                (1.0-lambda)*sigcom[k1][k2];
+          
         }
     }
     
-    mm = mat_det_inv(stpdf[m].sigma,
-                     stpdf[m].sigma_inv,
-                     stpdf[m].sigma_det,
-                     dim);
+    int mm = mat_det_inv(stpdf[m].sigma,
+                         stpdf[m].sigma_inv,
+                         stpdf[m].sigma_det,
+                         dim);
     if (mm==2) { /* singular matrix */
       for (k1=0, tpdb=0.0; k1<dim; k1++)
         tpdb+=stpdf[m].sigma[k1][k1];
@@ -638,7 +631,7 @@ void HmmModel::initialize(std::vector<std::vector<float>> &u,
                   dim);
     }
   }
-
+  
   /** Set the transition probabilities to uniform **/
   tpdb=1.0/(double)numst;
   for (i=0;i<numst;i++)
@@ -647,6 +640,7 @@ void HmmModel::initialize(std::vector<std::vector<float>> &u,
     for (j=0; j<numst; j++)
       a[i][j]=tpdb;
 }
+
 
 /*-----------------------------------------------------------*/
 /** compute the log likelihood of sequences under HMM        */
@@ -688,10 +682,7 @@ double HmmModel::classlikehd(std::vector<std::vector<float>> &u,
 {
   double loglikehd,v1;
   double dbtp;
-  int i,j,k,m,n,ii,mm;
-  int *c, *stcls;
-
-
+  int i,j,ii,mm;
 
   for (i=0,mm=0;i<nseq;i++) {
     if (mm<len[i]) mm=len[i];
@@ -710,13 +701,14 @@ double HmmModel::classlikehd(std::vector<std::vector<float>> &u,
 
     /* normalization */
     for (j=0; j<len[ii]; j++) {
-      for (m=0,dbtp=0.0; m<numst; m++)
-        dbtp+=cprob[ii][j*numst+m];
+      dbtp=0.0;
+      for (int m=0; m<numst; m++)
+        dbtp += cprob[ii][j*numst+m];
       if (dbtp>0.0) {
-        for (m=0; m<numst; m++) cprob[ii][j*numst+m]/=dbtp;
+        for (int m=0; m<numst; m++) cprob[ii][j*numst+m] /= dbtp;
       }
       else {
-        for (m=0; m<numst; m++) cprob[ii][j*numst+m]=1.0/(double)numst;
+        for (int m=0; m<numst; m++) cprob[ii][j*numst+m] = 1.0 / (double) numst;
       }
     }
   }
@@ -732,7 +724,7 @@ void transprob(std::vector<std::vector<double>> &asum,
                std::vector<int> &stcls,
                std::vector<double> &lsum)
 {
-  int k, l;
+  int k;
   double v1;
 
   for (int m=0;m<numcls;m++) {
@@ -825,7 +817,7 @@ int HmmModel::baumwelch(std::vector<std::vector<float>> &u,
      /* The only outputs are loglikehd, lhsumpt, and updated md */
 // Input wt[nseq] gives a weight to each sequence, normally it contains all 1
 {
-  int i,j,k,l,m,n,mm,k1,m1,t,ite,minite=3, maxrow, maxcol;
+  int i,k,mm,k1,ite,minite=3,maxcol;
   double ratio=10.0, epsilon2=5.0e-2;
   double oldlhsum = 0.0, lhsum = 0.0;
   double lambda=LAMBDA;
@@ -840,16 +832,19 @@ int HmmModel::baumwelch(std::vector<std::vector<float>> &u,
 
   std::vector<double> musum( numst*dim, 0.0);
   std::vector<double> mu( numst*dim, 0.0);
-  std::vector<std::vector<double>> mom2sum( numst*dim, std::vector<double>(dim,0.0));
-  std::vector<std::vector<double>> mom2( numst*dim, std::vector<double>(dim,0.0));
-  std::vector<std::vector<double>> sigma( numst*dim, std::vector<double>(dim,0.0));
-  std::vector<std::vector<double>> sigcom( dim, std::vector<double>(dim,0.0));
-  std::vector<std::vector<double>> asum( numst, std::vector<double>(numst,0.0));
-  std::vector<std::vector<double>> tm( numst, std::vector<double>(numst,0.0));
-  std::vector<std::vector<double>> amn( numst, std::vector<double>(numst,0.0));
-  std::vector<std::vector<double>> bnl( numst, std::vector<double>(numst,0.0));
-  std::vector<double>lsum( numst, 0.0);
-  std::vector<double>l1img( numst, 0.0);
+  std::vector<std::vector<double>> mom2sum(numst*dim,
+                                           std::vector<double>(dim,0.0));
+  std::vector<std::vector<double>> mom2(numst*dim,
+                                        std::vector<double>(dim,0.0));
+  std::vector<std::vector<double>> sigma(numst*dim,
+                                         std::vector<double>(dim,0.0));
+  std::vector<std::vector<double>> sigcom(dim, std::vector<double>(dim,0.0));
+  std::vector<std::vector<double>> asum(numst, std::vector<double>(numst,0.0));
+  std::vector<std::vector<double>> tm(numst, std::vector<double>(numst,0.0));
+  std::vector<std::vector<double>> amn(numst, std::vector<double>(numst,0.0));
+  std::vector<std::vector<double>> bnl(numst, std::vector<double>(numst,0.0));
+  std::vector<double> lsum(numst, 0.0);
+  std::vector<double> l1img(numst, 0.0);
 
   maxcol=len[0];
   for (int i=1; i<nseq; i++) {

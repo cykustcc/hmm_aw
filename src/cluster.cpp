@@ -159,7 +159,8 @@ float lloyd(std::vector<float> &cdbk,
   }  
 
   std::vector<int> index(numdata, 0);
-  std::vector<float> stddev(numcdwd*dim, 0.0);// standard deviation for appropriate split
+  // standard deviation for appropriate split
+  std::vector<float> stddev(numcdwd*dim, 0.0);
   std::vector<int> tmpindex;
   
   centroid(cdbk, dim, 1, vc, tmpindex, numdata);
@@ -231,17 +232,12 @@ float kmeans(std::vector<float> &cdbk,
              std::vector<float> &vc,
              int numdata,
              float threshold,
-             float distthred)
-{
-  int ite, splitwd;
-  float dist, olddist, minmse, mse;
-  int min_iteration=2;
+             float distthred){
+  float dist = 0.0;
   int numcdwd;
 
   std::vector<int> index;
   centroid(cdbk, dim, numcdwd, vc, index, numdata);
-
-  dist = 0.0;
   
   for (int i=0, k=0; i<numdata; i++)
     for (int j=0; j<dim; j++, k++)

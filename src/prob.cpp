@@ -5,14 +5,12 @@
 #define LOG_2_PI 1.83787706640935
 
 double GaussModel::gauss_pdf_log(std::vector<float> &ft,
-                                 int baseidx) const
-{
+                                 int baseidx) const {
   double res, tpdb, tpdb2;
-  int i,j,k,m,n;
   std::vector<double> db_array(dim, 0.0);
   std::vector<double> dif(dim, 0.0);
 
-  m=dim;
+  int m = dim;
   for (int i=0; i<m; i++) {
     dif[i] = ft[baseidx + i] - mean[i];
   }
@@ -36,8 +34,7 @@ double GaussModel::gauss_pdf_log(std::vector<float> &ft,
 }
 
 double GaussModel::gauss_pdf(std::vector<float> &ft,
-                             int baseidx) const
-{
+                             int baseidx) const {
   return(exp(gauss_pdf_log(ft, baseidx)));
 }
 
@@ -45,27 +42,25 @@ double mix_gauss_pdf_log(std::vector<float> &ft,
                          std::vector<GaussModel> &gmlist,
                          std::vector<double> &prior,
                          int ncmp,
-                         int baseidx)
-{
-  double res, v1,v2;
-  int i,j,k,m,n;
+                         int baseidx){
+  double res, v1, v2;
 
   std::vector<double> h(ncmp, 0.0);
-  for (i=0;i<ncmp;i++)
+  for (int i=0; i<ncmp; i++)
     h[i]=gmlist[i].gauss_pdf_log(ft, baseidx);
 
   v1=h[0];
-  for (i=1;i<ncmp;i++) if (h[i]>v1) v1=h[i];
+  for (int i=1; i<ncmp; i++) if (h[i]>v1) v1=h[i];
 
   v2=0.0;
-  for (i=0;i<ncmp;i++) {
-    v2 += prior[i]*exp(h[i]-v1);
+  for (int i=0; i<ncmp; i++) {
+    v2 += prior[i] * exp(h[i]-v1);
   }
 
-  if (v2>0.0)
-    res=v1+log(v2);
+  if (v2 > 0.0)
+    res = v1 + log(v2);
   else
-    res=-HUGE;
+    res = -HUGE;
 
   return(res);
 }
