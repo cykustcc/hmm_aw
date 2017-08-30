@@ -1,5 +1,5 @@
 //
-//  optinaltransport.cpp
+//  optimaltransport.cpp
 //  hmm_aw
 //
 //  Created by Yukun Chen on 4/28/17.

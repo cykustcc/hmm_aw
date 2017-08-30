@@ -24,10 +24,9 @@ TEST(MatchByDistmatTest, MatchByDistmat){
   double gt_dist[] = {0.0, 0.02, 0.08,\
     0.02, 0.0, 0.02,\
     0.08, 0.02, 0.0};
-//  LOG(INFO)<<"Cost matrix:";
-//  print_mat_double(C, n, m);
-//  LOG(INFO)<<"prior prob.:";
-//  print_mat_double(hmm1->a00, 3, 1);
+  for (int i=0; i<n*m; i++) {
+    EXPECT_NEAR(C[i], gt_dist[i], 0.0001);
+  }
   double* match = (double*) calloc(n*m, sizeof(double));
   double* a00 = (double*) malloc(n*sizeof(double));
   for (int i=0; i<n; i++) {

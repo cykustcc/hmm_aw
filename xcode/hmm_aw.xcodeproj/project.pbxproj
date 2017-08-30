@@ -14,7 +14,8 @@
 		6761594F1EB0F1F600DF0B69 /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6761594E1EB0F1F600DF0B69 /* libgtest.a */; };
 		676159631EB2D9B500DF0B69 /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 676159621EB2D9B500DF0B69 /* common.h */; };
 		676159641EB2D9B500DF0B69 /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 676159621EB2D9B500DF0B69 /* common.h */; };
-		676159661EB3B0FE00DF0B69 /* optinaltransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 676159651EB3B0FE00DF0B69 /* optinaltransport.cpp */; };
+		676BE8891F55DBDE000FB2B4 /* optimaltransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 676BE8881F55DBDE000FB2B4 /* optimaltransport.cpp */; };
+		676BE88B1F56099B000FB2B4 /* libglog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 676BE88A1F56099B000FB2B4 /* libglog.a */; };
 		676D6FE61E92DFD800ECB684 /* hmmdist_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 676D6FE51E92DFD800ECB684 /* hmmdist_test.cpp */; };
 		676D6FE81E92DFED00ECB684 /* hmmdist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 676D6FE71E92DFED00ECB684 /* hmmdist.cpp */; };
 		676D6FF01E92E27200ECB684 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 676D6FEF1E92E27200ECB684 /* main.cpp */; };
@@ -46,7 +47,6 @@
 		67F962751E707FD600482330 /* matrix_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962701E707FD600482330 /* matrix_test.cpp */; };
 		67F962761E707FD600482330 /* modelio_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962711E707FD600482330 /* modelio_test.cpp */; };
 		67F962791E70800900482330 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F962781E70800900482330 /* main.cpp */; };
-		67F9627D1E70813C00482330 /* libglog.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9627C1E70813C00482330 /* libglog.dylib */; };
 		67F962821E70825900482330 /* libhmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717BF281E66595F00E2521D /* libhmm.a */; };
 		67F962841E7082D400482330 /* libglog.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9627C1E70813C00482330 /* libglog.dylib */; };
 		67F962B51E70B40A00482330 /* gtest-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 67F962B41E70B40A00482330 /* gtest-all.cc */; };
@@ -131,7 +131,8 @@
 		6761594E1EB0F1F600DF0B69 /* libgtest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest.a; path = ../googletest/libgtest.a; sourceTree = "<group>"; };
 		6761595F1EB2D64900DF0B69 /* optimaltransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optimaltransport.h; sourceTree = "<group>"; };
 		676159621EB2D9B500DF0B69 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
-		676159651EB3B0FE00DF0B69 /* optinaltransport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = optinaltransport.cpp; sourceTree = "<group>"; };
+		676BE8881F55DBDE000FB2B4 /* optimaltransport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = optimaltransport.cpp; sourceTree = "<group>"; };
+		676BE88A1F56099B000FB2B4 /* libglog.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglog.a; path = ../../../../../../../usr/local/Cellar/glog/0.3.4_1/lib/libglog.a; sourceTree = "<group>"; };
 		676D6FE51E92DFD800ECB684 /* hmmdist_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hmmdist_test.cpp; sourceTree = "<group>"; };
 		676D6FE71E92DFED00ECB684 /* hmmdist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hmmdist.cpp; sourceTree = "<group>"; };
 		676D6FED1E92E27200ECB684 /* testlapacke */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = testlapacke; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -215,7 +216,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67F9627D1E70813C00482330 /* libglog.dylib in Frameworks */,
+				676BE88B1F56099B000FB2B4 /* libglog.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,6 +282,7 @@
 		6717BEED1E651AFB00E2521D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				676BE88A1F56099B000FB2B4 /* libglog.a */,
 				6761594E1EB0F1F600DF0B69 /* libgtest.a */,
 				676D700D1E92ED2600ECB684 /* libgfortran.dylib */,
 				676D6FFA1E92E2DC00ECB684 /* librefblas.a */,
@@ -355,7 +357,7 @@
 				67F962561E707FBF00482330 /* prob.cpp */,
 				67F962571E707FBF00482330 /* utils */,
 				67F962B61E70E6CF00482330 /* mosek_solver.cpp */,
-				676159651EB3B0FE00DF0B69 /* optinaltransport.cpp */,
+				676BE8881F55DBDE000FB2B4 /* optimaltransport.cpp */,
 			);
 			name = src;
 			path = ../src;
@@ -552,7 +554,7 @@
 		294549C11BDD68C000281995 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = cyk;
 				TargetAttributes = {
 					294549C81BDD68C000281995 = {
@@ -643,8 +645,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				676BE8891F55DBDE000FB2B4 /* optimaltransport.cpp in Sources */,
 				67F9626A1E707FBF00482330 /* blas_like64.cpp in Sources */,
-				676159661EB3B0FE00DF0B69 /* optinaltransport.cpp in Sources */,
 				67F962651E707FBF00482330 /* estimate.cpp in Sources */,
 				676D6FE81E92DFED00ECB684 /* hmmdist.cpp in Sources */,
 				67F962681E707FBF00482330 /* prob.cpp in Sources */,
@@ -713,8 +715,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -770,8 +774,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
