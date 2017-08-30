@@ -12,7 +12,8 @@
 
 // Assume GaussModel A and B has diagnal sigmas.
 // C[j][i] = C[j*m + i], C is an n by m matrix. Row Major.
-void pdist2_hmm(size_t d, size_t n, size_t m, HmmModel& A, HmmModel& B, double *C) {
+void pdist2_hmm(size_t d, size_t n, size_t m, HmmModel& A, HmmModel& B,
+                double *C){
   assert(d>0 && n>0 && m>0);
   for (size_t i=0; i<m*n; ++i) C[i] = 0;
   for (size_t i=0; i<m; ++i)

@@ -7,43 +7,43 @@
 void HmmModel::forward(std::vector<float> &u,
                        int ncols,
                        std::vector<double> &thetalog,
-                       double &loglikehd){
+                       double &loglikehd) {
 // ncols is the length of the sequence
 // u[sequence length*dim] stores the sequence of vectors as one array
 // thetalog is the log of the forward probabilities
 // md is the input HMM
 // *loglikehd is the log likelihood for the entire sequence
-  double v1,v3,maxv;
+  double v1, v3, maxv;
 
-  std::vector<double> buf(numst,0.0);
+  std::vector<double> buf(numst, 0.0);
 
   /* treat the first postion */
-  for (int l=0; l<numst; l++) {
+  for (int l = 0; l < numst; l++) {
     if (a00[l]>0.0)
-      thetalog[l]=log(a00[l])+stpdf[l].gauss_pdf_log(u, 0);
+      thetalog[l] = log(a00[l]) + stpdf[l].gauss_pdf_log(u, 0);
     else
-      thetalog[l]=-HUGE;
+      thetalog[l] = -HUGE;
   }
 
   /* treat the rest columns */
-  for (int jj=1; jj<ncols; jj++) {
-    for (int l=0;l<numst;l++) {
-      buf[l]=thetalog[(jj-1)*numst+l];
+  for (int jj = 1; jj < ncols; jj++) {
+    for (int l = 0;l < numst;l++) {
+      buf[l] = thetalog[(jj-1)*numst+l];
     }
-    maxv=buf[0];
-    for (int l=0; l<numst; l++)
-      if (buf[l]>maxv) maxv=buf[l];
+    maxv = buf[0];
+    for (int l = 0; l < numst; l++)
+      if (buf[l] > maxv) maxv = buf[l];
 
-    for (int m=0, mm=jj*numst; m<numst; m++,mm++) {
-      v3=stpdf[m].gauss_pdf_log(u, jj*dim);
-      v1=0.0;
-      for (int l=0;l<numst;l++) {
-        v1+=exp(buf[l]-maxv)*a[l][m];
+    for (int m = 0, mm = jj * numst; m < numst; m++, mm++) {
+      v3 = stpdf[m].gauss_pdf_log(u, jj * dim);
+      v1 = 0.0;
+      for (int l = 0 ;l < numst; l++) {
+        v1 += exp(buf[l] - maxv) * a[l][m];
       }
-      if (v1>0.0)
-        thetalog[mm]=maxv+log(v1)+v3;
+      if (v1 > 0.0)
+        thetalog[mm] = maxv + log(v1) + v3;
       else
-        thetalog[mm]=-HUGE;
+        thetalog[mm] = -HUGE;
     }
   }
 
@@ -52,58 +52,57 @@ void HmmModel::forward(std::vector<float> &u,
   v3=0.0;
 //  dbpt=thetalog+(ncols-1)*numst;
 //  v3=dbpt[0];
-  int baseidx = (ncols-1)*numst;
+  int baseidx = (ncols - 1) * numst;
   v3=thetalog[baseidx];
-  for (int m=0; m<numst; m++) {
-    if (thetalog[baseidx+m]>v3) v3=thetalog[baseidx+m];
+  for (int m = 0; m < numst; m++) {
+    if (thetalog[baseidx+m] > v3) v3 = thetalog[baseidx+m];
   }
   v1=0.0;
-  for (int m=0; m<numst; m++) {
-    v1+=exp(thetalog[baseidx+m]-v3);
+  for (int m = 0; m < numst; m++) {
+    v1 += exp(thetalog[baseidx+m] - v3);
   }
-  v3+=log(v1);
+  v3 += log(v1);
 
-  loglikehd=v3;
+  loglikehd = v3;
 }
 
 
 void HmmModel::backward(std::vector<float> &u,
                         int ncols,
-                        std::vector<double> &betalog)
+                        std::vector<double> &betalog) {
 // ncols is the length of the sequence
 // u[sequence length*dim] stores the sequence of vectors as one array
 // betalog is the log of the forward probabilities
 // md is the input HMM
-{
   double v1 = 0.0, maxv;
 
   std::vector<double> buf(numst,0.0);
 
   /* treat the last column */
   for (int l=0; l<numst; l++) {
-    betalog[(ncols-1)*numst+l]=0.0;
+    betalog[(ncols-1) * numst + l] = 0.0;
   }
   /* treat the rest columns */
 
-  for (int jj=ncols-2; jj>=0; jj--) {
-    for (int l=0; l<numst; l++) {
-      buf[l]=betalog[(jj+1)*numst+l]+
-        stpdf[l].gauss_pdf_log(u,(jj+1)*dim);
+  for (int jj = ncols-2; jj >= 0; jj--) {
+    for (int l = 0; l < numst; l++) {
+      buf[l] = betalog[(jj + 1) * numst + l]+
+        stpdf[l].gauss_pdf_log(u, (jj + 1) * dim);
     }
 
-    maxv=buf[0];
-    for (int l=0; l<numst; l++)
-      if (buf[l]>maxv) maxv=buf[l];
+    maxv = buf[0];
+    for (int l = 0; l < numst; l++)
+      if (buf[l] > maxv) maxv = buf[l];
 
-    for (int m=0, mm=jj*numst; m<numst; m++,mm++) {
+    for (int m = 0, mm = jj * numst; m < numst; m++,mm++) {
       v1 = 0.0;
-      for (int l=0;l<numst;l++) {
-        v1+=exp(buf[l]-maxv)*a[m][l];
+      for (int l = 0; l < numst; l++) {
+        v1 += exp(buf[l] - maxv) * a[m][l];
       }
-      if (v1>0.0)
-        betalog[mm]=maxv+log(v1);
+      if (v1 > 0.0)
+        betalog[mm] = maxv + log(v1);
       else
-        betalog[mm]=-HUGE;
+        betalog[mm] = -HUGE;
     }
   }
 }
@@ -113,28 +112,27 @@ void HmmModel::CompLm(std::vector<float> &u,
                       int ncols,
                       std::vector<double> &thetalog,
                       std::vector<double> &betalog,
-                      std::vector<double> &Lm)
+                      std::vector<double> &Lm) {
      /* Lm=double[ncols*numst], space allocated */
-{
   double v1,v2;
 
-  for (int j=0; j<ncols; j++) {
-    int baseidx = j*numst;
-    for (int m=0; m<numst;m++)
-      Lm[baseidx + m]=thetalog[j*numst+m]+betalog[j*numst+m];
+  for (int j = 0; j < ncols; j++) {
+    int baseidx = j * numst;
+    for (int m = 0; m < numst;m++)
+      Lm[baseidx + m] = thetalog[j*numst+m] + betalog[j*numst+m];
 
-    v1=Lm[baseidx];
-    for (int m=0; m<numst; m++)
-      if (Lm[baseidx + m]>v1) v1=Lm[baseidx + m];
+    v1 = Lm[baseidx];
+    for (int m = 0; m < numst; m++)
+      if (Lm[baseidx + m]>v1) v1 = Lm[baseidx + m];
     
     v2=0.0;
-    for (int m=0;m<numst;m++){
-      Lm[baseidx + m]=exp(Lm[baseidx + m]-v1);
+    for (int m = 0; m < numst; m++){
+      Lm[baseidx + m] = exp(Lm[baseidx + m] - v1);
       v2+=Lm[baseidx + m];
     }
 
-    for (int m=0;m<numst;m++)
-      Lm[baseidx+m]/=v2;
+    for (int m = 0; m < numst; m++)
+      Lm[baseidx+m] /= v2;
   }
 }
 
@@ -144,9 +142,8 @@ void HmmModel::CompHml(std::vector<float> &u,
                        std::vector<double> &thetalog,
                        std::vector<double> &betalog,
                        std::vector<double> &Hml,
-                       int west)
+                       int west) {
      /* Hml=double[ncols*numst], space allocated */
-{
   double v1;
   double loglikehd;
   
@@ -157,27 +154,27 @@ void HmmModel::CompHml(std::vector<float> &u,
   int baseidx = (ncols-1)*numst;
 
   loglikehd=thetalog[baseidx];
-  for (int m=0; m<numst; m++) {
-      if (thetalog[baseidx + m]>loglikehd) loglikehd=thetalog[baseidx + m];
+  for (int m = 0; m < numst; m++) {
+      if (thetalog[baseidx + m] > loglikehd) loglikehd = thetalog[baseidx + m];
   }
   
   v1=0.0;
-  for (int m=0; m<numst; m++) {
-      v1+=exp(thetalog[baseidx + m]-loglikehd);
+  for (int m = 0; m < numst; m++) {
+      v1 += exp(thetalog[baseidx + m] - loglikehd);
   }
-  loglikehd+=log(v1);
+  loglikehd += log(v1);
 
-  for (int j=0; j<ncols; j++) {
-    int baseidx = j*numst;
-    if (j==0) {
-      for (int l=0; l<numst;l++) Hml[baseidx + l]=0.0;
+  for (int j = 0; j < ncols; j++) {
+    int baseidx = j * numst;
+    if (j == 0) {
+      for (int l = 0; l < numst; l++) Hml[baseidx + l] = 0.0;
       continue;
     }
 
-    for (int l=0;l<numst;l++) {
-      Hml[baseidx + l]=-loglikehd+thetalog[(j-1)*numst+west]+betalog[j*numst+l]+
-        stpdf[l].gauss_pdf_log(u, j*dim);
-      Hml[baseidx + l]=exp(Hml[baseidx + l])*a[west][l];
+    for (int l = 0; l < numst; l++) {
+      Hml[baseidx + l] = -loglikehd + thetalog[(j-1) * numst + west] +
+          betalog[j*numst+l] + stpdf[l].gauss_pdf_log(u, j * dim);
+      Hml[baseidx + l] = exp(Hml[baseidx + l]) * a[west][l];
     }
   }
 }
@@ -189,9 +186,8 @@ void HmmModel::viterbi(std::vector<float> &u,
                        int len,
                        std::vector<int> &optst,
                        std::vector<double> &inita,
-                       std::vector<double> &lastmerit)
+                       std::vector<double> &lastmerit) {
 // optst stores the optimal sequence of states with maximum posterior
-{
   int m;
   double v1,v2,v3;
 
@@ -200,60 +196,60 @@ void HmmModel::viterbi(std::vector<float> &u,
   std::vector<double> merit(len*numst,0.0);
 
   /* treat the first location */
-  if (inita.size()==0){
+  if (inita.size() == 0) {
     for (int l=0; l<numst; l++) {
-      if (a00[l]>0.0) {
-        merit[l]=log(a00[l])+stpdf[l].gauss_pdf_log(u, 0);
+      if (a00[l] > 0.0) {
+        merit[l] = log(a00[l]) + stpdf[l].gauss_pdf_log(u, 0);
       }
       else {
-        merit[l]=-HUGE;
+        merit[l] = -HUGE;
       }
     }
   }else{
-    for (int l=0; l<numst; l++) {
-      if (inita[l]>0.0) {
-        merit[l]=log(inita[l])+stpdf[l].gauss_pdf_log(u, 0);
+    for (int l = 0; l < numst; l++) {
+      if (inita[l] > 0.0) {
+        merit[l] = log(inita[l]) + stpdf[l].gauss_pdf_log(u, 0);
       }
       else {
-        merit[l]=-HUGE;
+        merit[l] = -HUGE;
       }
     }
   }
 
   /* treat the rest locations */
-  for (int j=1; j<len; j++) {
-
-    for (int l=0; l<numst; l++) {
-      v1=stpdf[l].gauss_pdf_log(u, j*dim);
-      v2=(a[0][l]>0.0)?(merit[(j-1)*numst]+log(a[0][l])):(-HUGE);
-      prest[j*numst+l]=0;
-      for (int m=1; m<numst; m++) {
-        v3=(a[m][l]>0.0)?(merit[(j-1)*numst+m]+log(a[m][l])):(-HUGE);
-        if (v2<v3) {
-          v2=v3;
-          prest[j*numst+l]=m;
+  for (int j = 1; j < len; j++) {
+    for (int l = 0; l < numst; l++) {
+      v1 = stpdf[l].gauss_pdf_log(u, j*dim);
+      v2 = (a[0][l] > 0.0) ? (merit[(j-1) * numst] + log(a[0][l])) : (-HUGE);
+      prest[j * numst + l]=0;
+      for (int m = 1; m < numst; m++) {
+        v3 = (a[m][l] > 0.0) ? (merit[(j-1) * numst + m] + log(a[m][l]))
+            : (-HUGE);
+        if (v2 < v3) {
+          v2 = v3;
+          prest[j * numst + l]=m;
         }
       }
-      merit[j*numst+l]=v2+v1;
+      merit[j*numst + l] = v2 + v1;
     }
   }
 
-  m=0;
-  v1=merit[(len-1)*numst];
-  for (int l=1;l<numst;l++) {
-    if (merit[(len-1)*numst+l]>v1) {
-      v1=merit[(len-1)*numst+l];
-      m=l;
+  m = 0;
+  v1 = merit[ (len-1) * numst];
+  for (int l = 1;l < numst; l++) {
+    if (merit[(len-1) * numst + l] > v1) {
+      v1 = merit[(len-1) * numst + l];
+      m = l;
     }
   }
 
   if (lastmerit.size()!=0) {
-    for (int l=0;l<numst;l++) lastmerit[l]=merit[(len-1)*numst+l];
+    for (int l = 0; l < numst; l++) lastmerit[l] = merit[(len-1) * numst + l];
   }
 
-  optst[len-1]=m;
-  for (int j=len-2; j>=0; j--) {
-    optst[j]=prest[(j+1)*numst+optst[j+1]];
+  optst[len-1] = m;
+  for (int j = len-2; j >= 0; j--) {
+    optst[j] = prest[(j+1) * numst + optst[j+1]];
   }
 }
 
@@ -274,55 +270,54 @@ void HmmModel::formmix(std::vector<double> &inita,
   
   std::vector<int> cls2st(numcls,0);
 
-  for (int i=0;i<numcls;i++) {
-    for (int j=0;j<numst;j++) {
-      if (stcls[j]==i) {
-        cls2st[i]=j;
+  for (int i = 0;i < numcls; i++) {
+    for (int j = 0;j < numst; j++) {
+      if (stcls[j] == i) {
+        cls2st[i] = j;
         break;
       }
     }
   }
 
   if (inita.size() == 0) {
-    for (int i=0;i<numcls;i++) astart[i]=0.0;
-    for (int j=0;j<numst;j++) astart[stcls[j]]+=a00[j];
+    for (int i = 0; i < numcls; i++) astart[i] = 0.0;
+    for (int j = 0; j < numst; j++) astart[stcls[j]] += a00[j];
   }
   else {
-    for (int i=0;i<numcls;i++) astart[i]=0.0;
-    for (int j=0;j<numst;j++) astart[stcls[j]]+=inita[j];
+    for (int i = 0; i < numcls; i++) astart[i] = 0.0;
+    for (int j = 0; j < numst; j++) astart[stcls[j]] += inita[j];
   }
 
-  for (int i=0;i<numcls;i++) {
-    for (int j=0;j<numcls;j++) {
-      tm[i][j]=0.0;
-      for (int k=0;k<numst;k++) {
-        if (stcls[k]==j) {
+  for (int i = 0; i < numcls; i++) {
+    for (int j = 0; j < numcls; j++) {
+      tm[i][j] = 0.0;
+      for (int k = 0; k < numst; k++) {
+        if (stcls[k] == j) {
           tm[i][j] += a[cls2st[i]][k];
         }
       }
     }
   }
 
-  for (int i=0;i<numcls;i++) nstpercls[i]=0;
-  for (int j=0;j<numst;j++) nstpercls[stcls[j]]++;
+  for (int i = 0; i < numcls; i++) nstpercls[i] = 0;
+  for (int j = 0; j < numst; j++) nstpercls[stcls[j]]++;
 
-  for (int i=0;i<numcls;i++) {
-    v1=0.0;
+  for (int i = 0; i < numcls; i++) {
+    v1 = 0.0;
     for (int j=0,k=0;j<numst;j++) {
-      if (stcls[j]==i) {
-        prior[i][k]=a00[j];
-        v1+=prior[i][k];
+      if (stcls[j] == i) {
+        prior[i][k] = a00[j];
+        v1 += prior[i][k];
 
-        pdflist[i][k]=stpdf[j];
-
+        pdflist[i][k] = stpdf[j];
         k++;
       }
     }
-    if (v1>0.0) {
-      for (int j=0;j<k;j++)	prior[i][j]/=v1;
+    if (v1 > 0.0) {
+      for (int j = 0; j < k; j++)	prior[i][j] /= v1;
     }
     else {
-      for (int j=0;j<k;j++)	prior[i][j]=1.0/(double)k;
+      for (int j = 0; j < k; j++)	prior[i][j] = 1.0 / (double)k;
     }
   }
 }
@@ -334,34 +329,34 @@ void HmmModel::viterbicls(std::vector<float> &u,
                           std::vector<double> &inita,
                           std::vector<double> &lastmerit,
                           int &bestnext){
-  double v1,v2,v3;
+  double v1, v2, v3;
 
-  std::vector<int> prest(len*numcls, 0);
-  std::vector<double> merit(len*numcls,0.0);
+  std::vector<int> prest(len * numcls, 0);
+  std::vector<double> merit(len * numcls,0.0);
   std::vector<std::vector<GaussModel>> pdflist(numcls, std::vector<GaussModel>(numcls));
   std::vector<std::vector<double>> tm(numcls, std::vector<double>(numcls, 0.0));
-  std::vector<double> astart(numcls,0.0);
+  std::vector<double> astart(numcls, 0.0);
   std::vector<std::vector<double>> prior(numcls, std::vector<double>(numcls, 0.0));
-  std::vector<int> nstpercls(numcls,0);
+  std::vector<int> nstpercls(numcls, 0);
 
   formmix(inita, tm, astart, pdflist, prior, nstpercls);
 
   /* treat the first location */
-  for (int l=0; l<numcls; l++) {
-    if (astart[l]>0.0) {
-      merit[l]=log(astart[l])+
-      mix_gauss_pdf_log(u, pdflist[l], prior[l],nstpercls[l], 0);
+  for (int l = 0; l < numcls; l++) {
+    if (astart[l] > 0.0) {
+      merit[l] = log(astart[l])+
+      mix_gauss_pdf_log(u, pdflist[l], prior[l], nstpercls[l], 0);
     }
     else {
-      merit[l]=-HUGE;
+      merit[l] = -HUGE;
     }
   }
 
   /* treat the rest locations */
-  for (int j=1; j<len; j++) {
-    for (int l=0; l<numcls; l++) {
-      v1=mix_gauss_pdf_log(u, pdflist[l], prior[l], nstpercls[l], j*dim);
-      v2=(a[0][l]>0.0)?(merit[(j-1)*numcls]+log(a[0][l])):(-HUGE);
+  for (int j = 1; j < len; j++) {
+    for (int l = 0; l < numcls; l++) {
+      v1 = mix_gauss_pdf_log(u, pdflist[l], prior[l], nstpercls[l], j*dim);
+      v2 = (a[0][l] > 0.0) ? (merit[(j-1) * numcls] + log(a[0][l])) : (-HUGE);
       prest[j*numcls+l]=0;
       for (int m=1; m<numcls; m++) {
         v3=(a[m][l]>0.0)?(merit[(j-1)*numcls+m]+log(tm[m][l])):(-HUGE);
