@@ -7,7 +7,9 @@
 
 
 #include "hmm.h"
-#include "utils.h"
+/*
+ *#include "utils.h"
+ */
 #include "mex.h"
 #include <vector>
 
@@ -23,7 +25,7 @@ void mexPrint_mat(float* X, int dim, int n){
 }
 
 template<typename DType>
-void mex_print_vector(std::vector<DType>& vt, 
+void mex_print_vector(std::vector<DType>& vt,
                       /* # of rows*/ int m,
                       /* # of cols*/ int n){
   int size = vt.size();
@@ -44,7 +46,7 @@ unsigned char mexPrint_model(HmmModel &md)
   dim=md.dim;
   numst=md.numst;
   numcls=md.numcls;
-  
+
   mexPrintf("dim=%d\n", dim);
   mexPrintf("numst=%d\n", numst);
   mexPrintf("numcls=%d\n", numcls);
@@ -69,7 +71,7 @@ unsigned char mexPrint_model(HmmModel &md)
   mexPrintf("\nThe Gaussian distributions of states:\n");
   for (i=0; i<numst; i++) {
     mexPrintf("\nState %d =============================\n", i);
-    mexPrintf("exist=%d, dim=%d\n", md.stpdf[i].exist, 
+    mexPrintf("exist=%d, dim=%d\n", md.stpdf[i].exist,
       md.stpdf[i].dim);
 
     mexPrintf("Mean vector:\n");
@@ -80,7 +82,7 @@ unsigned char mexPrint_model(HmmModel &md)
     mexPrintf("Sigma_det=%e\n",md.stpdf[i].sigma_det);
 
     mexPrintf("Covariance matrix Sigma:\n");
- 
+
     for (m=0; m<md.stpdf[i].dim; m++) {
       for (n=0; n<md.stpdf[i].dim; n++)
       mexPrintf("%.5e ", md.stpdf[i].sigma[m][n]);
@@ -88,14 +90,14 @@ unsigned char mexPrint_model(HmmModel &md)
     }
 
     mexPrintf("Covariance matrix inverse Sigma_inv:\n");
- 
+
     for (m=0; m<md.stpdf[i].dim; m++) {
       for (n=0; n<md.stpdf[i].dim; n++)
       mexPrintf("%.5e ", md.stpdf[i].sigma_inv[m][n]);
       mexPrintf("\n");
     }
   }
-  
+
   return(1);
 }
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
@@ -209,7 +211,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   plhs[2] = mxCreateStructArray(2, dims, NUMBER_OF_FIELDS, field_names);
   int means_field = mxGetFieldNumber(plhs[2],"means");
   int sigma_field = mxGetFieldNumber(plhs[2],"sigma");
-    /* Populate the name and phone fields of the phonebook structure. */ 
+    /* Populate the name and phone fields of the phonebook structure. */
   for (i=0; i<NUMBER_OF_STRUCTS; i++) {
       /*----------- return mean vector ---------------------*/
       mxArray *field_mean_vector;

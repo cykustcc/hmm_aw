@@ -34,3 +34,6 @@ hmmaw_*
 ## mex files:
 *.mex*
 *.mexmaci64
+
+## macOS
+*.DS_Store
