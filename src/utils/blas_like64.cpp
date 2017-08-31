@@ -231,7 +231,7 @@ void _dpdist2_submat(size_t m, int *Bi, double *C,
       C[i * vocab_size + j] = dist_mat[Bi[i] * vocab_size + j];
 }
 
-void _dpdist_symbolic(int d, size_t n, size_t m, int * A, int * B, double *C,
+void _dpdist_symbolic(int d, size_t n, size_t m, int *A, int *B, double *C,
                       const int vocab_size, const double* dist_mat) {
   size_t i , j;
   int k;

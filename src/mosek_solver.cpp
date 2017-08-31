@@ -69,7 +69,7 @@ double match_by_distmat(int n,
   numcon = n + m - 1;
   MSKtask_t    *p_task;
   MSKrescodee r = MSK_RES_OK;
-  MSKint32t    i,j;
+  MSKint32t    i, j;
   double fval = 0.0;
   
   /* check if it is in the mode of multiple phase or single phase */
@@ -84,25 +84,25 @@ double match_by_distmat(int n,
     MSKint32t *asub;
     double ones[2] = {1.0, 1.0};
     asub = (MSKint32t *) malloc(2*m*n* sizeof(MSKint32t));
-    for (j=0; j<m; ++j) {
-      for (i=0; i<n; ++i) {
-        asub[2*(i +j*n)] = i;
-        asub[2*(i +j*n) +1] = n+j;
+    for (j = 0; j < m; ++j) {
+      for (i = 0; i < n; ++i) {
+        asub[2 * (i + j * n)] = i;
+        asub[2 * (i + j * n) + 1] = n + j;
       }
     }
     
     /* Create the optimization task. */
     r = MSK_maketask(env,numcon,numvar,p_task);
-    if ( r==MSK_RES_OK ) {
+    if (r == MSK_RES_OK) {
 //      r = MSK_linkfunctotaskstream(*p_task,MSK_STREAM_LOG,NULL,printstr);
     }else{
       printf("r!=MSK_RES_OK at MSK_maketask  r=");PRINTMSKres(x);
     }
     
-    r = MSK_appendcons(*p_task,numcon);
-    r = MSK_appendvars(*p_task,numvar);
+    r = MSK_appendcons(*p_task, numcon);
+    r = MSK_appendvars(*p_task, numvar);
     
-    for (j=0; j<numvar && r == MSK_RES_OK; ++j) {
+    for (j = 0; j < numvar && r == MSK_RES_OK; ++j) {
       /* Set the bounds on variable j.
        blx[j] <= x_j <= bux[j] */
       r = MSK_putvarbound(*p_task,
@@ -112,11 +112,11 @@ double match_by_distmat(int n,
                           +MSK_INFINITY);     /* Numerical value of upper bound.*/
       
       /* Input column j of A */
-      i = (j >= (m-1)*n) ? 1 : 2;
+      i = (j >= (m - 1) * n) ? 1 : 2;
       r = MSK_putacol(*p_task,
                       j,           /* Index of variable.*/
                       i,           /* Number of non-zeros in column j.*/
-                      asub+j*2,    /* Pointer to row indexes of column j.*/
+                      asub + j * 2,    /* Pointer to row indexes of column j.*/
                       ones);       /* Pointer to Values of column j.*/
     }
     free(asub);
@@ -136,18 +136,18 @@ double match_by_distmat(int n,
   }
   
   /* modify an existing task and re-optimize */
-  for (j=0; j<numvar && r == MSK_RES_OK; ++j) {
-    r = MSK_putcj(*p_task,j,C[j]);
+  for (j = 0; j < numvar && r == MSK_RES_OK; ++j) {
+    r = MSK_putcj(*p_task, j, C[j]);
   }
   
-  for (i=0; i<n && r==MSK_RES_OK; ++i){
+  for (i = 0; i < n && r == MSK_RES_OK; ++i){
     r = MSK_putconbound(*p_task,
                         i,
                         MSK_BK_FX,
                         wX[i],
                         wX[i]);
   }
-  for (i=0; i<m-1 && r==MSK_RES_OK; ++i){
+  for (i = 0; i < m - 1 && r == MSK_RES_OK; ++i){
     r = MSK_putconbound(*p_task,
                         i+n,
                         MSK_BK_FX,
@@ -156,21 +156,21 @@ double match_by_distmat(int n,
   }
   
   
-  if ( r==MSK_RES_OK )
+  if (r == MSK_RES_OK)
   {
     MSKrescodee trmcode;
     
     /* Run optimizer */
-    r = MSK_optimizetrm(*p_task,&trmcode);
+    r = MSK_optimizetrm(*p_task, &trmcode);
     
     /* Print a summary containing information
      about the solution for debugging purposes. */
 //    MSK_solutionsummary (*p_task,MSK_STREAM_LOG);
-    if ( r==MSK_RES_OK ) {
+    if (r == MSK_RES_OK) {
       MSKsolstae solsta;
-      r = MSK_getsolsta (*p_task,
-                         MSK_SOL_BAS,
-                         &solsta);
+      r = MSK_getsolsta(*p_task,
+                        MSK_SOL_BAS,
+                        &solsta);
       switch(solsta)
       {
         case MSK_SOL_STA_OPTIMAL:
@@ -178,13 +178,12 @@ double match_by_distmat(int n,
         {
           //double *xx = (double*) calloc(numvar,sizeof(double));
           MSK_getprimalobj(*p_task, MSK_SOL_BAS, &fval);
-          if ( x )
-          {
+          if (x) {
             MSK_getxx(*p_task,
                       MSK_SOL_BAS,    /* Request the basic solution. */
                       x);
             printf("Optimal primal solution\n");
-            for(int j=0; j<numvar; ++j) printf("x[%d]: %e\n",j,x[j]);
+            for(int j = 0; j < numvar; ++j) printf("x[%d]: %e\n",j,x[j]);
             
             //free(x);
           }
@@ -219,7 +218,7 @@ double match_by_distmat(int n,
                           desc);
           
           printf("The solution status is unknown.\n");
-          printf("The optimizer terminitated with code: %s\n",symname);
+          printf("The optimizer terminitated with code: %s\n", symname);
           break;
         }
         default:
@@ -228,7 +227,8 @@ double match_by_distmat(int n,
       }
     }
   }else{
-    printf("r!=MSK_RES_OK before MSK_putobjsense. r=");PRINTMSKres(x);
+    printf("r!=MSK_RES_OK before MSK_putobjsense. r=");
+    PRINTMSKres(x);
   }
   
   //  MSK_deletetask(&task);

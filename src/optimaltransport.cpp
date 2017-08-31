@@ -29,21 +29,21 @@ double match_by_distmat_BADMM(int n,
   //  Pi2=W1*W2';
   //  Lambda=zeros(size(Pi2));
   double *Pi1 = x;
-  double *Pi2 = _MALLOC_DOUBLE(n*m);
-  double *Lambda = _MALLOC_DOUBLE(n*m);
+  double *Pi2 = _MALLOC_DOUBLE(n * m);
+  double *Lambda = _MALLOC_DOUBLE(n * m);
   //  C=C/rho;
   //  xi=exp(-C);
-  double *C_div_rho = _MALLOC_DOUBLE(n*m);
-  double *xi = _MALLOC_DOUBLE(n*m);
-  cblas_dcopy(n*m, C, 1, C_div_rho, 1);
-  cblas_dscal(n*m, 1.0/rho, C_div_rho, 1);
-  for (int i=0; i<n*m; ++i, ++xi) *xi = exp(-*C_div_rho);
+  double *C_div_rho = _MALLOC_DOUBLE(n * m);
+  double *xi = _MALLOC_DOUBLE(n * m);
+  cblas_dcopy(n * m, C, 1, C_div_rho, 1);
+  cblas_dscal(n * m, 1.0 / rho, C_div_rho, 1);
+  for (int i = 0; i < n * m; ++i, ++xi) *xi = exp(-*C_div_rho);
   double *tmp = _MALLOC_DOUBLE(n*m);
-  for (int iter=0; iter<max_iter; iter++) {
+  for (int iter = 0; iter < max_iter; iter++) {
     // tmp = exp(Lambda);
-    for (int j=0; j<n*m; ++j, ++xi) *tmp = exp(*Lambda);
+    for (int j = 0; j < n * m; ++j, ++xi) *tmp = exp(*Lambda);
     // Pi1=Pi2 .* xi ./tmp  + eps;
-    for (int j=0; j<n*m; j++) Pi1[j] = Pi2[j] * xi[j] / tmp[j] + ROUNDOFF;
+    for (int j = 0; j < n * m; j++) Pi1[j] = Pi2[j] * xi[j] / tmp[j] + ROUNDOFF;
     // Pi1=bsxfun(@times, Pi1, W1 ./sum(Pi1, 2));
     _dcnorm(n, m, Pi1, NULL);
     _dgcmv(n, m, Pi1, wX);
@@ -53,13 +53,13 @@ double match_by_distmat_BADMM(int n,
     _drnorm(n, m, Pi2, NULL);
     _dgrmv(n, m, Pi1, wY);
     // Lambda=Lambda + Pi1 - Pi2;
-    for (int j=0; j<n*m; ++j, ++xi) Lambda[j] += Pi1[j] - Pi2[j];
+    for (int j = 0; j < n * m; ++j, ++xi) Lambda[j] += Pi1[j] - Pi2[j];
     // if mod(i,100)==0 && max(abs(Pi1(:)-Pi2(:)))<eps
     //   break
     // end
-    if ((iter%100==99 ))  {
+    if (iter % 100 == 99)  {
       double maxdiff = 0.0;
-      for (int j=0; j<n*m; ++j, ++xi)
+      for (int j = 0; j < n * m; ++j, ++xi)
         maxdiff =std::max(maxdiff, std::abs(Pi1[j] - Pi2[j]));
       if (maxdiff < BADMM_TOL) {
         break;

@@ -25,7 +25,8 @@ protected:
 
 TEST_F(HMMDistTest, GenSeq){
   int n = 800;
-  std::vector<std::vector<float>> seq(1, std::vector<float>(n*gt_hmm.dim, 0.0));
+  std::vector<std::vector<float>> seq(1,
+                                      std::vector<float>(n * gt_hmm.dim, 0.0));
   gt_hmm.gen_seq(seq[0], n, false);
 //  for (int i=0; i<n*gt_hmm.dim; i++) {
 //    std::cout<<seq[0][i]<<" ";

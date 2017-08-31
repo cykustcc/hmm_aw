@@ -27,9 +27,9 @@ TEST(MatchByDistmatTest, MatchByDistmat){
   for (int i=0; i<n*m; i++) {
     EXPECT_NEAR(C[i], gt_dist[i], 0.0001);
   }
-  double* match = (double*) calloc(n*m, sizeof(double));
-  double* a00 = (double*) malloc(n*sizeof(double));
-  for (int i=0; i<n; i++) {
+  double* match = (double*) calloc(n * m, sizeof(double));
+  double* a00 = (double*) malloc(n * sizeof(double));
+  for (int i = 0; i < n; i++) {
     a00[i] = hmm1.a00[i];
   }
   solver_setup();

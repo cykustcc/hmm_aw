@@ -27,7 +27,7 @@ double GaussModel::gauss_pdf_log(std::vector<float> &ft,
     tpdb2 += db_array[i] * dif[i];
   }
 
-  tpdb = -((double)(dim)) / 2.0 * LOG_2_PI - 0.5 * log(sigma_det);
+  tpdb = -((double) (dim)) / 2.0 * LOG_2_PI - 0.5 * log(sigma_det);
   res = tpdb + (-0.5) * tpdb2;
 
   return res;
