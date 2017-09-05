@@ -6,7 +6,9 @@
 //
 
 #include "hmm.h"
-#include "utils.h"
+/*
+ *#include "utils.h"
+ */
 #include "mex.h"
 #include <string.h>
 #include <vector>

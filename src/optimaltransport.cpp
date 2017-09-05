@@ -7,6 +7,7 @@
 //
 #include "stdlib.h"
 #include <cassert>
+#include <algorithm>
 
 #include <optimaltransport.h>
 #include "utils/blas_utils.h"
@@ -66,7 +67,7 @@ double match_by_distmat_BADMM(int n,
       }
     }
   }
-  
+
   _FREE(Pi1);
   _FREE(Pi2);
   _FREE(Lambda);
