@@ -1,7 +1,7 @@
 MOSEK=/storage/home/yzc147/work/libs/mosek/7/tools/platform/linux64x86
 MOSEK_VERSION=7.1
-#BLAS_LIB=-L/opt/packages/ATLAS/3.10.2/lib -llapack -lf77blas -lcblas -latlas
-BLAS_LIB=-L/usr/lib64 -lblas
+BLAS_LIB=-L/storage/home/yzc147/work/libs/lib/atlas -llapack -lf77blas -lcblas -latlas
+#BLAS_LIB=-L/usr/lib64 -lblas
 #matlab
 MEXCC=/usr/global/matlab/R2016a/bin/mex
 MATLABINC=-I/gpfs/apps/x86_64-rhel6/matlab/R2016a/extern/include
@@ -12,7 +12,7 @@ GLOG=/storage/home/yzc147/work/libs
 
 #extra cflags
 AW_DEFINES=-D __BLAS_LEGACY__
-MEX_AW_DEFINES=-D__BLAS_LEGACY__
+MEX_AW_DEFINES=-D__BLAS_LEGACY__ CFLAGS="\$(CFLAGS)"
 
 
 #matlab project

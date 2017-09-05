@@ -8,11 +8,15 @@ CFLAGS=-std=c++11 -fPIC $(AW_DEFINES)
 UNAME=$(shell uname -s)
 HNAME=$(shell hostname)
 IDENTIFIER=$(shell echo $(HNAME) | cut -d'.' -f 3)
+IDENTIFIER1=$(shell echo $(HNAME) | cut -d'.' -f 1)
 #lionxv.rcc.psu.edu
+#cyberstar.psu.edu
 #br005.pvt.bridges.psc.edu
 ifeq ($(UNAME), Linux)
 	LINUX := 1
-	ifeq ($(IDENTIFIER), psu)
+	ifeq ($(IDENTIFIER1), lionxv)
+		include make.inc.Linux.Cyberstar
+	else ifeq ($(IDENTIFIER1), cyberstar)
 		include make.inc.Linux.Cyberstar
 	else ifeq ($(IDENTIFIER), bridges)
 		include make.inc.Linux
