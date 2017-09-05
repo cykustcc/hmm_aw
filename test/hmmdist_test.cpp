@@ -25,7 +25,8 @@ protected:
 
 TEST_F(HMMDistTest, GenSeq){
   int n = 800;
-  std::vector<std::vector<float>> seq(1, std::vector<float>(n*gt_hmm.dim, 0.0));
+  std::vector<std::vector<float>> seq(1,
+                                      std::vector<float>(n * gt_hmm.dim, 0.0));
   gt_hmm.gen_seq(seq[0], n, false);
 //  for (int i=0; i<n*gt_hmm.dim; i++) {
 //    std::cout<<seq[0][i]<<" ";
@@ -49,6 +50,16 @@ TEST_F(HMMDistTest, GenSeq){
 
 TEST_F(HMMDistTest, DistKL){
   double dist = gt_hmm.dist_KL(gt_hmm, 200);
+  EXPECT_NEAR(dist, 0.0, 0.01);
+}
+
+TEST_F(HMMDistTest, DistMAW){
+  double dist = gt_hmm.dist_MAW(gt_hmm, 0.2);
+  EXPECT_NEAR(dist, 0.0, 0.01);
+}
+
+TEST_F(HMMDistTest, DistIAW){
+  double dist = gt_hmm.dist_IAW(gt_hmm, 0.2, 100, true);
   EXPECT_NEAR(dist, 0.0, 0.01);
 }
 

@@ -17,8 +17,8 @@ extern "C"{
   double match_by_distmat(int n,
                           int m,
                           double *C,
-                          std::vector<double> &wX,
-                          std::vector<double> &wY,
+                          double *wX,
+                          double *wY,
                           /** OUT **/ double *x,
                           /** OUT **/ double *lambda);
 #ifdef __cplucplus

@@ -12,7 +12,6 @@
 #include "test_common.h"
 #include "dist_utils.h"
 #include "mosek_solver.h"
-#include "utils.h"
 
 
 TEST(MatchByDistmatTest, MatchByDistmat){
@@ -25,13 +24,16 @@ TEST(MatchByDistmatTest, MatchByDistmat){
   double gt_dist[] = {0.0, 0.02, 0.08,\
     0.02, 0.0, 0.02,\
     0.08, 0.02, 0.0};
-//  LOG(INFO)<<"Cost matrix:";
-//  print_mat_double(C, n, m);
-//  LOG(INFO)<<"prior prob.:";
-//  print_mat_double(hmm1->a00, 3, 1);
-  double* match = (double*) calloc(n*m, sizeof(double));
+  for (int i=0; i<n*m; i++) {
+    EXPECT_NEAR(C[i], gt_dist[i], 0.0001);
+  }
+  double* match = (double*) calloc(n * m, sizeof(double));
+  double* a00 = (double*) malloc(n * sizeof(double));
+  for (int i = 0; i < n; i++) {
+    a00[i] = hmm1.a00[i];
+  }
   solver_setup();
-  double d = match_by_distmat(n, m, C, hmm1.a00, hmm1.a00, match, NULL);
+  double d = match_by_distmat(n, m, C, a00, a00, match, NULL);
   solver_release();
   EXPECT_NEAR(d, 0, 0.0001);
   double gt_match[3][3] = {{0.5,0.0,0.0},

@@ -11,7 +11,7 @@
 
 
 #if defined __APPLE__
-std::string root_path = "/Users/yzc147/Dropbox/GMMHMM/code/hmmaw";
+std::string root_path = "/Users/yzc147/Dropbox/GMMHMM/code/hmm_aw";
 #elif defined __unix__
 std::string root_path = "/storage/home/yzc147/work/hmm_aw";
 #endif

@@ -37,8 +37,8 @@ void print_vector(std::vector<DType>& vt, int m, int n){
 /*-------------------------------------------------------------------*/
 template<typename DType>
 extern void print_matrix(std::vector<std::vector<DType>> &mt){
-  int rows = mt.size();
-  int cols = rows > 0 ? mt[0].size(): 0;
+  int rows = (int) mt.size();
+  int cols = rows > 0 ? (int) mt[0].size(): 0;
   
   for (int i=0; i<rows; i++) {
     for (int j=0; j<cols; j++) {
@@ -68,9 +68,7 @@ void print_matrix(DType* X, int dim, int n){
 /*-------------------------------------------------------------------*/
 template<typename DType>
 extern DType mat_det( std::vector<std::vector<DType>> mt,
-                    int dim)
-{
-  int i,j,k,m,n;
+                    int dim){
   DType res;
   
   if (dim==1)
@@ -84,7 +82,7 @@ extern DType mat_det( std::vector<std::vector<DType>> mt,
     }
   }
   
-  n=1;
+  int n = 1;
   res = 0.0;
   
   for (int i=0; i<dim; i++) {
@@ -102,9 +100,9 @@ extern DType mat_det( std::vector<std::vector<DType>> mt,
 
 template<typename DType>
 unsigned char ludcmp(std::vector<std::vector<DType>> &a,
-                           int n,
-                           std::vector<int> &indx,
-                           DType &d)
+                     int n,
+                     std::vector<int> &indx,
+                     DType &d)
 {
   int imax = 0;
   DType big, dum,sum,temp;
@@ -202,10 +200,9 @@ extern void cholesky_decomp(std::vector<std::vector<DType>> &mt_P,
 
 template<typename DType>
 extern void lubksb(std::vector<std::vector<DType>> &a,
-            int n,
-            std::vector<int> &indx,
-            std::vector<DType> &b)
-{
+                   int n,
+                   std::vector<int> &indx,
+                   std::vector<DType> &b){
   int ii=-1, ip;
   DType sum;
   
@@ -228,8 +225,7 @@ extern void lubksb(std::vector<std::vector<DType>> &a,
 template<typename DType>
 unsigned char mat_inv(std::vector<std::vector<DType>> &mt,
                       std::vector<std::vector<DType>> &y,
-                      int dim)
-{
+                      int dim){
   DType d;
   std::vector<std::vector<DType>> a(dim, std::vector<DType>(dim, 0.0));
   
@@ -256,7 +252,7 @@ unsigned char mat_inv(std::vector<std::vector<DType>> &mt,
 
 template<typename DType>
 float mat_det_ludcmp(std::vector<std::vector<DType>> &mt,
-                    int dim)
+                     int dim)
 {
   DType d;
   

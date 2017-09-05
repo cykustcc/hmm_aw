@@ -90,7 +90,7 @@ lib/libmosek64_wrapper.dylib: build/mosek_solver.o
 	# install_name_tool -change  @loader_path/libmosek64.$(MOSEK_VERSION).dylib  $(MOSEK)/bin/libmosek64.$(MOSEK_VERSION).dylib libmosek64_wrapper.$(MOSEK_VERSION).dylib
 	# ln -sf libmosek64_wrapper.$(MOSEK_VERSION).dylib $@
 
-lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
+lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ)) lib/libmosek64_wrapper.dylib
 	@echo $^
 	@mkdir -p $(@D)
 	ar crv $@ $^
@@ -105,7 +105,7 @@ lib/libmosek64_wrapper.so: build/mosek_solver.o
 	$(CXX) -shared 	$(INCLUDES) $(LIBRARIES) -Wl,-soname,$@ -o $@ $< $(MOSEKLIB)
 	#ln -sf libmosek64_wrapper.$(MOSEK_VERSION).so $@
 
-lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
+lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ)) lib/libmosek64_wrapper.so
 	@echo $^
 	@mkdir -p $(@D)
 	ar crv $@ $^
