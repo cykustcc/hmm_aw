@@ -47,6 +47,7 @@ SOURCES_CPP := $(wildcard src/*.cpp src/*/*.cpp)
 OBJ := $(patsubst src/%.cpp, build/%.o, $(SOURCES_CPP))
 SOURCE_CPP_WITH_MAIN=main.cpp
 
+MEX_RELATED_SRCS := $(filter-out src/mosek_solver.cpp src/hmmdist.cpp src/optimaltransport.cpp, $(SOURCES_CPP))
 # OBJ_IN_FOLDER=$(subst src, obj, $(OBJ))
 # OBJ = $(patsubst src/%.c,obj/%.o,$(SOURCES_C))
 
@@ -64,22 +65,21 @@ GTEST_SRC := src/gtest/gtest-all.cpp
 
 .PHONY: clean all test
 
-all: $(PROJECT)_train mex/hmm_fit.mex mex/hmm_likelihood.mex
+#all: $(PROJECT)_train mex/hmm_fit.mex mex/hmm_likelihood.mex
+all: mex/hmm_fit.mex mex/hmm_likelihood.mex
 
 build/%.o: src/%.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(CFLAGS) $(INCLUDES) -MM -MT build/$*.o $< >build/$*.d
 	$(CXX) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
-mex/hmm_fit.mex: mex/hmm_fit.cpp lib/libhmm.a
-	$(MEXCC) $(MEX_AW_DEFINES) $(INCLUDES) -L./lib -lhmm $(MEXLIBRARIES) mex/hmm_fit.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
+mex/hmm_fit.mex: mex/hmm_fit.cpp
+	$(MEXCC) $(MEX_AW_DEFINES) $(INCLUDES) $(MEXLIBRARIES) mex/hmm_fit.cpp $(MEX_RELATED_SRCS)
 	mv hmm_fit.mex* mex/
-	cp mex/hmm_fit.mex* $(MATLAB_UTILS_HMM)
 
-mex/hmm_likelihood.mex: mex/hmm_likelihood.cpp lib/libhmm.a
-	$(MEXCC) $(MEX_AW_DEFINES) $(INCLUDES) -L./lib -lhmm $(MEXLIBRARIES) mex/hmm_likelihood.cpp $(filter-out src/mosek_solver.cpp, $(SOURCES_CPP))
+mex/hmm_likelihood.mex: mex/hmm_likelihood.cpp
+	$(MEXCC) $(MEX_AW_DEFINES) $(INCLUDES) $(MEXLIBRARIES) mex/hmm_likelihood.cpp $(MEX_RELATED_SRCS)
 	mv hmm_likelihood.mex* mex/
-	cp mex/hmm_likelihood.mex* $(MATLAB_UTILS_HMM)
 
 ifeq ($(OSX),1)
 $(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a lib/libmosek64_wrapper.dylib
@@ -121,6 +121,10 @@ run:
 	./$(PROJECT)_train --infilename ./data/gmm_hmm_samples_dim2_T1000.dat --mdfilename ./data/md.dat --dim 2 --num 1 --statenum 2 --len 1000 --forcediag
 	# ./$(PROJECT)_train -i ./data/gmm_hmm_samples_dim2_T1000.dat -m ./data/md.dat -d 2 -n 1 -s 2 -l 1000
 
+mexupdate:
+	cp mex/hmm_fit.mex* $(MATLAB_UTILS_HMM)
+	cp mex/hmm_likelihood.mex* $(MATLAB_UTILS_HMM)
+
 test: $(TEST_ALL_BIN) lib/libgtest.a
 
 runtest:
@@ -131,7 +135,7 @@ lib/libgtest.a:
 
 $(TEST_ALL_BIN): $(TEST_MAIN_SRC) $(TEST_SRCS) lib/libhmm.a lib/libgtest.a
 	@echo $@
-	$(CXX) $(TEST_MAIN_SRC) $(TEST_SRCS) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) -lhmm -lgtest -lmosek64_wrapper -Wl,-rpath,./lib
+	$(CXX) $(TEST_MAIN_SRC) $(TEST_SRCS) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) -lhmm -lgtest -lm -lpthread -lmosek64_wrapper -Wl,-rpath,./lib
 
 testvars:
 	@echo $(IDENTIFIER)
