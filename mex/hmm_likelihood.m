@@ -1,9 +1,9 @@
 %  Copyright (c) 2015
 %      Yukun Chen <cykustc@gmail.com>
-% 
+%
 % Compute likelihood of given data sequence on given HMM model using Forward Backward Algorithm
 %
-% likelihood = hmm_likelihood_jia(data, d, nseq, onelen, numst, verbose, a00, a, gmm.mu, gmm.covariance, gmm.inv_covariance)
+% likelihood = hmm_likelihood(data, d, nseq, onelen, numst, verbose, a00, a, gmm.mu, gmm.covariance, gmm.inv_covariance)
 %
 % Input:
 %   - d: dimension
@@ -22,7 +22,7 @@
 %
 %
 %
-function likelihood = hmm_likelihood_jia(data, d, nseq, onelen, numst, verbose, a00, a, gmm.mu, gmm.covariance, gmm.inv_covariance)
+function likelihood = hmm_likelihood(data, d, nseq, onelen, numst, verbose, a00, a, gmm.mu, gmm.covariance, gmm.inv_covariance)
 
-    likelihood = hmm_likelihood_jia(data, d, nseq, onelen, numst, verbose, a00, a, gmm.mu, gmm.covariance, gmm.inv_covariance);
+    likelihood = hmm_likelihood(data, d, nseq, onelen, numst, verbose, a00, a, gmm.mu, gmm.covariance, gmm.inv_covariance);
 end
