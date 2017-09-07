@@ -65,8 +65,8 @@ GTEST_SRC := src/gtest/gtest-all.cpp
 
 .PHONY: clean all test
 
-#all: $(PROJECT)_train mex/hmm_fit.mex mex/hmm_likelihood.mex
-all: mex/hmm_fit.mex mex/hmm_likelihood.mex
+all: $(PROJECT)_train mex/hmm_fit.mex mex/hmm_likelihood.mex
+#all: mex/hmm_fit.mex mex/hmm_likelihood.mex
 
 build/%.o: src/%.cpp
 	@mkdir -p $(@D)
@@ -118,7 +118,7 @@ clean:
 	rm $(PROJECT)_train
 
 run:
-	./$(PROJECT)_train --infilename ./data/gmm_hmm_samples_dim2_T1000.dat --mdfilename ./data/md.dat --dim 2 --num 1 --statenum 2 --len 1000 --forcediag
+	./$(PROJECT)_train --infilename ./data/gmm_hmm_samples_dim2_T1000.dat --mdfilename /tmp/md.dat --dim 2 --num 1 --statenum 2 --len 1000 --forcediag
 	# ./$(PROJECT)_train -i ./data/gmm_hmm_samples_dim2_T1000.dat -m ./data/md.dat -d 2 -n 1 -s 2 -l 1000
 
 mexupdate:
