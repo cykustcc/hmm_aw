@@ -26,7 +26,8 @@ public:
   GaussModel(){
     GaussModel(1,1,1);
   }
-  GaussModel(int _dim, int _cls, int _exist): dim(_dim), cls(_cls), exist(_exist){
+  GaussModel(int _dim, int _cls, int _exist)
+      : dim(_dim), cls(_cls), exist(_exist) {
     mean.resize(dim);
     sigma.resize(dim);
     for(int i = 0; i < dim; i++)
@@ -35,35 +36,36 @@ public:
     for(int i = 0; i < dim; i++)
       sigma_inv[i].resize(dim);
   }
-  GaussModel(const GaussModel &g): GaussModel(g.dim, g.cls, g.exist){
-    for (int i=0; i<g.dim; i++) {
+  GaussModel(const GaussModel &g)
+      : GaussModel(g.dim, g.cls, g.exist) {
+    for (int i = 0; i < g.dim; i++) {
       mean[i] = g.mean[i];
     }
     sigma_det=g.sigma_det;
-    for (int i=0; i<g.dim; i++) {
-      for (int j=0; j<g.dim; j++) {
+    for (int i = 0; i < g.dim; i++) {
+      for (int j = 0; j < g.dim; j++) {
         sigma[i][j] = g.sigma[i][j];
         sigma_inv[i][j] = g.sigma_inv[i][j];
       }
     }
   }
-  GaussModel & operator=(const GaussModel &g){
+  GaussModel & operator=(const GaussModel &g) {
     dim = g.dim;
     cls = g.cls;
     exist = g.exist;
     mean.resize(dim);
-    for (int i=0; i<g.dim; i++) {
+    for (int i = 0; i < g.dim; i++) {
       mean[i] = g.mean[i];
     }
-    sigma_det=g.sigma_det;
+    sigma_det = g.sigma_det;
     sigma.resize(dim);
     sigma_inv.resize(dim);
-    for (int i=0; i<g.dim; i++) {
+    for (int i = 0; i < g.dim; i++) {
       sigma[i].resize(dim);
       sigma_inv[i].resize(dim);
     }
-    for (int i=0; i<g.dim; i++) {
-      for (int j=0; j<g.dim; j++) {
+    for (int i = 0; i < g.dim; i++) {
+      for (int j = 0; j < g.dim; j++) {
         sigma[i][j] = g.sigma[i][j];
         sigma_inv[i][j] = g.sigma_inv[i][j];
       }
@@ -99,34 +101,34 @@ public:
   std::vector<double> a00; /* pmf of states at the boundary when there's no neighbor */
   HmmModel(){
     std::vector<int> stcls_tmp;
-    HmmModel(0,0,0,stcls_tmp);
+    HmmModel(0, 0, 0, stcls_tmp);
   }
   HmmModel(int _dim, int _numst, int _numcls, std::vector<int>& _stcls)
-    : dim(_dim), numst(_numst), numcls(_numcls){
+      : dim(_dim), numst(_numst), numcls(_numcls) {
     assert(_stcls.size() == 0 || _stcls.size() == numst);
     stcls.resize(numst);
     if (numcls == numst || stcls.size() == 0) {
-      for (int i=0; i<numst; i++) stcls[i]=i;
+      for (int i = 0; i < numst; i++) stcls[i] = i;
     }else{
-      for (int i=0; i<numst; i++) stcls[i] = _stcls[i];
+      for (int i = 0; i < numst; i++) stcls[i] = _stcls[i];
     }
 //    stpdf.resize(numst);
-    for (int i=0; i<numst; i++) {
+    for (int i = 0; i < numst; i++) {
       GaussModel tmp(dim, stcls[i], 1);
       stpdf.push_back(tmp);
     }
     a.resize(numst);
-    for (int i=0; i<numst; i++) {
+    for (int i = 0; i < numst; i++) {
       a[i].resize(numst);
     }
     a00.resize(numst);
   }
   HmmModel(HmmModel &h): HmmModel(h.dim, h.numst, h.numcls, h.stcls){
-    for (int i=0; i<numst; i++) {
+    for (int i = 0; i < numst; i++) {
       stcls[i] = h.stcls[i];
       stpdf[i] = h.stpdf[i];
       a00[i] = h.a00[i];
-      for (int j=0; j<numst; j++) {
+      for (int j = 0; j < numst; j++) {
         a[i][j] = h.a[i][j];
       }
     }
@@ -138,16 +140,16 @@ public:
     numcls = h.numcls;
     stcls.resize(numst);
     a.resize(numst);
-    for (int i=0; i<numst; i++) {
+    for (int i = 0; i < numst; i++) {
       a[i].resize(numst);
     }
     a00.resize(numst);
     stpdf.resize(numst);
-    for (int i=0; i<numst; i++) {
+    for (int i = 0; i < numst; i++) {
       stcls[i] = h.stcls[i];
       stpdf[i] = h.stpdf[i];
       a00[i] = h.a00[i];
-      for (int j=0; j<numst; j++) {
+      for (int j = 0; j < numst; j++) {
         a[i][j] = h.a[i][j];
       }
     }
@@ -161,25 +163,25 @@ public:
     assert(_stcls.size() == 0 || _stcls.size() == numst);
     stcls.resize(numst);
     if (numcls == numst || stcls.size() == 0) {
-      for (int i=0; i<numst; i++) stcls[i]=i;
+      for (int i = 0; i < numst; i++) stcls[i] = i;
     }else{
-      for (int i=0; i<numst; i++) stcls[i] = _stcls[i];
+      for (int i = 0; i < numst; i++) stcls[i] = _stcls[i];
     }
     //    stpdf.resize(numst);
-    for (int i=0; i<numst; i++) {
+    for (int i = 0; i < numst; i++) {
       GaussModel tmp(dim, stcls[i], 1);
       stpdf.push_back(tmp);
     }
     a.resize(numst);
-    for (int i=0; i<numst; i++) {
+    for (int i = 0; i < numst; i++) {
       a[i].resize(numst);
     }
     a00.resize(numst);
   }
   /*--------- model data getters --------*/
   inline void get_transmat(double *transmat){
-    for (int i=0; i<numst; i++) {
-      for (int j=0; j<numst; j++) {
+    for (int i = 0; i < numst; i++) {
+      for (int j = 0; j < numst; j++) {
         transmat[i*numst + j] = this->a[i][j];
       }
     }
@@ -300,11 +302,4 @@ public:
 };
 
 
-
-
-
-
-
 #endif
-
-

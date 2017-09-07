@@ -11,23 +11,23 @@
 /*-------------------------------------------------------------------*/
 
 template<typename DType>
-void print_vector(std::vector<DType>& vt){
+void print_vector(std::vector<DType>& vt) {
   int size = vt.size();
-  for (int i=0; i<size; i++) {
+  for (int i = 0; i < size; i++) {
     std::cout<<vt[i]<<" ";
   }
   std::cout<<std::endl;
 }
 
 template<typename DType>
-void print_vector(std::vector<DType>& vt, int m, int n){
+void print_vector(std::vector<DType>& vt, int m, int n) {
   int size = vt.size();
-  assert(m*n <= size);
-  for (int i=0; i<m; i++) {
-    for (int j=0; j<n; i++) {
-      std::cout<<vt[i*n + j]<<" ";
+  assert(m * n <= size);
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; i++) {
+      std::cout << vt[i * n + j] << " ";
     }
-    std::cout<<std::endl;
+    std::cout << std::endl;
   }
 }
 
@@ -36,25 +36,25 @@ void print_vector(std::vector<DType>& vt, int m, int n){
 /*------------------------ Print out Matrix -------------------------*/
 /*-------------------------------------------------------------------*/
 template<typename DType>
-extern void print_matrix(std::vector<std::vector<DType>> &mt){
+extern void print_matrix(std::vector<std::vector<DType>> &mt) {
   int rows = (int) mt.size();
   int cols = rows > 0 ? (int) mt[0].size(): 0;
   
-  for (int i=0; i<rows; i++) {
-    for (int j=0; j<cols; j++) {
-      std::cout<<mt[i][j]<<" ";
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      std::cout << mt[i][j] << " ";
     }
-    std::cout<<std::endl;
+    std::cout << std::endl;
   }
 }
 
 template<typename DType>
-void print_matrix(DType* X, int dim, int n){
+void print_matrix(DType* X, int dim, int n) {
   for (int i = 0; i < n; i++)
   {
     for (int j = 0; j < dim; j++)
     {
-      printf("%lf,\t", X[j+i*dim]);
+      printf("%lf,\t", X[j + i * dim]);
     }
     printf(";\n");
   }
@@ -67,30 +67,31 @@ void print_matrix(DType* X, int dim, int n){
 /*---------------      Calculate matrix determinant   ---------------*/
 /*-------------------------------------------------------------------*/
 template<typename DType>
-extern DType mat_det( std::vector<std::vector<DType>> mt,
-                    int dim){
+extern DType mat_det(std::vector<std::vector<DType>> mt,
+                     int dim) {
   DType res;
   
-  if (dim==1)
+  if (dim == 1)
     return(mt[0][0]);
   
-  std::vector<std::vector<DType>> submt(dim-1, std::vector<DType>(dim-1, 0.0));
+  std::vector<std::vector<DType>> submt(dim - 1,
+                                        std::vector<DType>(dim - 1, 0.0));
   
-  for (int i=1; i<dim; i++) {
-    for (int j=1; j<dim; j++) {
-      submt[i-1][j-1] = mt[i][j];
+  for (int i = 1; i < dim; i++) {
+    for (int j = 1; j < dim; j++) {
+      submt[i - 1][j - 1] = mt[i][j];
     }
   }
   
   int n = 1;
   res = 0.0;
   
-  for (int i=0; i<dim; i++) {
-    res += (n*mt[i][0]*mat_det(submt, dim-1));
+  for (int i = 0; i < dim; i++) {
+    res += (n*mt[i][0] * mat_det(submt, dim - 1));
     n = -n;
-    if (i==dim-1)
+    if (i == dim - 1)
       continue;
-    for (int j=1; j<dim; j++) {
+    for (int j = 1; j < dim; j++) {
       submt[i][j-1] = mt[i][j];
     }
   }
@@ -105,55 +106,55 @@ unsigned char ludcmp(std::vector<std::vector<DType>> &a,
                      DType &d)
 {
   int imax = 0;
-  DType big, dum,sum,temp;
+  DType big, dum, sum, temp;
   std::vector<float> vv(n, 0.0);
-  DType TINY=1e-20;
+  DType TINY = 1e-20;
   
   d = 1.0;
-  for (int i=0; i<n; i++) {
-    big =0.0;
-    for (int j=0; j<n; j++)
-      if ((temp=fabs(a[i][j]))>big)
+  for (int i = 0; i < n; i++) {
+    big = 0.0;
+    for (int j = 0; j < n; j++)
+      if ((temp = fabs(a[i][j])) > big)
         big = temp;
-    if (big==0.0) {
+    if (big == 0.0) {
       fprintf(stderr, "Singular matrix in ludcmp\n");
       return(2); /* 2 stands for singular matrix */
     }
-    vv[i]=1.0/big;
+    vv[i]=1.0 / big;
   }
   
-  for (int j=0; j<n; j++) {
-    for (int i=0; i<j; i++) {
+  for (int j = 0; j < n; j++) {
+    for (int i = 0; i < j; i++) {
       sum = a[i][j];
-      for (int k=0; k<i; k++)
-        sum -= a[i][k]*a[k][j];
+      for (int k = 0; k < i; k++)
+        sum -= a[i][k] * a[k][j];
       a[i][j] = sum;
     }
     big = 0.0;
-    for (int i=j; i<n; i++) {
+    for (int i = j; i < n; i++) {
       sum = a[i][j];
-      for (int k=0; k<j; k++)
-        sum -= a[i][k]*a[k][j];
+      for (int k = 0; k < j; k++)
+        sum -= a[i][k] * a[k][j];
       a[i][j] = sum;
-      if ((dum=vv[i]*fabs(sum))>=big) {
+      if ((dum=vv[i] * fabs(sum)) >= big) {
         big = dum;
         imax = i;
       }
     }
-    if (j!=imax) {
-      for (int k=0; k<n; k++) {
+    if (j != imax) {
+      for (int k = 0; k < n; k++) {
         dum = a[imax][k];
-        a[imax][k]=a[j][k];
-        a[j][k]=dum;
+        a[imax][k] = a[j][k];
+        a[j][k] = dum;
       }
       d = -d;
-      vv[imax]=vv[j];
+      vv[imax] = vv[j];
     }
-    indx[j]=imax;
-    if (a[j][j]==0.0) a[j][j] = TINY;
-    if (j!=n-1) {
-      dum = 1.0/(a[j][j]);
-      for (int i=j+1; i<n; i++)
+    indx[j] = imax;
+    if (a[j][j] == 0.0) a[j][j] = TINY;
+    if (j != n-1) {
+      dum = 1.0 / (a[j][j]);
+      for (int i = j+1; i < n; i++)
         a[i][j] *= dum;
     }
   }
@@ -203,22 +204,22 @@ extern void lubksb(std::vector<std::vector<DType>> &a,
                    int n,
                    std::vector<int> &indx,
                    std::vector<DType> &b){
-  int ii=-1, ip;
+  int ii = -1, ip;
   DType sum;
   
-  for (int i=0; i<n; i++) {
+  for (int i = 0; i<n; i++) {
     ip = indx[i];
     sum = b[ip];
-    b[ip]=b[i];
-    if (ii>=0)
-      for (int j=ii; j<i; j++) sum -= a[i][j]*b[j];
-    else if (sum != 0.0) ii=i;
-    b[i]=sum;
+    b[ip] = b[i];
+    if (ii >= 0)
+      for (int j = ii; j < i; j++) sum -= a[i][j]*b[j];
+    else if (sum != 0.0) ii = i;
+    b[i] = sum;
   }
-  for (int i=n-1; i>=0; i--) {
-    sum=b[i];
-    for (int j=i+1; j<n; j++) sum-= a[i][j]*b[j];
-    b[i]=sum/a[i][i];
+  for (int i = n-1; i >= 0; i--) {
+    sum = b[i];
+    for (int j = i + 1; j < n; j++) sum -= a[i][j] * b[j];
+    b[i] = sum / a[i][i];
   }
 }
 
@@ -229,8 +230,8 @@ unsigned char mat_inv(std::vector<std::vector<DType>> &mt,
   DType d;
   std::vector<std::vector<DType>> a(dim, std::vector<DType>(dim, 0.0));
   
-  for (int i=0; i<dim; i++) {
-    for (int j=0; j<dim; j++) {
+  for (int i = 0; i < dim; i++) {
+    for (int j = 0; j < dim; j++) {
       a[i][j] = mt[i][j];
     }
   }
@@ -238,13 +239,13 @@ unsigned char mat_inv(std::vector<std::vector<DType>> &mt,
   std::vector<DType> col(dim);
   std::vector<int> indx(dim);
   
-  ludcmp(a,dim,indx,d);
-  for (int j=0; j<dim; j++) {
-    for (int i=0; i<dim; i++) col[i]=0.0;
-    col[j]=1.0;
-    lubksb(a,dim,indx,col);
-    for (int i=0; i<dim;i++)
-      y[i][j]=col[i];
+  ludcmp(a, dim, indx, d);
+  for (int j = 0; j < dim; j++) {
+    for (int i = 0; i < dim; i++) col[i] = 0.0;
+    col[j] = 1.0;
+    lubksb(a, dim, indx, col);
+    for (int i = 0; i < dim;i++)
+      y[i][j] = col[i];
   }
   
   return(1);
@@ -257,15 +258,15 @@ float mat_det_ludcmp(std::vector<std::vector<DType>> &mt,
   DType d;
   
   std::vector<std::vector<DType>> a(dim, std::vector<DType>(dim, 0.0));
-  for (int i=0; i<dim; i++) {
-    for (int j=0; j<dim; j++) {
+  for (int i = 0; i < dim; i++) {
+    for (int j = 0; j < dim; j++) {
       a[i][j] = mt[i][j];
     }
   }
   std::vector<int> indx(dim, 0);
   
-  ludcmp(a,dim,indx,d);
-  for (int j=0; j<dim; j++) d *= a[j][j];
+  ludcmp(a, dim, indx, d);
+  for (int j = 0; j < dim; j++) d *= a[j][j];
   
   return(d);
 }
@@ -286,27 +287,27 @@ unsigned char mat_det_inv(std::vector<std::vector<DType>> &mt,
   std::vector<std::vector<DType>> a(mt);
   
   /** initialize matrix determinant **/
-  det=0.0;
+  det = 0.0;
   std::vector<DType> col(dim, 0.0);
   std::vector<int> indx(dim, 0);
   
-  int m=ludcmp(a,dim,indx,d);
-  if (m==2) {  /** singular matrix **/
-    det=0.0;
+  int m = ludcmp(a, dim, indx, d);
+  if (m == 2) {  /** singular matrix **/
+    det = 0.0;
     return(2);
   }
   
-  for (int j=0; j<dim; j++) d *= a[j][j];
-  det=d;
+  for (int j = 0; j < dim; j++) d *= a[j][j];
+  det = d;
   
-  for (int j=0; j<dim; j++) {
-    for (int i=0; i<dim; i++) col[i]=0.0;
-    col[j]=1.0;
-    lubksb(a,dim,indx,col);
-    for (int i=0; i<dim;i++)
-      y[i][j]=col[i];
+  for (int j = 0; j < dim; j++) {
+    for (int i = 0; i < dim; i++) col[i] = 0.0;
+    col[j] = 1.0;
+    lubksb(a, dim, indx, col);
+    for (int i = 0; i < dim; i++)
+      y[i][j] = col[i];
   }
   return(1);
 }
 
-#endif
+#endif  //__hmm_aw_matrix_h

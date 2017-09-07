@@ -810,7 +810,7 @@ int HmmModel::baumwelch(std::vector<std::vector<float>> &u,
   int twomdflag = 0;
   int res = 0;
 
-  fprintf(stderr, "Inside baumwelch:\n");
+  LOG(INFO)<<"Inside baumwelch.";
 
   if (nseq == 0) return res;
 
