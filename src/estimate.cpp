@@ -300,7 +300,8 @@ void HmmModel::formmix(std::vector<double> &inita,
 
   for (int i = 0; i < numcls; i++) {
     v1 = 0.0;
-    for (int j = 0, k = 0; j < numst; j++) {
+    k = 0;
+    for (int j = 0; j < numst; j++) {
       if (stcls[j] == i) {
         prior[i][k] = a00[j];
         v1 += prior[i][k];
@@ -668,7 +669,7 @@ double HmmModel::classlikehd(std::vector<std::vector<float>> &u,
   double loglikehd, v1;
   double dbtp;
   int mm = 0;
-  for (int i=0; i < nseq; i++) {
+  for (int i = 0; i < nseq; i++) {
     if (mm < len[i]) mm = len[i];
   }
   std::vector<double> thetalog(mm, 0.0);
@@ -710,7 +711,6 @@ void transprob(std::vector<std::vector<double>> &asum,
                std::vector<std::vector<double>> &bnl,
                const std::vector<int> &stcls,
                const std::vector<double> &lsum) {
-  int k;
   double v1;
 
   for (int m = 0; m < numcls; m++) {
@@ -728,7 +728,7 @@ void transprob(std::vector<std::vector<double>> &asum,
 
   for (int n = 0; n < numcls; n++) {
     v1 = 0.0;
-    k = 0;
+    int k = 0;
     for (int l = 0; l < numst; l++) {
       if (stcls[l] != n) {
         bnl[n][l] = 0.0;

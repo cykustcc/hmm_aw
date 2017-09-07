@@ -234,7 +234,7 @@ float kmeans(std::vector<float> &cdbk,
              float threshold,
              float distthred) {
   float dist = 0.0;
-  int numcdwd;
+  int numcdwd = 0;
 
   std::vector<int> index;
   centroid(cdbk, dim, numcdwd, vc, index, numdata);
