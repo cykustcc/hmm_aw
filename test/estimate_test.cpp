@@ -10,7 +10,6 @@
 #include "glog/logging.h"
 #include "test_common.h"
 #include "dist_utils.h"
-#include "mosek_solver.h"
 #include "hmm.h"
 #include <cstring>
 #include "matrix.h"
@@ -24,7 +23,7 @@ protected:
     std::string datafile = root_path + "/data/test/seqhmmdim2st2.txt";
     int len = 200, dim = 2, numst = 2;
     std::vector<double> loglikehd(1, 0.0);
-    
+
     // TODO: add a function to read the sequence data!
     std::vector<std::vector<float>> u(1, std::vector<float>(dim*len, 0.0)); //since nseq = 1
     FILE *fp = fopen(datafile.c_str(), "r");
@@ -40,13 +39,13 @@ protected:
     est_hmm_diag.resize(dim, numst, numcls, stcls);
     est_hmm_notdiag.hmmfit(u, 1, lens, loglikehd, lhsum, EPSILON, tmpwt, false);
     est_hmm_diag.hmmfit(u, 1, lens, loglikehd, lhsum, EPSILON, tmpwt, true);
-    
+
     std::string filenamein = root_path + "/data/test/hmm_forhmmfittest.in";
     gt_hmm.read_model(filenamein);
   }
   virtual void TearDown()
   {
-    
+
   }
 };
 

@@ -76,10 +76,10 @@ public:
   /*-------------------------------------*/
   /*-------------- prob.c ---------------*/
   /*-------------------------------------*/
-  
+
   double gauss_pdf_log(std::vector<float> &ft,
                        int baseidx) const;
-  
+
   double gauss_pdf(std::vector<float> &ft,
                    int baseidx) const;
 };
@@ -133,7 +133,7 @@ public:
       }
     }
   }
-  
+
   HmmModel & operator=(HmmModel &h){
     dim = h.dim;
     numst = h.numst;
@@ -214,26 +214,26 @@ public:
                int len, std::vector<int> &optst,
                std::vector<double> & inita,
                std::vector<double> &lastmerit);
-  
+
   void formmix(std::vector<double> &inita,
                std::vector<std::vector<double>> &tm,
                std::vector<double> &astart,
                std::vector<std::vector<GaussModel>> &pdflist,
                std::vector<std::vector<double>> &prior,
                std::vector<int> &nstpercls);
-  
+
   void viterbicls(std::vector<float> &u,
                   int len,
                   std::vector<int> &optst,
                   std::vector<double> &inita,
                   std::vector<double> &lastmerit,
                   int &bestnext);
-  
+
   void viterbi_mulseq(std::vector<std::vector<float>> &u,
                       int nseq,
                       std::vector<int> &len,
                       std::vector<std::vector<int>> &st);
-  
+
   void updatepar_adder(std::vector<float> &u,
                        int ncols,
                        std::vector<double> &thetalog,
@@ -243,24 +243,24 @@ public:
                        std::vector<std::vector<double>> &mom2sum,
                        std::vector<std::vector<double>> &asum,
                        std::vector<double> &lsum);
-  
+
   void initialize(std::vector<std::vector<float>> &u,
                   int nseq,
                   std::vector<int> &len,
                   int dim,
                   int ranflag);
-  
+
   double comploglike(std::vector<std::vector<float>> &u,
                      int nseq,
                      std::vector<int> &len,
                      std::vector<double>&wt);
-  
+
   double classlikehd(std::vector<std::vector<float>> &u,
                      int nseq,
                      std::vector<int> &len,
                      std::vector<std::vector<double>> &cprob,
                      std::vector<double>& wt);
-  
+
   int baumwelch(std::vector<std::vector<float>> &u,
                 int nseq,
                 std::vector<int> &len,
@@ -269,7 +269,7 @@ public:
                 double epsilon,
                 std::vector<double> &wt,
                 bool forcediag);
-  
+
   void hmmfit(std::vector<std::vector<float>> &u,
               int nseq,
               std::vector<int> &len,
@@ -278,27 +278,6 @@ public:
               double epsilon,
               std::vector<double> &wt,
               bool forcediag);
-  
-  double dist_KL(HmmModel &hmm2, int sample_size, bool diag = false);
-  double dist_transmat_MAW(HmmModel &hmm2, double* C, double* x);
-  double dist_MAW(HmmModel &hmm2, double alpha);
-  double dist_IAW(HmmModel &hmm2, double alpha, int sample_size, bool diag);
-  
-  void gen_seq(std::vector<float> &seq,
-               int n,
-               bool diag);
-  
-  void gen_gmm(std::vector<float> &seq,
-               int n,
-               bool diag);
-  
-  void gauss_sample(std::vector<float> &seq,
-                    int idx,
-                    int N,
-                    int state,
-                    std::vector<std::vector<double>> &mt_S,
-                    bool diag);
-  
 };
 
 

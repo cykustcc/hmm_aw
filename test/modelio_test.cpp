@@ -10,7 +10,6 @@
 #include "glog/logging.h"
 #include "hmm.h"
 #include "test_common.h"
-#include <utils/blas_utils.h>
 
 TEST(ModelIoTest, HmmRead){
   std::string filename(root_path + "/data/test/hmm1.in");

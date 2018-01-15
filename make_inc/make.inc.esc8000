@@ -1,0 +1,10 @@
+#BLAS_LIB=-L/opt/packages/ATLAS/3.10.2/lib -lcblas -lgfortran
+#BLAS_LIB=-L/opt/packages/ATLAS/3.10.2/lib -llapack -lf77blas -lcblas -latlas
+
+#gflags and glog
+GFLAGS=/home/ustc/work/libs
+GLOG=/home/ustc/work/libs
+
+#extra cflags
+AW_DEFINES=-D __BLAS_LEGACY__
+MEX_AW_DEFINES=-D__BLAS_LEGACY__
