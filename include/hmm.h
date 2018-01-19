@@ -82,6 +82,11 @@ public:
 
   double gauss_pdf(std::vector<float> &ft,
                    int baseidx) const;
+
+  void gauss_pdf_grad(std::vector<float> &ft,
+                      int baseidx,
+                      std::vector<float> &grads,
+                      int grad_idx) const;
 };
 
 extern double mix_gauss_pdf_log(std::vector<float> &ft,

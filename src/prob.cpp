@@ -38,6 +38,29 @@ double GaussModel::gauss_pdf(std::vector<float> &ft,
   return(exp(gauss_pdf_log(ft, baseidx)));
 }
 
+void GaussModel::gauss_pdf_grad(std::vector<float> &ft,
+                                int baseidx,
+                                std::vector<float> &grads,
+                                int grad_idx) const {
+// d \phi(x) / dx = \phi(x) inv_sigma (x - mu)
+  double phi_x = gauss_pdf(ft, baseidx);
+  std::vector<float> dif(dim, 0.0);
+
+  int m = dim;
+  for (int i = 0; i < m; i++) {
+    dif[i] = ft[baseidx + i] - mean[i];
+  }
+
+  for (int i = 0; i < m; i++) {
+    grads[grad_idx + i] = 0.0;
+    for (int j = 0; j < m; j++) {
+      grads[grad_idx + i] += sigma_inv[i][j] * dif[j];
+    }
+    grads[grad_idx + i] *= phi_x;
+  }
+};
+
+
 double mix_gauss_pdf_log(std::vector<float> &ft,
                          std::vector<GaussModel> &gmlist,
                          std::vector<double> &prior,
