@@ -24,7 +24,7 @@ void print_vector(std::vector<DType>& vt, int m, int n) {
   int size = vt.size();
   assert(m * n <= size);
   for (int i = 0; i < m; i++) {
-    for (int j = 0; j < n; i++) {
+    for (int j = 0; j < n; j++) {
       std::cout << vt[i * n + j] << " ";
     }
     std::cout << std::endl;
@@ -39,7 +39,7 @@ template<typename DType>
 extern void print_matrix(std::vector<std::vector<DType>> &mt) {
   int rows = (int) mt.size();
   int cols = rows > 0 ? (int) mt[0].size(): 0;
-  
+
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
       std::cout << mt[i][j] << " ";
@@ -70,22 +70,22 @@ template<typename DType>
 extern DType mat_det(std::vector<std::vector<DType>> mt,
                      int dim) {
   DType res;
-  
+
   if (dim == 1)
     return(mt[0][0]);
-  
+
   std::vector<std::vector<DType>> submt(dim - 1,
                                         std::vector<DType>(dim - 1, 0.0));
-  
+
   for (int i = 1; i < dim; i++) {
     for (int j = 1; j < dim; j++) {
       submt[i - 1][j - 1] = mt[i][j];
     }
   }
-  
+
   int n = 1;
   res = 0.0;
-  
+
   for (int i = 0; i < dim; i++) {
     res += (n*mt[i][0] * mat_det(submt, dim - 1));
     n = -n;
@@ -95,7 +95,7 @@ extern DType mat_det(std::vector<std::vector<DType>> mt,
       submt[i][j-1] = mt[i][j];
     }
   }
-  
+
   return(res);
 }
 
@@ -109,7 +109,7 @@ unsigned char ludcmp(std::vector<std::vector<DType>> &a,
   DType big, dum, sum, temp;
   std::vector<float> vv(n, 0.0);
   DType TINY = 1e-20;
-  
+
   d = 1.0;
   for (int i = 0; i < n; i++) {
     big = 0.0;
@@ -122,7 +122,7 @@ unsigned char ludcmp(std::vector<std::vector<DType>> &a,
     }
     vv[i]=1.0 / big;
   }
-  
+
   for (int j = 0; j < n; j++) {
     for (int i = 0; i < j; i++) {
       sum = a[i][j];
@@ -206,7 +206,7 @@ extern void lubksb(std::vector<std::vector<DType>> &a,
                    std::vector<DType> &b){
   int ii = -1, ip;
   DType sum;
-  
+
   for (int i = 0; i<n; i++) {
     ip = indx[i];
     sum = b[ip];
@@ -229,16 +229,16 @@ unsigned char mat_inv(std::vector<std::vector<DType>> &mt,
                       int dim){
   DType d;
   std::vector<std::vector<DType>> a(dim, std::vector<DType>(dim, 0.0));
-  
+
   for (int i = 0; i < dim; i++) {
     for (int j = 0; j < dim; j++) {
       a[i][j] = mt[i][j];
     }
   }
-  
+
   std::vector<DType> col(dim);
   std::vector<int> indx(dim);
-  
+
   ludcmp(a, dim, indx, d);
   for (int j = 0; j < dim; j++) {
     for (int i = 0; i < dim; i++) col[i] = 0.0;
@@ -247,7 +247,7 @@ unsigned char mat_inv(std::vector<std::vector<DType>> &mt,
     for (int i = 0; i < dim;i++)
       y[i][j] = col[i];
   }
-  
+
   return(1);
 }
 
@@ -256,7 +256,7 @@ float mat_det_ludcmp(std::vector<std::vector<DType>> &mt,
                      int dim)
 {
   DType d;
-  
+
   std::vector<std::vector<DType>> a(dim, std::vector<DType>(dim, 0.0));
   for (int i = 0; i < dim; i++) {
     for (int j = 0; j < dim; j++) {
@@ -264,10 +264,10 @@ float mat_det_ludcmp(std::vector<std::vector<DType>> &mt,
     }
   }
   std::vector<int> indx(dim, 0);
-  
+
   ludcmp(a, dim, indx, d);
   for (int j = 0; j < dim; j++) d *= a[j][j];
-  
+
   return(d);
 }
 
@@ -285,21 +285,21 @@ unsigned char mat_det_inv(std::vector<std::vector<DType>> &mt,
 {
   double d;
   std::vector<std::vector<DType>> a(mt);
-  
+
   /** initialize matrix determinant **/
   det = 0.0;
   std::vector<DType> col(dim, 0.0);
   std::vector<int> indx(dim, 0);
-  
+
   int m = ludcmp(a, dim, indx, d);
   if (m == 2) {  /** singular matrix **/
     det = 0.0;
     return(2);
   }
-  
+
   for (int j = 0; j < dim; j++) d *= a[j][j];
   det = d;
-  
+
   for (int j = 0; j < dim; j++) {
     for (int i = 0; i < dim; i++) col[i] = 0.0;
     col[j] = 1.0;

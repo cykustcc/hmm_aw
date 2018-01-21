@@ -37,17 +37,14 @@ int main(int argc, char *argv[])
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   FILE *infile, *mdfile;
   int i,j,k,m,n;
-  int dim=2;
-  int nseq, numdat, onelen=0;
-  int numst=2;
+  int dim = FLAGS_dim;
+  int nseq = FLAGS_num;
+  int numdat, onelen = FLAGS_len;
+  int numst = FLAGS_statenum;
   double lhsum;
   float epsilon=EPSILON;
   float tp1, tp2;
 
-  nseq = FLAGS_num;
-  onelen = FLAGS_len;
-  numst = FLAGS_statenum;
-  dim = FLAGS_dim;
   std::string infilenamestr = FLAGS_infilename;
   std::string mdfilenamestr = FLAGS_mdfilename;
   std::string hmmmdfilenamestr = mdfilenamestr.substr(0,mdfilenamestr.size()-3) + "txt";
@@ -59,22 +56,17 @@ int main(int argc, char *argv[])
   /*----------------------------------------------------------------*/
   /*--------------------- open files -------------------------------*/
   /*----------------------------------------------------------------*/
-
   infile = fopen(infilename, "r");
-//  infile = fopen(FLAGS_infilename, "r")
-  if (infile == NULL)
-    {
+  if (infile == NULL) {
       printf("Couldn't open input data file \n");
       exit(1);
    }
 
   mdfile = fopen(mdfilename, "wb");
-//  mdfile = fopen(FLAGS_mdfilename, "wb");
-  if (mdfile == NULL)
-    {
+  if (mdfile == NULL) {
       printf("Couldn't open output model file \n");
       exit(1);
-    }
+  }
 
   /*----------------------------------------------------------------*/
   /*----------------- Read in data ---------------------------------*/
@@ -94,24 +86,20 @@ int main(int argc, char *argv[])
   std::vector<std::vector<float>> u;
   for (i=0,numdat=0;i<nseq;i++){
     numdat+=len[i];
-    u.push_back(std::vector<float>(len[i], 0.0));
+    u.push_back(std::vector<float>(len[i] * dim, 0.0));
+    std::cout<<len[i]<<std::endl;
   }
-//  std::vector<float> dat(numdat*dim, 0.0);
-
 
   // For testing purpose only
-  //fprintf(stdout, "nseq=%d, numdat=%d, dim=%d\n",nseq,numdat,dim);
-  //for (i=0;i<nseq;i++)
-  // fprintf(stdout, "len[%d]=%d\n", i,len[i]);r
+  // fprintf(stdout, "nseq=%d, numdat=%d, dim=%d\n",nseq,numdat,dim);
+  // for (i=0;i<nseq;i++)
+  //  fprintf(stdout, "len[%d]=%d\n", i,len[i]);
 
-  int dimension,seq_len;
-  std::vector<int> size(2, 0);
-  input.read(reinterpret_cast<char*>(&size[0]), size.size());
-  dimension=size[0];
-  seq_len=size[1];
-  printf("dimension=%d, n=%d\n",dimension,seq_len);
-  for (i=0,m=0;i<nseq;i++) {
-    input.read(reinterpret_cast<char*>(&u[i][0]), u[i].size());
+  std::vector<int> size(2, 0); // dimension, seq_len
+	input.read(reinterpret_cast<char*>(&size[0]), size.size() * sizeof(int));
+  printf("dimension=%d, n=%d\n", size[0], size[1]);
+  for (i=0; i<nseq; i++) {
+    input.read(reinterpret_cast<char*>(&u[i][0]), u[i].size() * sizeof(float));
     print_vector(u[i], len[i], dim);
   }
 

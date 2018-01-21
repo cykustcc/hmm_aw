@@ -80,7 +80,7 @@ lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
 endif
 
 ifeq ($(LINUX),1)
-$(PROJECT)_train: lib/libhmm.a
+$(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a
 	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) -lhmm $(LDFLAGS)
 
 lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
