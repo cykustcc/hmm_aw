@@ -56,7 +56,7 @@ void GaussModel::gauss_pdf_grad(std::vector<float> &ft,
     for (int j = 0; j < m; j++) {
       grads[grad_idx + i] += sigma_inv[i][j] * dif[j];
     }
-    grads[grad_idx + i] *= phi_x;
+    grads[grad_idx + i] *= -phi_x;
   }
 };
 
