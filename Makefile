@@ -80,13 +80,14 @@ lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
 endif
 
 ifeq ($(LINUX),1)
-$(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a
-	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) -lhmm $(LDFLAGS)
+$(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.so
+	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) -lhmm -Wl,-rpath=./lib $(LDFLAGS)
 
-lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
+lib/libhmm.so: $(filter-out build/mosek_solver.o, $(OBJ))
 	@echo $^
 	@mkdir -p $(@D)
-	ar crv $@ $^
+	$(CXX) -shared -o $@ $^
+	#ar crv $@ $^
 
 endif
 
@@ -103,7 +104,7 @@ test: $(TEST_ALL_BIN)
 runtest:
 	$(TEST_ALL_BIN)
 
-$(TEST_ALL_BIN): $(TEST_MAIN_SRC) $(TEST_SRCS) lib/libhmm.a lib/libgtest.so
+$(TEST_ALL_BIN): $(TEST_MAIN_SRC) $(TEST_SRCS) lib/libhmm.so lib/libgtest.so
 	@echo $@
 	$(CXX) $(TEST_MAIN_SRC) $(TEST_SRCS) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) -lhmm -lgtest -lm -lpthread -Wl,-rpath,./lib
 
