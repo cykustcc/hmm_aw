@@ -95,6 +95,46 @@ extern double mix_gauss_pdf_log(std::vector<float> &ft,
                                 int ncmp,
                                 int baseidx);
 
+class GmmModel{
+public:
+  int dim;
+  int numst;
+  std::vector<GaussModel> stpdf;
+  std::vector<double> a00; /* pmf of states at the boundary when there's no neighbor */
+  GmmModel(){
+    GmmModel(0, 0);
+  }
+  GmmModel(int _dim, int _numst)
+      : dim(_dim), numst(_numst) {
+    for (int i = 0; i < numst; i++) {
+      GaussModel tmp(dim, i, 1);
+      stpdf.push_back(tmp);
+    }
+    a00.resize(numst);
+  }
+
+  GmmModel(GmmModel &h): GmmModel(h.dim, h.numst){
+    for (int i = 0; i < numst; i++) {
+      stpdf[i] = h.stpdf[i];
+      a00[i] = h.a00[i];
+    }
+  }
+
+  GmmModel & operator=(GmmModel &h){
+    dim = h.dim;
+    numst = h.numst;
+    a00.resize(numst);
+    stpdf.resize(numst);
+    for (int i = 0; i < numst; i++) {
+      stpdf[i] = h.stpdf[i];
+      a00[i] = h.a00[i];
+    }
+    return *this;
+  }
+  ~GmmModel() = default;
+  void print_model(std::string filename) const;
+};
+
 class HmmModel{
 public:
   int dim;

@@ -16,7 +16,11 @@ std::string root_path = "/Users/yzc147/Dropbox/GMMHMM/code/hmm_aw";
 /*
  *std::string root_path = "/storage/home/yzc147/work/hmm_aw";
  */
-std::string root_path = "/home/ustc/work/hmm_aw";
+/*
+ *std::string root_path = "/home/ustc/work/hmm_aw";
+ */
+
+std::string root_path = "/home/yukun/works/hmm_aw";
 #endif
 
 void expect_same_hmm(HmmModel& md1, HmmModel& md2, double tol){

@@ -21,6 +21,8 @@ ifeq ($(UNAME), Linux)
 		include make_inc/make.inc.Linux
 	else ifeq ($(IDENTIFIER), ESC8000)
 	  include make_inc/make.inc.esc8000
+	else ifneq (,$(findstring yukun-dell,$(IDENTIFIER)))
+	  include make_inc/make.inc.home-dell
 	endif
 else ifeq ($(UNAME), Darwin)
 	OSX := 1
@@ -34,8 +36,8 @@ INCLUDES=-Iinclude/ -I$(MOSEK)/h $(CBLAS_INC) \
  -I$(GFLAGS)/include \
  -I$(GLOG)/include
 LIBRARIES=-Wl,-rpath,. $(BLAS_LIB) \
- -L$(GLOG)/lib -lglog -Wl,-rpath,$(GLOG)/lib \
  -L$(GFLAGS)/lib -lgflags -Wl,-rpath,$(GFLAGS)/lib \
+ -L$(GLOG)/lib -lglog -Wl,-rpath,$(GLOG)/lib \
  -L./lib
 BUILD_DIR=build
 
@@ -70,7 +72,7 @@ build/%.o: src/%.cpp
 
 ifeq ($(OSX),1)
 $(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.a
-	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) -lhmm $(LDFLAGS)
+	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) -L./lib -lhmm $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) $(LDFLAGS)
 
 lib/libhmm.a: $(filter-out build/mosek_solver.o, $(OBJ))
 	@echo $^
@@ -81,12 +83,12 @@ endif
 
 ifeq ($(LINUX),1)
 $(PROJECT)_train: $(SOURCE_CPP_WITH_MAIN) lib/libhmm.so
-	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) -lhmm -Wl,-rpath=./lib $(LDFLAGS)
+	$(CXX) -o $@ $(CFLAGS) $(INCLUDES) -L./lib -lhmm -Wl,-rpath=./lib $(LIBRARIES) $(SOURCE_CPP_WITH_MAIN) $(LDFLAGS)
 
 lib/libhmm.so: $(filter-out build/mosek_solver.o, $(OBJ))
 	@echo $^
 	@mkdir -p $(@D)
-	$(CXX) -shared -o $@ $^
+	$(CXX) -shared -o $@ $^ $(LIBRARIES)
 	#ar crv $@ $^
 
 endif
@@ -120,3 +122,5 @@ testvars:
 	@echo $(filter-out build/mosek_solver.o, $(OBJ))
 	@echo $(TEST_SRCS)
 	@echo $(TEST_CXX_OBJS)
+	@echo $(IN_HOME_DELL)
+	@echo $(findstring yukun-dell,$(IDENTIFIER))

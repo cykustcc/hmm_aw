@@ -2,6 +2,54 @@
 #include <assert.h>
 #include "glog/logging.h"
 
+void GmmModel::print_model(std::string filename) const {
+  // Using "" as input filename if you want to print to stdout.
+  FILE *outfile = filename.size() > 0 ? fopen(filename.c_str(), "w+") : stdout;
+  assert(outfile);
+  int dim, numst, numcls;
+
+  dim = this->dim;
+  numst = this->numst;
+
+  fprintf(outfile, "dim=%d\n", dim);
+  fprintf(outfile, "numst=%d\n", numst);
+
+  fprintf(outfile, "\nStation distribution a00:\n");
+  for (int i = 0; i < numst; i++)
+    fprintf(outfile, "%8e ", this->a00[i]);
+  fprintf(outfile, "\n");
+
+  fprintf(outfile, "\nThe Gaussian distributions of states:\n");
+  for (int i = 0; i < numst; i++) {
+    fprintf(outfile, "\nState %d =============================\n", i);
+    fprintf(outfile, "exist=%d, dim=%d\n", this->stpdf[i].exist,
+            this->stpdf[i].dim);
+
+    fprintf(outfile, "Mean vector:\n");
+    for (int j = 0; j < dim; j++)
+      fprintf(outfile, "%.5e ", this->stpdf[i].mean[j]);
+    fprintf(outfile, "\n");
+
+    fprintf(outfile, "Sigma_det=%e\n", this->stpdf[i].sigma_det);
+
+    fprintf(outfile, "Covariance matrix Sigma:\n");
+
+    for (int m = 0; m < this->stpdf[i].dim; m++) {
+      for (int n = 0; n < this->stpdf[i].dim; n++)
+        fprintf(outfile, "%.5e ", this->stpdf[i].sigma[m][n]);
+      fprintf(outfile, "\n");
+    }
+
+    fprintf(outfile, "Covariance matrix inverse Sigma_inv:\n");
+
+    for (int m = 0; m < this->stpdf[i].dim; m++) {
+      for (int n = 0; n < this->stpdf[i].dim; n++)
+        fprintf(outfile, "%.5e ", this->stpdf[i].sigma_inv[m][n]);
+      fprintf(outfile, "\n");
+    }
+  }
+}
+
 // see hmm1.in for input format example. specifications will be added later
 void HmmModel::read_model(std::string filename) {
   FILE *fp = NULL;
