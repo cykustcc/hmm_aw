@@ -152,7 +152,7 @@
 		67F961F91E6F92EB00482330 /* libglog.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglog.dylib; path = ../../../../../../usr/local/Cellar/glog/0.3.4_1/lib/libglog.dylib; sourceTree = "<group>"; };
 		67F962071E7078A000482330 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		67F962471E707FBF00482330 /* cluster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cluster.h; sourceTree = "<group>"; };
-		67F962481E707FBF00482330 /* dist_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dist_utils.h; sourceTree = "<group>"; };
+		67F962481E707FBF00482330 /* dist_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dist_utils.h; path = ../include/dist_utils.h; sourceTree = SOURCE_ROOT; };
 		67F962491E707FBF00482330 /* hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmm.h; sourceTree = "<group>"; };
 		67F9624A1E707FBF00482330 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 		67F9624C1E707FBF00482330 /* blas_like.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blas_like.h; sourceTree = "<group>"; };
